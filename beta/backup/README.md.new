@@ -1,0 +1,41 @@
+# Facebook Scraper with PostgreSQL
+
+Advanced Facebook scraper with PostgreSQL database integration, screenshot capture, 
+complete comment extraction, and manual login support.
+
+## Features
+
+- **PostgreSQL database integration** for better performance and features
+- **Automatic screenshot capture** of posts
+- **Local storage** of all post images in the 'images' folder
+- **Full comment scraping** with no limit
+- **Manual login support** for reliable access
+- **Option to limit posts** scraped per page
+
+## Documentation
+
+This project is documented in two comprehensive guides:
+
+1. [SETUP_GUIDE.md](SETUP_GUIDE.md) - Complete setup instructions
+2. [USAGE_GUIDE.md](USAGE_GUIDE.md) - How to run the scraper with all options
+
+## Quick Start
+
+1. Install PostgreSQL and set up the database:
+   ```
+   setup_postgres.bat
+   ```
+
+2. Install Python requirements:
+   ```
+   pip install -r requirements.txt
+   ```
+
+3. Edit your list of Facebook pages in `pages.txt`
+
+4. Run the scraper:
+   ```
+   python facebook_scraper_all.py
+   ```
+   
+For complete documentation, refer to the setup and usage guides.

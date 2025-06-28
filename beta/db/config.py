@@ -2,8 +2,8 @@ from typing import Dict, Optional
 import os
 from pathlib import Path
 
-# Database configuration - Using SQLite instead of PostgreSQL for easier setup
-USE_SQLITE = True
+# Database configuration - Using PostgreSQL for better performance and features
+USE_SQLITE = False  # Set to False to use PostgreSQL
 DB_CONFIG = {
     "username": "postgres",
     "password": "Keqing17",
@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 IMAGES_DIR = PROJECT_ROOT / "images"
 LOGS_DIR = PROJECT_ROOT / "logs"
 DEBUG_DIR = PROJECT_ROOT / "debug"
+EXPORTS_DIR = PROJECT_ROOT / "exports"
 SQLITE_DB_PATH = PROJECT_ROOT / "facebook_scraper.db"
 
 def get_database_url() -> str:
@@ -41,6 +42,7 @@ def init_project_structure() -> None:
     IMAGES_DIR.mkdir(exist_ok=True)
     LOGS_DIR.mkdir(exist_ok=True)
     DEBUG_DIR.mkdir(exist_ok=True)
+    EXPORTS_DIR.mkdir(exist_ok=True)
 
 def validate_config() -> bool:
     """Validate database configuration"""

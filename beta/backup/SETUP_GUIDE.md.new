@@ -1,0 +1,200 @@
+# Facebook Scraper Setup Guide
+
+This comprehensive guide provides instructions for setting up the Facebook Scraper project with PostgreSQL database integration.
+
+## Features
+
+- **PostgreSQL database integration** for better performance and features
+- **Automatic screenshot capture** of posts
+- **Local storage** of all post images in the 'images' folder
+- **Full comment scraping** with no limit
+- **Manual login support** for reliable access
+- **Option to limit posts** scraped per page
+
+## Project Structure
+
+```
+facebook-scraper/
+├── db/                      # Database package
+│   ├── __init__.py
+│   ├── config.py            # Database configuration 
+│   ├── database.py          # Database manager
+│   └── models.py            # SQLAlchemy models
+├── images/                  # Downloaded images
+│   └── [page_name]/         # Organized by page
+│       └── screenshots/     # Post screenshots
+├── exports/                 # Exported comments and data
+├── logs/                    # Log files
+├── debug/                   # Debug screenshots and HTML
+├── facebook_scraper_all.py  # Complete scraper with all features
+├── view_comments.py         # View and search comments
+├── export_comments_to_text.py # Export comments to text files
+├── check_db.py              # Check database status
+└── scraper_cli.py           # Command-line interface
+```
+
+## Prerequisites
+
+1. **Python 3.9+** 
+2. **PostgreSQL 14+**
+3. **Firefox** browser
+
+## Step 1: Install PostgreSQL
+
+### Option A: Command Line Installation
+
+1. **Download PostgreSQL** from the [official website](https://www.postgresql.org/download/)
+2. **Run the installer** and follow the prompts
+3. **Remember your password** for the PostgreSQL superuser (postgres)
+4. **Set up PATH environment variables** if not done automatically
+
+### Option B: Using pgAdmin (Visual Interface)
+
+pgAdmin is a powerful management tool for PostgreSQL with a web-based user interface. It makes database setup and management much easier.
+
+1. **Download and install pgAdmin 4** from [the official website](https://www.pgadmin.org/download/)
+2. **Launch pgAdmin 4** from your Start menu or desktop shortcut
+3. You'll see the browser interface open (pgAdmin 4 runs as a web application)
+4. If prompted, enter your master password to access pgAdmin
+
+## Step 2: Create the Database
+
+### Option A: Automatic Setup (Recommended)
+
+Run the automatic setup batch file:
+
+```
+setup_postgres.bat
+```
+
+This will:
+1. Create the database named "facebook_scraper"
+2. Set up all required tables
+3. Configure permissions
+
+### Option B: Using pgAdmin
+
+1. **Connect to Your PostgreSQL Server**
+   - In the left-hand browser panel, locate your PostgreSQL server
+   - If prompted, enter your PostgreSQL password to access the server
+
+2. **Create a New Database**
+   - Right-click on "Databases" and select "Create" > "Database..."
+   - Enter database name: `facebook_scraper`
+   - Set the owner to: `postgres` (or your preferred user)
+   - Click "Save"
+
+3. **Run the Setup Script**
+   - Right-click on the new `facebook_scraper` database
+   - Select "Query Tool"
+   - Open the file: `create_postgres_db.sql`
+   - Click the "Execute" button (or press F5)
+   - You should see "Query returned successfully" in the output panel
+
+4. **Verify Tables**
+   - In the browser panel, expand your database
+   - Navigate to "Schemas" > "public" > "Tables"
+   - You should see three tables: `facebook_posts`, `post_images`, and `post_comments`
+
+### Option C: Manual SQL Setup
+
+1. **Create the database:**
+   ```sql
+   CREATE DATABASE facebook_scraper;
+   ```
+
+2. **Connect to the database:**
+   ```bash
+   psql -U postgres -d facebook_scraper
+   ```
+
+3. **Run the setup SQL script:**
+   ```bash
+   psql -U postgres -d facebook_scraper -f create_postgres_db.sql
+   ```
+
+## Step 3: Install Python Requirements
+
+1. **Create a virtual environment** (recommended):
+   ```bash
+   python -m venv venv
+   ```
+
+2. **Activate the virtual environment**:
+   - Windows:
+     ```
+     venv\Scripts\activate
+     ```
+   - Linux/Mac:
+     ```
+     source venv/bin/activate
+     ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Step 4: Configure Database Connection
+
+1. **Edit db/config.py** to match your PostgreSQL settings:
+   ```python
+   # PostgreSQL connection settings
+   DB_HOST = 'localhost'
+   DB_PORT = '5432'
+   DB_NAME = 'facebook_scraper'
+   DB_USER = 'postgres'  # Change this if using a different user
+   DB_PASSWORD = 'your_password_here'  # Change this to your password
+   ```
+
+2. **Test the connection**:
+   ```
+   python test_postgres_connection.py
+   ```
+   If successful, you'll see: "✅ Database connection successful!"
+
+## Step 5: Initialize Project Structure
+
+Run the initialization script to create necessary directories:
+
+```bash
+python init_project.py
+```
+
+This will create:
+- `images/` - For storing downloaded images
+- `exports/` - For exported comments and other data
+- `logs/` - For log files
+- `debug/` - For debug screenshots and HTML
+
+## Troubleshooting Database Connection
+
+### Common Issues:
+
+1. **Connection Refused**
+   - Check if PostgreSQL service is running
+   - Verify the port number (default is 5432)
+   - Check firewall settings
+
+2. **Authentication Failed**
+   - Double-check username and password
+   - Verify that the user has appropriate permissions
+
+3. **Database Does Not Exist**
+   - Make sure you created the database
+   - Check for typos in the database name
+
+### Testing Database Connection
+
+To verify that the database connection works:
+
+```bash
+python check_db.py
+```
+
+## Next Steps
+
+Now that your environment is set up:
+
+1. Set up your list of Facebook pages in `pages.txt`
+2. Continue to the [Usage Guide](USAGE_GUIDE.md) for instructions on running the scraper

@@ -1,0 +1,1111 @@
+#!/usr/bin/env python
+"""
+Complete Facebook Scraper
+Combines all scraping functionality in one script:
+- Posts scraping
+- Images scraping
+- Complete comment scraping (all comments and replies)
+- Manual login support
+"""
+
+import sys
+import logging
+import argparse
+import os
+import re
+import time
+import requests
+import json
+from pathlib import Path
+from datetime import datetime
+from urllib.parse import urlparse, unquote
+
+# Add project root to Python path
+ROOT_DIR = Path(__file__).parent
+sys.path.append(str(ROOT_DIR))
+
+from db.database import DatabaseManager
+from db.config import LOGS_DIR, DEBUG_DIR, IMAGES_DIR
+from db.models import FacebookPost, PostImage, PostComment
+
+try:
+    from selenium import webdriver
+    from selenium.webdriver.firefox.options import Options as FirefoxOptions
+    from selenium.webdriver.firefox.service import Service as FirefoxService
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+    print("Warning: Selenium not available. Please install selenium package.")
+
+try:
+    from webdriver_manager.firefox import GeckoDriverManager
+    WEBDRIVER_MANAGER_AVAILABLE = True
+except ImportError:
+    WEBDRIVER_MANAGER_AVAILABLE = False
+    print("Warning: Webdriver-manager not available. Will use local Firefox driver.")
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(LOGS_DIR / 'facebook_scraper.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+class FacebookScraper:
+    """Enhanced Facebook scraper with full functionality"""
+    
+    def __init__(self, headless=False, wait_time=10, download_images=True, take_screenshots=True, 
+                 use_cookies=True, comment_limit=0):
+        """Initialize the scraper with options"""
+        if not SELENIUM_AVAILABLE:
+            raise ImportError("Selenium is required but not installed. Please install selenium package.")
+        
+        self.headless = headless
+        self.wait_time = wait_time  # Maximum wait time for manual login
+        self.download_images = download_images
+        self.take_screenshots = take_screenshots
+        self.use_cookies = use_cookies
+        self.comment_limit = comment_limit  # 0 means all comments
+        
+        self.driver = None
+        self.db = DatabaseManager()
+        self.logged_in = False
+        
+        # Create directories
+        LOGS_DIR.mkdir(exist_ok=True)
+        IMAGES_DIR.mkdir(exist_ok=True)
+        DEBUG_DIR.mkdir(exist_ok=True)
+    
+    def setup_driver(self):
+        """Initialize Firefox driver with optimized settings"""
+        logger.info("Setting up Firefox driver...")
+        
+        try:
+            # Configure Firefox options
+            options = FirefoxOptions()
+            options.set_preference("dom.webnotifications.enabled", False)  # Disable notifications
+            options.set_preference("permissions.default.image", 2 if not self.download_images else 1)  # Load images conditionally
+            options.headless = self.headless  # Set headless mode
+            
+            # Try with WebDriver Manager if available
+            if WEBDRIVER_MANAGER_AVAILABLE:
+                service = FirefoxService(GeckoDriverManager().install())
+                driver = webdriver.Firefox(service=service, options=options)
+            else:
+                # Fallback to local driver
+                driver = webdriver.Firefox(options=options)
+            
+            # Set page load timeout
+            driver.set_page_load_timeout(30)
+            
+            logger.info("Firefox browser set up successfully")
+            return driver
+            
+        except Exception as e:
+            logger.error(f"Error setting up Firefox browser: {e}")
+            # Save error log
+            error_log_path = DEBUG_DIR / f"browser_driver_error_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+            with open(error_log_path, "w") as f:
+                f.write(f"Error setting up browser: {str(e)}\n")
+                
+            print(f"Error setting up browser: {e}")
+            print(f"Error details saved to {error_log_path}")
+            return None
+    
+    def start(self):
+        """Start the browser session"""
+        if not self.driver:
+            self.driver = self.setup_driver()
+            if not self.driver:
+                raise RuntimeError("Failed to initialize browser session")
+    
+    def close(self):
+        """Close the browser session"""
+        if self.driver:
+            self.driver.quit()
+            self.driver = None
+            logger.info("Browser closed")
+    
+    def save_debug_info(self, filename_prefix):
+        """Save current page source and screenshot for debugging"""
+        if not self.driver:
+            return None, None
+            
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Save HTML
+        html_path = DEBUG_DIR / f"{filename_prefix}_{timestamp}.html"
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(self.driver.page_source)
+        
+        # Save screenshot
+        screenshot_path = DEBUG_DIR / f"{filename_prefix}_{timestamp}.png"
+        self.driver.save_screenshot(str(screenshot_path))
+        
+        logger.info(f"Saved debug info: {html_path.name} and {screenshot_path.name}")
+        return html_path, screenshot_path
+        
+    def manual_login(self):
+        """Perform manual login to Facebook"""
+        if not self.driver:
+            self.start()
+            
+        try:
+            # Navigate to Facebook
+            logger.info("Navigating to Facebook login page...")
+            self.driver.get("https://www.facebook.com/")
+            time.sleep(3)
+            
+            # Check if already logged in
+            if self._check_login_status():
+                logger.info("Already logged in to Facebook")
+                print("\n✅ Already logged in to Facebook! Proceeding...")
+                self.logged_in = True
+                return True
+            
+            # Otherwise, display manual login instructions
+            print("\n" + "="*80)
+            print("MANUAL LOGIN REQUIRED")
+            print("="*80)
+            print("1. Log in to Facebook with your credentials in the browser window")
+            print("2. Complete any security checks if prompted")
+            print("3. Return to this terminal when logged in")
+            print("4. Type 'done' and press Enter to continue")
+            print("="*80)
+            
+            # Give user time to log in manually
+            print("Please log in to Facebook and type 'done' when finished...")
+            user_input = input("After logging in, type 'done' here: ").strip().lower()
+            
+            # Short pause to let any redirects/page loads complete
+            time.sleep(5)
+            
+            # Final login check
+            if self._check_login_status():
+                logger.info("Successfully logged in to Facebook")
+                print("\n✅ Login successful! Proceeding...")
+                self.logged_in = True
+                self.save_debug_info("login_success_manual")
+                return True
+            else:
+                logger.warning("Login not confirmed after waiting")
+                print("\n❌ Login not confirmed after waiting. Please try again.")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error during manual login: {e}")
+            print(f"\n❌ Error during login: {e}")
+            return False
+    
+    def _check_login_status(self):
+        """Check if currently logged in to Facebook"""
+        try:
+            # Look for elements that indicate logged-in state
+            elements = self.driver.find_elements(By.XPATH, 
+                "//div[@role='navigation'] | //div[@aria-label='Facebook'] | //div[contains(@class, 'userNav')]")
+            
+            # Also check for elements that indicate NOT logged in
+            login_elements = self.driver.find_elements(By.XPATH, "//input[@name='email'] | //input[@name='pass']")
+            
+            return len(elements) > 0 and len(login_elements) == 0
+            
+        except Exception as e:
+            logger.error(f"Error checking login status: {e}")
+            return False
+    
+    def navigate_to_page(self, page_name):
+        """Navigate to a Facebook page"""
+        if not self.driver:
+            return False
+            
+        try:
+            logger.info(f"Navigating to page: {page_name}")
+            self.driver.get(f"https://www.facebook.com/{page_name}")
+            time.sleep(5)  # Wait for page to load
+            
+            # Check if page exists
+            not_found_indicators = self.driver.find_elements(By.XPATH, 
+                "//div[contains(text(), 'This page isn') and contains(text(), 'available')]")
+            
+            if not_found_indicators:
+                logger.error(f"Page not found: {page_name}")
+                self.save_debug_info(f"page_not_found_{page_name}")
+                return False
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error navigating to page {page_name}: {e}")
+            return False
+    
+    def scroll_page_for_posts(self, max_posts=10):
+        """Scroll down the page to load more posts"""
+        if not self.driver:
+            return
+            
+        try:
+            post_count = 0
+            max_scroll_attempts = 30  # Avoid infinite scrolling
+            post_elements = []
+            
+            for _ in range(max_scroll_attempts):
+                # Find post elements
+                new_posts = self.driver.find_elements(By.XPATH, 
+                    "//div[contains(@class, 'userContentWrapper') or @role='article' or contains(@class, 'feed_item')]")
+                
+                # Update post count
+                current_count = len(new_posts)
+                
+                if current_count > post_count:
+                    logger.info(f"Found {current_count} posts so far...")
+                    post_count = current_count
+                    post_elements = new_posts
+                
+                # If we've found enough posts, stop scrolling
+                if max_posts > 0 and post_count >= max_posts:
+                    break
+                
+                # Scroll down
+                self.driver.execute_script("window.scrollBy(0, 1000);")
+                time.sleep(2)  # Wait for content to load
+            
+            logger.info(f"Finished scrolling, found {post_count} posts")
+            return post_elements[:max_posts] if max_posts > 0 else post_elements
+            
+        except Exception as e:
+            logger.error(f"Error scrolling page for posts: {e}")
+            return []
+    
+    def extract_post_data(self, post_element, page_name):
+        """Extract data from a post element"""
+        try:
+            # Extract post ID
+            post_id = None
+            try:
+                # Try to find post ID in various attributes
+                for attr in ['id', 'data-ft', 'data-aid']:
+                    attr_value = post_element.get_attribute(attr)
+                    if attr_value:
+                        # Look for post ID patterns
+                        id_match = re.search(r'(?:story_|fbid=|id=|post:|id:)(\d+)', attr_value)
+                        if id_match:
+                            post_id = id_match.group(1)
+                            break
+                
+                # Try links if ID not found
+                if not post_id:
+                    links = post_element.find_elements(By.XPATH, ".//a[contains(@href, 'posts') or contains(@href, 'story')]")
+                    for link in links:
+                        href = link.get_attribute('href')
+                        if href:
+                            id_match = re.search(r'/posts/(\d+)', href) or re.search(r'story_fbid=(\d+)', href)
+                            if id_match:
+                                post_id = id_match.group(1)
+                                break
+            except Exception as e:
+                logger.warning(f"Error extracting post ID: {e}")
+            
+            # Generate a random ID if none found
+            if not post_id:
+                post_id = f"unknown_{int(time.time())}_{hash(post_element.text) % 10000}"
+            
+            # Extract post URL
+            post_url = None
+            try:
+                # Look for permalinks
+                permalink_elements = post_element.find_elements(By.XPATH, 
+                    ".//a[contains(@href, 'posts') or contains(@href, 'story') or contains(@href, 'permalink')]")
+                
+                for permalink in permalink_elements:
+                    href = permalink.get_attribute('href')
+                    if href and ('posts' in href or 'story' in href or 'permalink' in href):
+                        post_url = href
+                        break
+            except Exception as e:
+                logger.warning(f"Error extracting post URL: {e}")
+            
+            # Extract post text
+            post_text = ""
+            try:
+                # Try different selectors for post content
+                content_selectors = [
+                    ".//div[contains(@class, 'userContent')]",
+                    ".//div[@data-ad-preview='message']",
+                    ".//div[@data-testid='post_message']",
+                    ".//div[contains(@class, 'text_exposed_root')]"
+                ]
+                
+                for selector in content_selectors:
+                    content_elements = post_element.find_elements(By.XPATH, selector)
+                    if content_elements:
+                        post_text = content_elements[0].text
+                        break
+                
+                # If still empty, try a more generic approach
+                if not post_text:
+                    # Find all paragraphs within the post
+                    paragraphs = post_element.find_elements(By.XPATH, ".//p")
+                    post_text = "\n".join([p.text for p in paragraphs if p.text])
+            except Exception as e:
+                logger.warning(f"Error extracting post text: {e}")
+            
+            # Extract post time
+            post_time = None
+            try:
+                # Try finding timestamp elements
+                time_selectors = [
+                    ".//abbr",
+                    ".//a[contains(@class, 'timestamp')]",
+                    ".//span[contains(@class, 'timestamp')]",
+                    ".//div[contains(@class, 'timestampContent')]",
+                ]
+                
+                for selector in time_selectors:
+                    time_elements = post_element.find_elements(By.XPATH, selector)
+                    for time_element in time_elements:
+                        timestamp = time_element.get_attribute('data-utime') or time_element.get_attribute('title')
+                        if timestamp:
+                            try:
+                                # Try to parse as Unix timestamp
+                                if timestamp.isdigit():
+                                    post_time = datetime.fromtimestamp(int(timestamp))
+                                else:
+                                    # Try to parse human-readable date
+                                    from dateutil.parser import parse
+                                    post_time = parse(timestamp)
+                            except:
+                                pass
+                
+                # If still None, use current time
+                if not post_time:
+                    post_time = datetime.now()
+            except Exception as e:
+                logger.warning(f"Error extracting post time: {e}")
+                post_time = datetime.now()  # Default to current time
+            
+            # Extract engagement metrics
+            likes = 0
+            shares = 0
+            comments_count = 0
+            
+            try:
+                # Look for likes/reactions
+                like_selectors = [
+                    ".//span[contains(@class, 'likeButton') or contains(@class, 'UFILikeSentence')]",
+                    ".//div[contains(@class, 'like_def') or contains(@class, 'UFILikeSentence')]",
+                    ".//span[contains(@aria-label, 'like') or contains(@aria-label, 'reaction')]"
+                ]
+                
+                for selector in like_selectors:
+                    like_elements = post_element.find_elements(By.XPATH, selector)
+                    for like_element in like_elements:
+                        text = like_element.text or like_element.get_attribute('aria-label') or ""
+                        like_match = re.search(r'(\d+)\s*(?:like|reaction|people)', text.lower())
+                        if like_match:
+                            likes = int(like_match.group(1))
+                            break
+                
+                # Look for shares
+                share_selectors = [
+                    ".//a[contains(text(), 'share') or contains(text(), 'Share')]",
+                    ".//span[contains(text(), 'share') or contains(text(), 'Share')]"
+                ]
+                
+                for selector in share_selectors:
+                    share_elements = post_element.find_elements(By.XPATH, selector)
+                    for share_element in share_elements:
+                        text = share_element.text
+                        share_match = re.search(r'(\d+)\s*share', text.lower())
+                        if share_match:
+                            shares = int(share_match.group(1))
+                            break
+                
+                # Look for comments count
+                comment_selectors = [
+                    ".//a[contains(text(), 'comment') or contains(text(), 'Comment')]",
+                    ".//span[contains(text(), 'comment') or contains(text(), 'Comment')]"
+                ]
+                
+                for selector in comment_selectors:
+                    comment_elements = post_element.find_elements(By.XPATH, selector)
+                    for comment_element in comment_elements:
+                        text = comment_element.text
+                        comment_match = re.search(r'(\d+)\s*comment', text.lower())
+                        if comment_match:
+                            comments_count = int(comment_match.group(1))
+                            break
+            except Exception as e:
+                logger.warning(f"Error extracting engagement metrics: {e}")
+            
+            # Extract post author (usually the page name for page posts)
+            author = page_name
+            
+            # Take screenshot of the post if enabled
+            screenshot_path = None
+            if self.take_screenshots:
+                try:
+                    # Scroll to the post and take screenshot
+                    self.driver.execute_script("arguments[0].scrollIntoView(true);", post_element)
+                    time.sleep(1)  # Give it time to scroll
+                    
+                    # Create screenshots directory if it doesn't exist
+                    screenshots_dir = IMAGES_DIR / page_name / "screenshots"
+                    screenshots_dir.mkdir(parents=True, exist_ok=True)
+                    
+                    # Generate screenshot filename
+                    timestamp = int(time.time())
+                    screenshot_file = screenshots_dir / f"post_{post_id}_{timestamp}.png"
+                    
+                    # Take screenshot of the specific element
+                    post_element.screenshot(str(screenshot_file))
+                    screenshot_path = str(screenshot_file.relative_to(ROOT_DIR))
+                    
+                    logger.info(f"Saved post screenshot to {screenshot_file.name}")
+                except Exception as e:
+                    logger.warning(f"Error taking post screenshot: {e}")
+            
+            # Extract image URLs
+            image_urls = []
+            try:
+                # Look for images in post
+                img_selectors = [
+                    ".//img[not(contains(@alt, 'emoticon') or contains(@alt, 'emoji'))]",
+                    ".//div[@data-visualcompletion='media-vc-image']/img"
+                ]
+                
+                for selector in img_selectors:
+                    img_elements = post_element.find_elements(By.XPATH, selector)
+                    for img in img_elements:
+                        src = img.get_attribute('src')
+                        if src and ('http' in src) and not ('emoji' in src.lower()):
+                            image_urls.append(src)
+            except Exception as e:
+                logger.warning(f"Error extracting image URLs: {e}")
+            
+            # Build post data object
+            post_data = {
+                'post_id': post_id,
+                'page_name': page_name,
+                'post_url': post_url,
+                'post_text': post_text,
+                'post_time': post_time,
+                'author': author,
+                'likes': likes,
+                'shares': shares,
+                'comments_count': comments_count,
+                'screenshot_path': screenshot_path,
+                'extracted_at': datetime.now(),
+                'image_urls': image_urls
+            }
+            
+            logger.info(f"Extracted post data: ID={post_id}, Likes={likes}, Comments={comments_count}, Images={len(image_urls)}")
+            return post_data
+            
+        except Exception as e:
+            logger.error(f"Error extracting post data: {e}")
+            return None
+    
+    def download_post_images(self, post_data):
+        """Download images from a post"""
+        if not self.download_images or not post_data or not post_data.get('image_urls'):
+            return []
+        
+        downloaded_images = []
+        
+        try:
+            # Create images directory for this page
+            images_dir = IMAGES_DIR / post_data['page_name']
+            images_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Download each image
+            for image_url in post_data['image_urls']:
+                try:
+                    # Generate a unique filename
+                    parsed_url = urlparse(image_url)
+                    original_filename = unquote(os.path.basename(parsed_url.path))
+                    # Clean up filename and add unique timestamp
+                    timestamp = int(time.time())
+                    filename = f"{post_data['post_id']}_{timestamp}_{original_filename[-40:]}"
+                    filename = re.sub(r'[^\w\.-]', '_', filename)
+                    
+                    # Full path for the image
+                    image_path = images_dir / filename
+                    
+                    # Download the image
+                    response = requests.get(image_url, stream=True, timeout=10)
+                    if response.status_code == 200:
+                        with open(image_path, 'wb') as f:
+                            for chunk in response.iter_content(1024):
+                                f.write(chunk)
+                        
+                        # Add to downloaded images list
+                        rel_path = str(image_path.relative_to(ROOT_DIR))
+                        downloaded_images.append({
+                            'original_url': image_url,
+                            'local_path': rel_path,
+                            'filename': filename,
+                            'downloaded_at': datetime.now()
+                        })
+                        
+                        logger.info(f"Downloaded image: {filename}")
+                    else:
+                        logger.warning(f"Failed to download image, status code: {response.status_code}")
+                
+                except Exception as e:
+                    logger.warning(f"Error downloading image {image_url}: {e}")
+            
+            return downloaded_images
+            
+        except Exception as e:
+            logger.error(f"Error downloading post images: {e}")
+            return []
+    
+    def extract_comments(self, post_data, limit=0):
+        """Extract comments from a post"""
+        if not post_data or not post_data.get('post_url'):
+            return []
+        
+        try:
+            # Navigate to post URL to get comments
+            logger.info(f"Navigating to post to extract comments: {post_data['post_id']}")
+            print(f"Navigating to post URL for comments: {post_data['post_url']}")
+            self.driver.get(post_data['post_url'])
+            time.sleep(5)  # Wait for page to load
+            
+            # Expand comments if needed
+            self._expand_comments(limit)
+            
+            # Save debug info to analyze the page structure
+            self.save_debug_info(f"comments_page_{post_data['post_id']}")
+            
+            # Extract comments with updated selectors for 2025 Facebook layout
+            comment_selectors = [
+                "//div[@aria-label='Comment' or contains(@class, 'UFIComment')]",
+                "//div[contains(@class, 'comments-comment-item')]",
+                "//div[contains(@data-testid, 'UFI2Comment')]",
+                "//div[@data-testid='comment']",
+                "//div[@role='article' and contains(@class, 'comment')]",
+                "//div[contains(@class, 'commentable_item')]",
+                "//div[contains(@class, 'comment') and .//span[@dir='auto']]"
+            ]
+            
+            comment_elements = []
+            successful_selector = None
+            
+            for selector in comment_selectors:
+                try:
+                    elements = self.driver.find_elements(By.XPATH, selector)
+                    if elements:
+                        comment_elements = elements
+                        successful_selector = selector
+                        logger.info(f"Found {len(elements)} comments using selector: {selector}")
+                        print(f"Found {len(elements)} comments using selector: {selector}")
+                        break
+                except Exception as e:
+                    logger.warning(f"Error with selector '{selector}': {e}")
+            
+            if not comment_elements:
+                logger.info(f"No comments found for post {post_data['post_id']}")
+                print(f"No comments found for post {post_data['post_id']}")
+                return []
+            
+            logger.info(f"Found {len(comment_elements)} comments for post {post_data['post_id']} using selector: {successful_selector}")
+            print(f"Found {len(comment_elements)} comments for post {post_data['post_id']}")
+            
+            # Process each comment
+            comments = []
+            successful_comments = 0
+            
+            for i, comment in enumerate(comment_elements, 1):
+                try:
+                    # Extract comment author with updated selectors
+                    author = "Unknown"
+                    author_selectors = [
+                        ".//a[contains(@class, 'UFIComment') or @role='link' or contains(@href, 'facebook.com')]",
+                        ".//span[contains(@class, 'author') or contains(@class, 'user')]",
+                        ".//h3[contains(@class, 'actor')]",
+                        ".//a[contains(@class, 'actor')]",
+                        ".//a[@data-hovercard]", 
+                        ".//strong",
+                        ".//span[contains(@class, 'fcg')]"
+                    ]
+                    
+                    for selector in author_selectors:
+                        try:
+                            author_elements = comment.find_elements(By.XPATH, selector)
+                            if author_elements and author_elements[0].text:
+                                author = author_elements[0].text
+                                break
+                        except:
+                            pass
+                    
+                    # Extract comment text with updated selectors
+                    text = ""
+                    text_selectors = [
+                        ".//div[contains(@class, 'UFICommentBody') or @data-ad-comet-preview='message']",
+                        ".//div[@data-testid='comment-content']",
+                        ".//div[contains(@class, 'comment-content')]",
+                        ".//div[contains(@class, 'commentText')]",
+                        ".//span[@dir='auto']",
+                        ".//div[contains(@class, 'userContent')]"
+                    ]
+                    
+                    for selector in text_selectors:
+                        try:
+                            text_elements = comment.find_elements(By.XPATH, selector)
+                            if text_elements and text_elements[0].text:
+                                text = text_elements[0].text
+                                break
+                        except:
+                            pass
+                    
+                    # Skip if we couldn't extract useful data
+                    if not text or text.strip() == "":
+                        logger.warning(f"Comment {i} has no text, skipping")
+                        continue
+                        
+                    # Extract likes
+                    likes = 0
+                    try:
+                        likes_elements = comment.find_elements(By.XPATH, 
+                            ".//span[contains(@class, 'UFICommentLikeButton') or contains(text(), 'Like')]")
+                        for likes_element in likes_elements:
+                            likes_text = likes_element.get_attribute('aria-label') or likes_element.text
+                            if likes_text and 'like' in likes_text.lower():
+                                likes_match = re.search(r'(\d+)', likes_text)
+                                if likes_match:
+                                    likes = int(likes_match.group(1))
+                    except:
+                        pass
+                    
+                    # Build comment data with guaranteed post_id
+                    comment_data = {
+                        'post_id': post_data['post_id'],
+                        'author': author,
+                        'text': text,
+                        'likes': likes,
+                        'comment_time': datetime.now(),  # Facebook doesn't show exact comment times easily
+                        'extracted_at': datetime.now()
+                    }
+                    
+                    comments.append(comment_data)
+                    successful_comments += 1
+                    
+                    # Print progress for debugging
+                    if i == 1 or i % 5 == 0:  # First comment and every 5th
+                        print(f"  Processed comment {i}: Author='{author}', Text='{text[:30]}...'")
+                                            
+                except Exception as e:
+                    logger.warning(f"Error extracting comment {i}: {e}")
+            
+            print(f"Successfully extracted {successful_comments} comments out of {len(comment_elements)} found")
+            return comments
+            
+        except Exception as e:
+            logger.error(f"Error extracting comments from post {post_data['post_id']}: {e}")
+            print(f"Error extracting comments: {e}")
+            return []
+            
+    def _expand_comments(self, limit=0):
+        """Expand all comments and replies"""
+        try:
+            print("Expanding comments and replies...")
+            # Take debug screenshot at start
+            self.save_debug_info("before_expand_comments")
+            
+            # Track clicks for reporting
+            total_clicks = 0
+            max_attempts = 10  # Maximum number of attempts to expand comments
+            max_clicks = 200 if limit == 0 else 50  # Limit clicks if we're only getting a sample
+            
+            # Loop multiple times to make sure we expand all nested levels
+            for attempt in range(max_attempts):
+                if total_clicks >= max_clicks:
+                    logger.info(f"Reached maximum click limit ({max_clicks}), stopping comment expansion")
+                    break
+                
+                current_clicks = 0
+                # Try to expand more comments with updated selectors for 2025 Facebook
+                view_more_selectors = [
+                    "//span[contains(text(), 'View more comments')]/ancestor::div[@role='button']",
+                    "//span[contains(text(), 'View previous comments')]/ancestor::div[@role='button']",
+                    "//div[@role='button' and contains(., 'View more comments')]",
+                    "//div[@role='button' and contains(., 'View previous comments')]",
+                    "//div[contains(text(), 'View more comments') or contains(text(), 'View previous comments')]",
+                    "//span[contains(text(), 'View') and contains(text(), 'comment')]/ancestor::*[1]",
+                    "//div[contains(@class, 'UFIPagerLink')]",
+                    "//a[contains(@class, 'UFIPagerLink')]",
+                    "//a[contains(text(), 'View more comments') or contains(text(), 'View previous comments')]"
+                ]
+                
+                for selector in view_more_selectors:
+                    more_buttons = self.driver.find_elements(By.XPATH, selector)
+                    if more_buttons:
+                        for button in more_buttons[:5]:  # Limit to 5 buttons per selector to avoid infinite loops
+                            try:
+                                # Scroll to button
+                                self.driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                                time.sleep(0.5)
+                                # Click button
+                                self.driver.execute_script("arguments[0].click();", button)
+                                current_clicks += 1
+                                total_clicks += 1
+                                time.sleep(2)  # Wait for comments to load
+                                
+                                if total_clicks >= max_clicks:
+                                    break
+                            except:
+                                pass
+                        
+                        if total_clicks >= max_clicks:
+                            break
+                
+                # Try to expand replies with updated selectors for 2025 Facebook
+                reply_selectors = [
+                    "//span[contains(text(), 'View') and contains(text(), 'repl')]/ancestor::div[@role='button']",
+                    "//div[@role='button' and contains(., 'View') and contains(., 'repl')]",
+                    "//a[contains(text(), 'View') and contains(text(), 'repl')]",
+                    "//span[contains(text(), 'View') and contains(text(), 'repl')]/..",
+                    "//span[contains(text(), 'Reply') or contains(text(), 'Replies')]/ancestor::div[@role='button']",
+                    "//div[contains(@class, 'UFIReplyList')]//a[contains(text(), 'View')]"
+                ]
+                
+                for selector in reply_selectors:
+                    reply_buttons = self.driver.find_elements(By.XPATH, selector)
+                    if reply_buttons:
+                        for button in reply_buttons[:5]:  # Limit to 5 buttons per selector
+                            try:
+                                self.driver.execute_script("arguments[0].scrollIntoView(true);", button)
+                                time.sleep(0.5)
+                                self.driver.execute_script("arguments[0].click();", button)
+                                current_clicks += 1
+                                total_clicks += 1
+                                time.sleep(1.5)
+                                
+                                if total_clicks >= max_clicks:
+                                    break
+                            except:
+                                pass
+                        
+                        if total_clicks >= max_clicks:
+                            break
+                
+                # If no clicks were made in this round, we might be done
+                if current_clicks == 0:
+                    if attempt >= 2:  # Make sure we've made at least 3 attempts
+                        break
+                
+                # Scroll down a bit to load more content
+                self.driver.execute_script("window.scrollBy(0, 500);")
+                time.sleep(2)
+            
+            logger.info(f"Comment expansion completed with {total_clicks} total clicks")
+            
+        except Exception as e:
+            logger.error(f"Error expanding comments: {e}")
+    
+    def save_post_to_database(self, post_data, images=None, comments=None):
+        """Save post data to the database"""
+        if not post_data:
+            return False
+        
+        try:
+            # Convert dictionary to a model instance if necessary
+            # Post data is already a dictionary in our case
+            logger.info(f"Attempting to save post {post_data.get('post_id')} to database")
+            print(f"Database save: Post={post_data.get('post_id')}, Images={len(images) if images else 0}, Comments={len(comments) if comments else 0}")
+            
+            # Verify comment data before saving
+            if comments:
+                for i, comment in enumerate(comments):
+                    if not comment.get('post_id'):
+                        print(f"Warning: Comment {i} has no post_id! Setting it now.")
+                        comment['post_id'] = post_data.get('post_id')
+                    
+                    if not comment.get('text') or not comment.get('author'):
+                        print(f"Warning: Comment {i} has incomplete data! Text: '{comment.get('text')[:20]}...', Author: '{comment.get('author')}'")
+            
+            # Save post using database manager
+            result = self.db.save_post(post_data, images, comments)
+            
+            if result:
+                logger.info(f"Successfully saved post {post_data.get('post_id')} to database with {len(comments) if comments else 0} comments")
+            else:
+                logger.warning(f"Failed to save post {post_data.get('post_id')} to database")
+                
+            return result
+            
+        except Exception as e:
+            logger.error(f"Error saving post {post_data.get('post_id')} to database: {e}")
+            print(f"Database error: {str(e)}")
+            return False
+    
+    def scrape_page(self, page_name, max_posts=10, extract_comments=True):
+        """Scrape posts from a Facebook page"""
+        if not self.driver:
+            self.start()
+        
+        try:
+            # Make sure we're logged in
+            if not self.logged_in and not self._check_login_status():
+                if not self.manual_login():
+                    logger.error("Not logged in to Facebook")
+                    return None
+            
+            # Navigate to the page
+            if not self.navigate_to_page(page_name):
+                logger.error(f"Failed to navigate to page: {page_name}")
+                return None
+            
+            # Scroll to load posts
+            logger.info(f"Scrolling for posts on {page_name}...")
+            post_elements = self.scroll_page_for_posts(max_posts)
+            
+            if not post_elements:
+                logger.warning(f"No posts found on page: {page_name}")
+                return None
+            
+            logger.info(f"Found {len(post_elements)} posts on {page_name}")
+            
+            # Process each post
+            posts_data = []
+            total_images = 0
+            total_comments = 0
+            
+            for i, post_element in enumerate(post_elements, 1):
+                logger.info(f"Processing post {i}/{len(post_elements)} from {page_name}")
+                
+                # Extract post data
+                post_data = self.extract_post_data(post_element, page_name)
+                if not post_data:
+                    continue
+                
+                # Download images
+                images = self.download_post_images(post_data)
+                total_images += len(images)
+                
+                # Extract comments if needed
+                comments = []
+                if extract_comments and post_data.get('post_url'):
+                    print(f"Extracting comments for post: {post_data.get('post_id')}")
+                    try:
+                        comments = self.extract_comments(post_data, self.comment_limit)
+                        print(f"  ✓ Found {len(comments)} comments")
+                        
+                        # Print some comment details for debugging
+                        if comments:
+                            print(f"  ✓ First comment by: {comments[0].get('author')}")
+                            print(f"  ✓ First comment text: {comments[0].get('text')[:50]}...")
+                        
+                        # Make sure comments have the correct post_id
+                        for comment in comments:
+                            if comment.get('post_id') != post_data.get('post_id'):
+                                comment['post_id'] = post_data.get('post_id')
+                                
+                        total_comments += len(comments)
+                    except Exception as e:
+                        logger.error(f"Error in comment extraction: {e}")
+                        print(f"  ✗ Comment extraction error: {e}")
+                        # Continue processing the post even if comment extraction fails
+                        self.save_debug_info(f"comment_error_{post_data.get('post_id')}")
+                
+                # Save to database
+                print(f"Saving post {post_data['post_id']} with {len(comments)} comments to database...")
+                
+                # Debug comment data before saving
+                if comments:
+                    print(f"Comment data for post {post_data['post_id']}:")
+                    for i, c in enumerate(comments[:3], 1):  # Print details for first 3 comments
+                        print(f"  Comment {i}: {c.get('author')} - {c.get('text')[:30]}...")
+                
+                if self.save_post_to_database(post_data, images, comments):
+                    posts_data.append(post_data)
+                    logger.info(f"Successfully saved post {post_data['post_id']} with {len(comments)} comments to database")
+                    print(f"✓ Successfully saved post with {len(comments)} comments to database")
+                else:
+                    logger.warning(f"Failed to save post {post_data['post_id']} to database")
+                    print(f"✗ Failed to save post to database")
+            
+            logger.info(f"Completed scraping {page_name}: {len(posts_data)} posts, {total_images} images, {total_comments} comments")
+            return posts_data, total_images, total_comments
+            
+        except Exception as e:
+            logger.error(f"Error scraping page {page_name}: {e}")
+            return None
+        
+def read_pages_from_file(file_path):
+    """Read list of pages from a text file"""
+    pages = []
+    try:
+        pages_file = Path(file_path)
+        if not pages_file.exists():
+            logger.error(f"Pages file not found: {file_path}")
+            print(f"Error: Pages file not found: {file_path}")
+            return []
+            
+        with open(pages_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                # Strip whitespace and skip empty lines or comments
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    pages.append(line)
+        
+        if not pages:
+            logger.warning(f"No page names found in {file_path}")
+            print(f"Warning: No page names found in {file_path}")
+        
+        return pages
+        
+    except Exception as e:
+        logger.error(f"Error reading pages file: {e}")
+        print(f"Error reading pages file: {e}")
+        return []
+
+def parse_args():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(description='Complete Facebook Scraper')
+    parser.add_argument('--pages', nargs='+', help='List of Facebook page names to scrape')
+    parser.add_argument('--pages-file', type=str, default='pages.txt',
+                        help='File containing list of Facebook page names (one per line)')
+    parser.add_argument('--max-posts', type=int, default=10,
+                        help='Maximum number of posts to scrape per page (0 = all)')
+    parser.add_argument('--headless', action='store_true',
+                        help='Run browser in headless mode (no UI)')
+    parser.add_argument('--no-images', action='store_true',
+                        help='Do not download images')
+    parser.add_argument('--no-comments', action='store_true',
+                        help='Do not extract comments')
+    parser.add_argument('--no-screenshots', action='store_true',
+                        help='Do not take screenshots of posts')
+    parser.add_argument('--wait-time', type=int, default=300,
+                        help='Maximum time to wait for manual login (seconds)')
+    return parser.parse_args()
+
+def main():
+    """Main function"""
+    # Check if Selenium is available
+    if not SELENIUM_AVAILABLE:
+        print("Error: Selenium is required but not installed.")
+        print("Please run: pip install selenium webdriver-manager")
+        return 1
+        
+    # Parse command line arguments
+    args = parse_args()
+    
+    # Print banner
+    print("\n" + "="*80)
+    print("COMPLETE FACEBOOK SCRAPER")
+    print("="*80)
+    print("Features:")
+    print("✓ Post scraping")
+    print("✓ Image downloading")
+    print("✓ Comment extraction")
+    print("✓ Post screenshots")
+    print("✓ Manual login support")
+    print("="*80 + "\n")
+    
+    # Determine pages to scrape
+    pages_to_scrape = []
+    
+    if args.pages:
+        pages_to_scrape = args.pages
+    else:
+        pages_to_scrape = read_pages_from_file(args.pages_file)
+    
+    if not pages_to_scrape:
+        print("No pages to scrape. Please provide page names using --pages or --pages-file.")
+        return 1
+    
+    print(f"Will scrape {len(pages_to_scrape)} pages: {', '.join(pages_to_scrape)}")
+    print(f"Max posts per page: {args.max_posts if args.max_posts > 0 else 'All'}")
+    print(f"Download images: {'No' if args.no_images else 'Yes'}")
+    print(f"Extract comments: {'No' if args.no_comments else 'Yes'}")
+    print(f"Take screenshots: {'No' if args.no_screenshots else 'Yes'}")
+    print(f"Headless mode: {'Yes' if args.headless else 'No'}")
+    
+    # Initialize scraper
+    print("\nInitializing Facebook scraper...")
+    scraper = FacebookScraper(
+        headless=args.headless,
+        wait_time=args.wait_time,
+        download_images=(not args.no_images),
+        take_screenshots=(not args.no_screenshots)
+    )
+    
+    try:
+        # Perform manual login - always required for new sessions
+        print("\nChecking login status...")
+        if not scraper.manual_login():
+            print("Login failed or was canceled. Cannot proceed.")
+            return 1
+        
+        # Process each page
+        total_posts = 0
+        total_images = 0
+        total_comments = 0
+        
+        for page_name in pages_to_scrape:
+            print(f"\n{'='*40}")
+            print(f"SCRAPING PAGE: {page_name}")
+            print(f"{'='*40}")
+            
+            result = scraper.scrape_page(
+                page_name, 
+                max_posts=args.max_posts,
+                extract_comments=(not args.no_comments)
+            )
+            
+            if result:
+                posts_data, images_count, comments_count = result
+                total_posts += len(posts_data)
+                total_images += images_count
+                total_comments += comments_count
+                print(f"\n✅ Successfully scraped {len(posts_data)} posts from {page_name}")
+                print(f"   - {images_count} images downloaded")
+                print(f"   - {comments_count} comments extracted")
+            else:
+                print(f"\n❌ Failed to scrape page: {page_name}")
+        
+        # Print summary
+        print("\n" + "="*50)
+        print("SCRAPING SUMMARY")
+        print("="*50)
+        print(f"Total pages scraped: {len(pages_to_scrape)}")
+        print(f"Total posts scraped: {total_posts}")
+        print(f"Total images downloaded: {total_images}")
+        print(f"Total comments extracted: {total_comments}")
+        print("="*50)
+        
+        if total_comments == 0 and not args.no_comments:
+            print("\n⚠️ WARNING: No comments were extracted. Possible issues:")
+            print("  1. Comments might be disabled or hidden on these pages/posts")
+            print("  2. Facebook's layout might have changed")
+            print("  3. Login session might not have proper access to comments")
+            print("\nTry running the comment_fix.py script to fix any missing comments.")
+        
+        print("\n✅ Scraping completed successfully!")
+        return 0
+        
+    except KeyboardInterrupt:
+        print("\n\nScraping interrupted by user.")
+        return 130
+        
+    except Exception as e:
+        print(f"\n❌ Error during scraping: {e}")
+        logger.exception("Unhandled exception during scraping:")
+        return 1
+        
+    finally:
+        if scraper:
+            scraper.close()
+
+if __name__ == "__main__":
+    sys.exit(main())
