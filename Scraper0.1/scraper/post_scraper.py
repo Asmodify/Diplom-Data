@@ -296,6 +296,7 @@ class PostScraper:
                                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                             )
                             modal_opened = True
+                            logger.info(f"Opened modal via timestamp for post_id={post_id}")
                         except Exception as e:
                             logger.debug(f"Timestamp click failed: {e}")
                             try:
@@ -304,6 +305,7 @@ class PostScraper:
                                     EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                                 )
                                 modal_opened = True
+                                logger.info(f"Opened modal via timestamp (JS click) for post_id={post_id}")
                             except Exception as e2:
                                 logger.debug(f"Timestamp JS click failed: {e2}")
                                 try:
@@ -312,6 +314,7 @@ class PostScraper:
                                         EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                                     )
                                     modal_opened = True
+                                    logger.info(f"Opened modal via timestamp (ActionChains) for post_id={post_id}")
                                 except Exception as e3:
                                     logger.debug(f"Timestamp ActionChains click failed: {e3}")
                     if not modal_opened:
@@ -346,6 +349,7 @@ class PostScraper:
                                     EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                                 )
                                 modal_opened = True
+                                logger.info(f"Opened modal via comment button for post_id={post_id}")
                             except Exception as e:
                                 logger.debug(f"Comment button click failed: {e}")
                                 try:
@@ -354,6 +358,7 @@ class PostScraper:
                                         EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                                     )
                                     modal_opened = True
+                                    logger.info(f"Opened modal via comment button (JS click) for post_id={post_id}")
                                 except Exception as e2:
                                     logger.debug(f"Comment button JS click failed: {e2}")
                                     try:
@@ -362,6 +367,7 @@ class PostScraper:
                                             EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                                         )
                                         modal_opened = True
+                                        logger.info(f"Opened modal via comment button (ActionChains) for post_id={post_id}")
                                     except Exception as e3:
                                         logger.debug(f"Comment button ActionChains click failed: {e3}")
                         else:
@@ -374,6 +380,7 @@ class PostScraper:
                                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                             )
                             modal_opened = True
+                            logger.info(f"Opened modal via post container for post_id={post_id}")
                         except Exception as e2:
                             logger.error(f"Fallback JS click on post container also failed: {e2}")
                             # Save HTML for debug
@@ -409,15 +416,29 @@ class PostScraper:
                                     except Exception:
                                         continue
                                 time.sleep(0.25)
-                                self.driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", modal)
-                                time.sleep(0.15)
-                                if len(comments) == last_count:
-                                    scroll_attempts += 1
-                                else:
-                                    scroll_attempts = 0
-                                last_count = len(comments)
-                                if scroll_attempts >= 3:
-                                    break
+                                # Find the scrollable container inside the modal
+                                scrollable = None
+                                try:
+                                    # Try common selectors for Facebook's scrollable comment area
+                                    for sel in [
+                                        'div[aria-label="Comments"]',
+                                        'div[aria-label="comments"]',
+                                        'div[role="dialog"] div[role="main"]',
+                                        'div[role="dialog"] div[tabindex="0"]',
+                                        'div[role="dialog"] div[style*="overflow-y: auto"]',
+                                    ]:
+                                        found = modal.find_elements(By.CSS_SELECTOR, sel)
+                                        if found:
+                                            scrollable = found[0]
+                                            break
+                                except Exception:
+                                    scrollable = None
+                                if not scrollable:
+                                    scrollable = modal  # fallback
+                                # Incremental scroll inside the scrollable container
+                                for scroll_y in range(0, 2000, 200):
+                                    self.driver.execute_script("arguments[0].scrollTop = arguments[1];", scrollable, scroll_y)
+                                    time.sleep(0.08)
                         except Exception as e:
                             logger.error(f"Error extracting or scrolling modal comments: {e}")
                 except Exception as e:
@@ -866,12 +887,99 @@ class PostScraper:
     def extract_modal_comments(self, elem, post_id, base_dir):
         """
         Extract comments from the modal dialog after clicking the post.
-        This is a stub implementation. Replace with actual extraction logic as needed.
+        Uses robust selectors and BeautifulSoup to extract all visible comment texts.
+        Logs every comment found. Only saves non-empty, deduplicated comments.
         """
-        comments = []  # Replace with real extraction logic
-        # ...real extraction logic should limit to 50 comments...
-        if len(comments) > 50:
-            comments = comments[:50]
+        import time
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+        from bs4 import BeautifulSoup
+        comments = []
+        seen_comments = set()
+        max_comments = 50
+        modal_closed = False
+        try:
+            modal = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@role='dialog' or @aria-modal='true']"))
+            )
+            scrollable = None
+            for candidate in modal.find_elements(By.XPATH, ".//*"):
+                try:
+                    if candidate.value_of_css_property("overflow-y") in ("auto", "scroll") and candidate.size["height"] > 200:
+                        scrollable = candidate
+                        break
+                except Exception:
+                    continue
+            if not scrollable:
+                scrollable = modal
+            last_height = 0
+            scroll_attempts = 0
+            last_comment_count = 0
+            while len(comments) < max_comments and scroll_attempts < 30:
+                self.driver.execute_script("arguments[0].scrollBy(0, 200);", scrollable)
+                time.sleep(0.5)
+                if "Сэтгэгдэл хараахан алга" in modal.text:
+                    logger.info(f"No comments message detected in modal for post_id={post_id}, stopping.")
+                    break
+                # Use BeautifulSoup to extract all visible comment texts from modal HTML
+                soup = BeautifulSoup(modal.get_attribute('innerHTML'), 'html.parser')
+                # Facebook comments are often in <div> or <span> with role="article" or aria-label="Comment"
+                for cdiv in soup.find_all(['div', 'article'], attrs={'aria-label': 'Comment'}):
+                    text = cdiv.get_text(separator=' ', strip=True)
+                    if text and text not in seen_comments:
+                        logger.info(f"[Comment] {text}")
+                        comments.append(text)
+                        seen_comments.add(text)
+                        if len(comments) >= max_comments:
+                            break
+                # Fallback: try role="article" without aria-label
+                for cdiv in soup.find_all(['div', 'article'], attrs={'role': 'article'}):
+                    text = cdiv.get_text(separator=' ', strip=True)
+                    if text and text not in seen_comments:
+                        logger.info(f"[Comment] {text}")
+                        comments.append(text)
+                        seen_comments.add(text)
+                        if len(comments) >= max_comments:
+                            break
+                # If no new comments were found after scroll, break
+                if len(comments) == last_comment_count:
+                    logger.info(f"No new comments found after scroll for post_id={post_id}, stopping.")
+                    break
+                last_comment_count = len(comments)
+                # Try clicking "View more comments" if present
+                more_btns = scrollable.find_elements(By.XPATH, ".//div[@role='button' and (contains(text(),'View more comments') or contains(text(),'See more comments'))]")
+                if not more_btns:
+                    logger.info(f"No more 'View more comments' buttons for post_id={post_id}, stopping.")
+                    break
+                for btn in more_btns:
+                    try:
+                        btn.click()
+                        time.sleep(0.5)
+                    except Exception:
+                        continue
+                new_height = self.driver.execute_script("return arguments[0].scrollTop;", scrollable)
+                if new_height == last_height:
+                    logger.info(f"Scroll position did not change for post_id={post_id}, assuming bottom reached.")
+                    break
+                last_height = new_height
+            if len(comments) > max_comments:
+                comments = comments[:max_comments]
+            logger.info(f"Extracted {len(comments)} comments from modal for post_id={post_id}")
+        except Exception as e:
+            logger.error(f"Error extracting comments from modal for post_id={post_id}: {e}")
+            if base_dir:
+                try:
+                    with open(os.path.join(base_dir, f"modal_debug_{post_id}.html"), "w", encoding="utf-8") as f:
+                        f.write(self.driver.page_source)
+                except Exception:
+                    pass
+        finally:
+            try:
+                self.close_modal()
+                modal_closed = True
+            except Exception as e:
+                logger.warning(f"Failed to close modal for post_id={post_id} in extract_modal_comments: {e}")
         self.save_comments_to_db(comments, post_id)
         return comments
 
@@ -914,35 +1022,71 @@ class PostScraper:
     def extract_comments_modal_first(self, post_elem, post_id, base_dir):
         """
         Always attempt to open the comment modal for a post, extract up to 50 comments if present, then close modal.
-        If modal cannot be opened or has no comments, close and continue.
+        Tries multiple strategies for all post types (text, photo, video):
+        - Timestamp link
+        - Comment button
+        - Post container
+        - Video overlay/play button (for video posts)
         """
         comments = []
         modal_opened = False
         try:
-            # Try to find and click the comment button to open modal
-            comment_btn = post_elem.find_element(By.XPATH, ".//div[@aria-label='Leave a comment' or @aria-label='Comment']")
-            comment_btn.click()
-            modal_opened = True
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
-            )
-            # Extract comments from modal (replace with real logic)
-            comments = self.extract_modal_comments(post_elem, post_id, base_dir)
-            if not comments:
-                logger.info(f"No comments found in modal for post_id={post_id}")
+            # Try to open modal by clicking timestamp link
+            try:
+                timestamp = post_elem.find_element(By.XPATH, ".//a[contains(@href, '/posts/') or contains(@href, '/videos/')]")
+                timestamp.click()
+                modal_opened = True
+                logger.info(f"Opened modal via timestamp for post_id={post_id}")
+            except Exception:
+                # Try to open modal by clicking comment button
+                try:
+                    comment_btn = post_elem.find_element(By.XPATH, ".//div[@aria-label='Leave a comment' or @aria-label='Comment']")
+                    comment_btn.click()
+                    modal_opened = True
+                    logger.info(f"Opened modal via comment button for post_id={post_id}")
+                except Exception:
+                    # Try to open modal by clicking post container
+                    try:
+                        post_elem.click()
+                        modal_opened = True
+                        logger.info(f"Opened modal via post container for post_id={post_id}")
+                    except Exception:
+                        # Try to open modal by clicking video overlay/play button
+                        try:
+                            video_btn = post_elem.find_element(By.XPATH, ".//div[contains(@aria-label, 'Play video') or contains(@aria-label, 'Watch') or contains(@role, 'button')]")
+                            video_btn.click()
+                            modal_opened = True
+                            logger.info(f"Opened modal via video overlay for post_id={post_id}")
+                        except Exception:
+                            logger.warning(f"Could not open modal for post_id={post_id} (all strategies failed)")
+            if modal_opened:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
+                )
+                # Extract comments from modal
+                comments = self.extract_modal_comments(post_elem, post_id, base_dir)
+                if not comments:
+                    logger.info(f"No comments found in modal for post_id={post_id}")
         except Exception as e:
             logger.warning(f"Modal could not be opened or no comments for post_id={post_id}: {e}")
         finally:
             if modal_opened:
+                closed = False
+                # Try to close the modal robustly
                 try:
-                    # Try to close the modal
                     close_btn = self.driver.find_element(By.XPATH, "//div[@aria-label='Close' or @aria-label='Close dialog']")
                     close_btn.click()
                     WebDriverWait(self.driver, 5).until_not(
                         EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Comments' or @role='dialog']"))
                     )
-                except Exception as e:
-                    logger.warning(f"Failed to close modal for post_id={post_id}: {e}")
+                    closed = True
+                except Exception:
+                    pass
+                if not closed:
+                    try:
+                        self.close_modal()
+                    except Exception as e:
+                        logger.warning(f"Failed to close modal for post_id={post_id} (fallback): {e}")
             # Save comments if any
             if comments:
                 if len(comments) > 50:
@@ -953,21 +1097,35 @@ class PostScraper:
     def scrape_posts_on_page(self, page_url, max_posts=10, base_dir=None):
         """
         Scrape up to max_posts from a single Facebook page, always attempting modal extraction for each post.
+        Refetches post elements by index after each modal close to avoid stale element issues.
         """
         self.driver.get(page_url)
         WebDriverWait(self.driver, 15).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '[role="main"]'))
         )
-        posts = self.driver.find_elements(By.XPATH, "//div[@role='article']")
         scraped = 0
-        for post_elem in posts:
-            if scraped >= max_posts:
-                break
-            post_id = self.extract_post_id(post_elem)
-            if not post_id:
+        post_idx = 0
+        while scraped < max_posts:
+            try:
+                posts = self.driver.find_elements(By.XPATH, "//div[@role='article']")
+                if post_idx >= len(posts):
+                    break
+                post_elem = posts[post_idx]
+                post_id = self.extract_post_id(post_elem)
+                if not post_id:
+                    post_idx += 1
+                    continue
+                self.extract_comments_modal_first(post_elem, post_id, base_dir)
+                scraped += 1
+                post_idx += 1
+            except Exception as e:
+                logger.error(f"Error scraping post: {e}")
+                try:
+                    self.close_modal()
+                except Exception:
+                    pass
+                post_idx += 1
                 continue
-            self.extract_comments_modal_first(post_elem, post_id, base_dir)
-            scraped += 1
         logger.info(f"Scraped {scraped} posts from {page_url}")
         return scraped
 

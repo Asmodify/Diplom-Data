@@ -21,5 +21,9 @@ try:
         result = conn.execute(text("SELECT * FROM facebook_posts LIMIT 10"))
         for row in result:
             print(row)
+        print("\nSample data from post_comments:")
+        result = conn.execute(text("SELECT * FROM post_comments LIMIT 10"))
+        for row in result:
+            print(row)
 except Exception as e:
     print("Database connection failed:", e)
