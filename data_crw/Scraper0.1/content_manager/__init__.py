@@ -1,0 +1,1 @@
+# Content manager package init
