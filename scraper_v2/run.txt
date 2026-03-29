@@ -1,0 +1,9 @@
+# Run AI-powered comprehensive analysis
+python run.py analyze --ai --limit 100
+
+# Export to JSON
+python run.py analyze --ai --limit 100 --output analysis.json
+
+# Interactive mode
+python run.py
+# Select option 5 → 3 for AI analysis

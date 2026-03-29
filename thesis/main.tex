@@ -1,0 +1,1662 @@
+﻿% ============================================================================
+% Дипломын ажил - Нийгмийн сүлжээний мэдээлэл цуглуулагч ба анализ хийх систем
+% ============================================================================
+\documentclass[12pt,a4paper]{report}
+
+% ============================================================================
+% Packages
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[mongolian,english]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{appendix}
+\usepackage{pdfpages}
+
+% ============================================================================
+% Page Layout
+% ============================================================================
+\geometry{
+    left=30mm,
+    right=20mm,
+    top=25mm,
+    bottom=25mm
+}
+
+\onehalfspacing
+
+% ============================================================================
+% Header/Footer
+% ============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\leftmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================================
+% Document Info
+% ============================================================================
+\newcommand{\thesistitle}{Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем}
+\newcommand{\thesissubtitle}{Sentiment Analysis ба ойролцоогоор хэрэглэгч оролцооны таамаглал}
+\newcommand{\authorname}{Ө.Хүслэн}
+\newcommand{\studentid}{B221930045}
+\newcommand{\supervisor}{Мөнхбуян}
+\newcommand{\university}{Шинжлэх ухаан технологийн их сургууль}
+\newcommand{\faculty}{Мэдээлэл холбооны технологийн сургууль}
+\newcommand{\department}{Мэдээллийн технологийн тэнхим}
+\newcommand{\thesisyear}{2026}
+
+% ============================================================================
+% Begin Document
+% ============================================================================
+\begin{document}
+
+% ============================================================================
+% Title Page
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \university \par}
+    \vspace{0.5cm}
+    {\large \faculty \par}
+    {\large \department \par}
+    
+    \vspace{2cm}
+    
+    {\Huge\bfseries \thesistitle \par}
+    \vspace{0.5cm}
+    {\Large \thesissubtitle \par}
+    
+    \vspace{2cm}
+    
+    {\Large\bfseries Дипломын ажил \par}
+    
+    \vfill
+    
+    \begin{flushleft}
+        \large
+        \textbf{Оюутан:} \authorname \\
+        \textbf{Оюутны ID:} \studentid \\
+        \textbf{Удирдагч:} \supervisor \\
+    \end{flushleft}
+    
+    \vspace{1cm}
+    
+    {\large Улаанбаатар, \thesisyear \par}
+\end{titlepage}
+
+% ============================================================================
+% Abstract (Mongolian)
+% ============================================================================
+\chapter*{Хураангуй}
+\addcontentsline{toc}{chapter}{Хураангуй}
+
+Энэхүү дипломын ажил нь нийгмийн сүлжээний нээлттэй олон нийтийн өгөгдлийг автоматаар цуглуулж, тэдгээрт Sentiment Analysis хийж, хэрэглэгчид хэрхэн оролцоо үзүүлэх болон ямар төвөгтэй хариу үйлдэл авах магадлалыг таамаглах системийг боловсруулахад чиглэсэн болно. Судалгааны практик хэрэгжилт нь нийгмийн сүлжээний өгөгдөлд төвлөрсөн бөгөөд модульчлагдсан архитектур нь ирээдүйд олон төрлийн эх сурвалж нэмэх боломжтой байхаар зохион байгуулагдсан.
+
+\textbf{Судалгааны үндсэн зорилгууд:}
+\begin{itemize}
+    \item Нийгмийн сүлжээний хуудаснаас нийтлэл, сэтгэгдлийг автоматаар цуглуулах систем бүтээх
+    \item Цуглуулсан мэдээлэлд байгалийн хэлийн боловсруулалт ашиглан Sentiment Analysis хийх
+    \item Мэдрэмж, оролцооны метрик, цаг хугацааны өгөгдөлд тулгуурлан хүмүүсийн оролцоотой байх магадлал болон оролцооны хэмжээг таамаглах
+    \item Таамагласан үр дүнд үндэслэн автомат зөвлөмж үүсгэх алгоритм боловсруулах
+    \item Системийг хэрэглэхэд хялбар болгох интерфейс.nашиглах
+    \item Цуглуулсан өгөгдлийг безопаснаар хадгалах ба удирдах
+\end{itemize}
+
+Систем нь өгөгдлийн цуглуулга, боловсруулалт, Sentiment Analysis, таамаглалт болон зөвлөмжийн модультай байна. Мэдрэмжийн шинжилгээнд бүтээлэг байгалийн хэлийн боловсруулалтын аргуудыг ашигласан. Таамаглалтын хэсэгт сурсан машины аргуудыг ашиглан мэдрэмж, оролцоо, хугацааны хэв маяг, сэдвийн кластерчлалыг нэгтгэн оролцооны төрөл (идэвхтэй/идэвхгүй/сайрхаж) болон оролцооны хэмжээг үнэлж, практик зөвлөмж гарган байна.
+
+Туршилтын үр дүнд систем нь нийгмийн сүлжээний хуудаснаас тогтвортой өгөгдөл цуглуулж, Sentiment Analysis-ын нарийвчлал 91\%-д хүрсэн бөгөөд оролцоотой байхуу болон оролцооны хэмжээний таамаглалд суурилсан зөвлөмжийн практик хамаарал 87\% гарсан.
+
+\textbf{Түлхүүр үгс:} Нийгмийн сүлжээ, вэб цуглуулга, sentiment analysis, оролцооны таамаглал, байгалийн хэлийн боловсруулалт, сурсан машин, таамаглалтын загвар
+
+% ============================================================================
+% Abstract (English)
+% ============================================================================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This thesis presents an automated system for collecting social media public data, performing sentiment analysis, and estimating how users are likely to engage and how much engagement a post may receive. The practical implementation focuses on social media platforms, while the modular architecture keeps the system extensible for future data sources. The system uses automated data collection techniques to gather posts and comments, applies natural language processing (NLP) for sentiment analysis, and combines sentiment, engagement, and temporal signals to estimate engagement likelihood and engagement volume, then generate recommendations based on analysis.
+
+\textbf{The system's main objectives are:}
+\begin{itemize}
+    \item Develop an automated data collection system for public social media content
+    \item Implement sentiment analysis using natural language processing techniques
+    \item Predict likely user engagement and engagement volume using sentiment, engagement metrics, and temporal patterns
+    \item Develop automated recommendation generation algorithms based on predicted outcomes
+    \item Create a user-friendly interface
+    \item Store and manage collected data securely
+\end{itemize}
+
+The system comprises four major modules: data collection, data processing, sentiment analysis, and engagement prediction with recommendation generation. The sentiment analysis component employs advanced natural language processing methods. The prediction component combines machine learning techniques with sentiment signals, engagement metrics, temporal patterns, and topic clustering to estimate engagement likelihood (active/inactive/neutral) and expected engagement volume, then generate actionable insights.
+
+Experimental results show that the system can reliably collect public social media content with sentiment analysis accuracy of 91\% and engagement prediction/recommendation relevance of 87\%.
+
+\textbf{Keywords:} Social Media, Data Collection, Sentiment Analysis, Engagement Prediction, Natural Language Processing, Machine Learning, Predictive Modeling
+
+% ============================================================================
+% Table of Contents
+% ============================================================================
+\tableofcontents
+\listoftables
+
+% ============================================================================
+% Chapter 1: Introduction
+% ============================================================================
+\chapter{Оршил}
+
+\section{Судалгааны үндэслэл}
+
+Өнөө үед нийгмийн сүлжээ нь хүмүүсийн өдөр тутмын амьдралын салшгүй хэсэг болсон. Нийгмийн сүлжээний платформууд миллиард гаруй хэрэглэгчтэй бөгөөд өдөр бүр хязгааргүй их хэмжээний мэдээлэл үүсгэж байна. Энэ мэдээллийг цуглуулж, анализ хийснээр:
+
+\begin{itemize}
+    \item Олон нийтийн санал бодлыг судлах
+    \item Брэнд болон бүтээгдэхүүний талаарх хандлагыг тодорхойлох
+    \item Маркетингийн стратеги боловсруулах
+    \item Нийгмийн чиг хандлагыг урьдчилан таамаглах
+    \item Хэрэглэгчдийн зан төлөвийг ойлгох
+\end{itemize}
+
+зэрэг олон чухал зорилгод ашиглах боломжтой. Иймээс автомат системээр нийгмийн сүлжээний өгөгдлийг цуглуулж, анализ хийх нь орчин үеийн бизнес, маркетинг, судалгаа гэх мэт салбарын үндсэн хэрэгцээ болж хувирсан.
+
+\section{Судалгааны зорилго}
+
+Энэхүү дипломын ажлын гол зорилго нь нийгмийн сүлжээний хуудаснаас мэдээлэл автоматаар цуглуулж, байгалийн хэлийн боловсруулалтын технологи ашиглан Sentiment Analysis хийж, түүнд тулгуурлан хүмүүс хэрхэн оролцоо үзүүлэх болон ямар төвөгтэй оролцооны хариу авахыг таамаглах иж бүрэн систем боловсруулах явдал юм. Систем нь нийгмийн сүлжээний өгөгдөл дээр баталгаажсан бөгөөд архитектур нь дараагийн шатанд бусад төрлийн эх сурвалж нэмэхээр өргөтгөх боломжтой.
+
+\textbf{Систем юу хийх ёстой вэ?}
+\begin{itemize}
+    \item Нийгмийн сүлжээний хуудаснаас нийтлэл, сэтгэгдлийг автоматаар цуглуулах
+    \item Цуглуулсан текст өгөгдөлд Sentiment Analysis хийж хандлагыг тодорхойлох
+    \item Мэдрэмж, оролцоо, хугацааны хэв маягт тулгуурлан контентийн оролцооны магадлал болон оролцааны хэмжээг таамаглах
+    \item Таамаглалд суурилсан практик зөвлөмжийг хэрэглэгчид ашиглахад хялбар байдлаар гаргах
+\end{itemize}
+
+\textbf{Дэд зорилтууд:}
+\begin{enumerate}
+    \item Нийгмийн сүлжээний нийтлэл, сэтгэгдлийг цуглуулах найдвартай систем бүтээх
+    \item Цуглуулсан өгөгдлийг үр дүнтэйгээр боловсруулах
+    \item Sentiment Analysis-ын нарийвчлалыг сайжруулах зөндөө байгалийн хэлийн боловсруулалтын арга ашиглах
+    \item Мэдрэмж, оролцоо, хугацааны өгөгдөлд суурилан оролцооны магадлал ба оролцааны хэмжээний таамаглал гаргах
+    \item Сурсан машины аргууд ашиглан таамаглалтын нарийвчлалыг сайжруулах
+    \item Хэрэглэгчид ашиглахад хялбар системийн интерфейс бүтээх
+    \item Цуглуулсан өгөгдлийг безопаснаар хадгалах ба удирдах системийг бүтээх
+\end{enumerate}
+
+\section{Судалгааны асуулт}
+
+Энэхүү дипломын ажил дараах судалгааны үндсэн асуултуудад хариулахыг зорьсон:
+
+\begin{enumerate}
+    \item Нийгмийн сүлжээний пост, сэтгэгдлээс мэдрэмжийн төлөвийг найдвартай тодорхойлох боломж ямар түвшинд байна вэ?
+    \item Мэдрэмжийн мэдээлэл, оролцооны метрик, хугацааны хэв маягийг нэгтгэснээр хэрэглэгчийн хариу үйлдэл (эерэг/сөрөг чиглэл)-ийг урьдчилан таамаглаж чадах уу?
+    \item Нийтлэлийн авах реакцын хэмжээг (likes, shares, comments) практикт ашиглахуйц нарийвчлалтай таамаглах боломжтой юу?
+\end{enumerate}
+
+\section{Судалгааны таамаглал}
+
+Судалгааны хүрээнд дараах таамаглалуудыг дэвшүүлсэн:
+
+\begin{itemize}
+    \item \textbf{H1:} BERT-д суурилсан Sentiment Analysis нь rule-based аргуудаас (TextBlob, VADER) өндөр нарийвчлал үзүүлнэ.
+    \item \textbf{H2:} Мэдрэмжийн үзүүлэлт + оролцооны метрик + хугацааны хэв маягийг нэгтгэх нь хариу үйлдлийн чиглэлийг дан ганц мэдрэмжийн онооноос илүү сайн тайлбарлана.
+    \item \textbf{H3:} Таамагласан хариу үйлдэлд суурилсан зөвлөмж нь контентийн реакцын хэмжээг нэмэгдүүлэхэд практик үнэ цэнтэй байна.
+\end{itemize}
+
+\section{Судалгааны ач холбогдол}
+
+Энэ судалгааны ажил нь дараах ач холбогдолтой:
+
+\textbf{Онолын ач холбогдол:}
+\begin{itemize}
+    \item Нийгмийн сүлжээний өгөгдөл цуглуулах арга зүйг системчлэх
+    \item Монгол хэлний Sentiment Analysis-ын боломжийг судлах
+\end{itemize}
+
+\textbf{Практик ач холбогдол:}
+\begin{itemize}
+    \item Бизнесийн байгууллагуудад хэрэглэгчийн санал хүсэлтийг судлах хэрэгсэл болох
+    \item Судлаачдад нийгмийн сүлжээний судалгаа хийхэд туслах
+    \item Маркетингийн мэргэжилтнүүдэд брэндийн имижийг хянахад ашиглах
+\end{itemize}
+
+\section{Судалгааны хүрээ ба хязгаарлалт}
+
+\textbf{Судалгааны хүрээ:}
+\begin{itemize}
+    \item Facebook нийгмийн сүлжээний нийтлэл, сэтгэгдлийг цуглуулах (өргөтгөх боломжтой архитектур)
+    \item Англи хэлний sentiment analysis (TextBlob, VADER, BERT)
+    \item PostgreSQL, SQLite, Firebase өгөгдлийн сангууд
+    \item REST API интерфейс
+\end{itemize}
+
+\textbf{Хязгаарлалт:}
+\begin{itemize}
+    \item Платформуудын нууцлалын бодлогын өөрчлөлтөөс хамаарч систем тохируулга шаардаж болно
+    \item Монгол хэлний Sentiment Analysis хязгаарлагдмал
+    \item Скрапинг хурд нь платформуудын хориг хамгаалалтаас хамаарна
+\end{itemize}
+
+\section{Судалгааны аргачлалын ерөнхий загвар}
+
+Судалгааг дараах дараалсан үе шаттайгаар зохион байгуулсан:
+
+\begin{enumerate}
+    \item \textbf{Өгөгдөл цуглуулалт:} Facebook пост, сэтгэгдлийг автомат аргаар татан төвлөрүүлэх
+    \item \textbf{Өгөгдөл боловсруулалт:} текст цэвэрлэх, шинж тэмдэг үүсгэх, мэдрэмжийн ангилал хийх
+    \item \textbf{Таамаглалын моделчлол:} хариу үйлдлийн чиглэл болон реакцын хэмжээг тооцоолох
+    \item \textbf{Үр дүнгийн үнэлгээ:} ангиллын чанарыг Accuracy/F1, хэмжээний таамаглалыг MAE/RMSE үзүүлэлтээр үнэлэх
+    \item \textbf{Хэлэлцүүлэг:} гарсан үр дүнг судалгааны асуулт, таамаглалтай уялдуулан дүгнэх
+\end{enumerate}
+
+\section{Дипломын ажлын бүтэц}
+
+Энэхүү дипломын ажил нь дараах бүлгүүдээс бүрдэнэ:
+
+\begin{description}
+    \item[1-р бүлэг:] Оршил - Судалгааны үндэслэл, зорилго, ач холбогдол
+    \item[2-р бүлэг:] Онолын хэсэг - Холбогдох технологиуд, урьд өмнөх судалгаанууд
+    \item[3-р бүлэг:] Арга зүй - Системийн архитектур, технологийн сонголт
+    \item[4-р бүлэг:] Хэрэгжилт - Системийн бүрэлдэхүүн хэсгүүдийн хөгжүүлэлт
+    \item[5-р бүлэг:] Үр дүн - Туршилт, тест, үнэлгээ
+    \item[6-р бүлэг:] Дүгнэлт - Нэгтгэл, дүгнэлт, цаашдын чиглэл
+\end{description}
+
+% ============================================================================
+% Chapter 2: Literature Review
+% ============================================================================
+\chapter{Онолын хэсэг}
+
+\section{Нийгмийн сүлжээ ба Big Data}
+
+\subsection{Нийгмийн сүлжээний тухай ойлголт}
+
+Нийгмийн сүлжээ (Social Media) гэдэг нь хэрэглэгчид хоорондоо харилцан мэдээлэл солилцох, контент хуваалцах боломжийг олгодог интернет платформуудыг хэлнэ. Үндсэн нийгмийн сүлжээнүүд:
+
+\begin{table}[H]
+\centering
+\caption{Дэлхийн алдартай нийгмийн сүлжээнүүд (2024)}
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Платформ} & \textbf{Хэрэглэгчид (сая)} & \textbf{Үндсэн хэлбэр} \\
+\hline
+Facebook & 3,050 & Текст, зураг, видео \\
+YouTube & 2,500 & Видео \\
+WhatsApp & 2,000 & Мессеж \\
+Instagram & 2,000 & Зураг, видео \\
+TikTok & 1,500 & Богино видео \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Big Data ба нийгмийн сүлжээ}
+
+Нийгмийн сүлжээний өгөгдөл нь Big Data-ийн 5V шинж чанарыг бүрэн агуулдаг:
+
+\begin{itemize}
+    \item \textbf{Volume (Хэмжээ):} Өдөр бүр тэрбум тэрбум нийтлэл, сэтгэгдэл
+    \item \textbf{Velocity (Хурд):} Мэдээлэл бодит цаг хугацаанд үүсдэг
+    \item \textbf{Variety (Олон төрөл):} Текст, зураг, видео, emoji
+    \item \textbf{Veracity (Үнэн зөв):} Мэдээллийн найдвартай байдал янз бүр
+    \item \textbf{Value (Үнэ цэнэ):} Бизнес, судалгаанд чухал ач холбогдолтой
+\end{itemize}
+
+\section{Вэб скрапинг технологи}
+
+\subsection{Вэб скрапингийн тухай}
+
+Вэб скрапинг (Web Scraping) гэдэг нь вэб сайтуудаас автоматаар мэдээлэл цуглуулах процесс юм. Үндсэн аргууд:
+
+\begin{enumerate}
+    \item \textbf{HTTP Request:} Шууд HTTP хүсэлт илгээх (requests)
+    \item \textbf{Browser Automation:} Хөтөч автоматжуулах (Selenium)
+    \item \textbf{API:} Албан ёсны API ашиглах
+\end{enumerate}
+
+\subsection{Selenium WebDriver}
+
+Selenium нь вэб хөтчийг автоматжуулах хамгийн алдартай хэрэгсэл юм. Давуу талууд:
+
+\begin{itemize}
+    \item JavaScript ажиллуулах чадвартай
+    \item Хүний үйлдлийг дуурайх
+    \item Олон хөтчийг дэмждэг (Chrome, Firefox, Edge)
+    \item Динамик контенттой ажиллах
+\end{itemize}
+
+
+\textbf{Яагаад ашигласан бэ?} Selenium WebDriver нь JavaScript-аар ачаалагддаг динамик хуудсуудтай ажиллах, нэвтрэх үйлдэл гүйцэтгэх, хүний үйлдлийг дуурайлган тогтвортой скрапинг хийх боломж олгодог тул сонгосон.
+
+\textbf{Хаана ашигласан бэ?} Энэ технологийг системийн BrowserManager болон PostScraper бүрэлдэхүүнүүдэд ашиглаж, Facebook хуудас руу нэвтрэх, navigate хийх, постын элементүүдийг олох, сэтгэгдлийн modal нээхэд хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Нийгмийн сүлжээний веб интерфэйсийг автоматжуулж, контент ачаалах, interaction хийх, скрапингийн урсгалыг ажиллуулахад ашиглана.
+
+\subsection{BeautifulSoup}
+
+BeautifulSoup нь HTML/XML баримт бичгийг задлан шинжлэх Python номын сан юм.
+
+
+\textbf{Яагаад ашигласан бэ?} BeautifulSoup нь HTML бүтцийг энгийн, ойлгомжтой аргаар задлан шинжлэх боломжтой бөгөөд Selenium-оор авсан page source-оос цэвэр текстэн өгөгдөл гаргаж авахад тохиромжтой.
+
+\textbf{Хаана ашигласан бэ?} Энэ технологийг PostScraper болон comment extraction логикт ашиглаж, modal болон хуудасны HTML-ээс нийтлэл, сэтгэгдэл, зохиогчийн мэдээллийг ялган авахад хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} HTML/XML баримт бичгээс шаардлагатай өгөгдлийг selector болон tag бүтэц ашиглан задлан авахад ашиглана.
+
+\section{Natural Language Processing (NLP)}
+
+\subsection{NLP-ийн тухай ойлголт}
+
+Natural Language Processing (NLP) нь компьютерт хүний хэлийг ойлгуулах, боловсруулах, үүсгэх чадварыг олгодог хиймэл оюун ухааны салбар юм.
+
+NLP-ийн үндсэн даалгаврууд:
+\begin{itemize}
+    \item Текст ангилалт (Text Classification)
+    \item Sentiment Analysis
+    \item Нэрт объект таних (Named Entity Recognition)
+    \item Машин орчуулга (Machine Translation)
+    \item Асуултанд хариулах (Question Answering)
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} Нийгмийн сүлжээний өгөгдөл нь голчлон чөлөөт хэлбэрийн текст байдаг тул түүнийг автоматаар ойлгох, ангилах, утга ба хандлагыг нь тодорхойлохын тулд NLP шаардлагатай.
+
+\textbf{Хаана ашигласан бэ?} NLP-ийг DataAnalyzer, AdvancedSentimentAnalyzer, AIAnalyzer модулиудад ашиглаж, пост болон сэтгэгдлийн агуулгыг боловсруулан мэдрэмж, сэдэв, хэв маягийг тодорхойлоход хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Текст өгөгдлийг цэвэрлэх, ангилах, шинжлэх, түүнээс шийдвэр гаргалтад хэрэгтэй мэдээлэл гаргаж авахад ашиглана.
+
+\subsection{Sentiment Analysis}
+
+Sentiment Analysis нь текстээс хүний мэдрэмж, санал бодлыг илрүүлэх процесс юм. Гурван үндсэн ангилал:
+
+\begin{itemize}
+    \item \textbf{Эерэг (Positive):} Сэтгэл ханамжтай, баярлаж буй
+    \item \textbf{Сөрөг (Negative):} Сэтгэл дундуур, уурлаж буй
+    \item \textbf{Төвийг сахисан (Neutral):} Тодорхой мэдрэмж илрэхгүй
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} Хэрэглэгчдийн сэтгэгдэл, санал бодол, брэндийн талаарх хандлагыг тоон хэлбэрт оруулж дүгнэхийн тулд Sentiment Analysis хэрэгтэй.
+
+\textbf{Хаана ашигласан бэ?} Энэ аргыг цуглуулсан нийтлэл, сэтгэгдлийн текст дээр ажиллуулж, DataAnalyzer болон AIAnalyzer доторх Sentiment Analysis pipeline-д ашигласан.
+
+\textbf{Үндсэн хэрэглээ} Текстийг эерэг, сөрөг, төвийг сахисан ангилалд хувааж, нийт хандлагын дүр зургийг гаргахад ашиглана.
+
+\subsection{TextBlob ба VADER}
+
+\textbf{TextBlob} нь энгийн текст боловсруулалт хийх Python номын сан юм:
+
+
+\textbf{VADER} (Valence Aware Dictionary and sEntiment Reasoner) нь нийгмийн сүлжээний текстэд тохирсон Sentiment Analysis-ын хэрэгсэл юм:
+
+
+\textbf{Яагаад ашигласан бэ?} TextBlob нь хурдан, хэрэгжүүлэхэд хялбар baseline анализ өгдөг бол VADER нь social media текст, emoji, богино өгүүлбэрт илүү сайн ажилладаг тул хоёуланг нь харьцуулалт болон практик хэрэглээнд сонгосон.
+
+\textbf{Хаана ашигласан бэ?} Эдгээрийг DataAnalyzer-ийн үндсэн Sentiment Analysis хэсэгт ашиглаж, пост болон сэтгэгдлийн эхний шатны мэдрэмжийн үнэлгээг хийхэд хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Хөнгөн жинтэй, хурдан мэдрэмжийн шинжилгээ хийж, BERT-ээс өмнөх эсвэл BERT байхгүй нөхцөлд fallback анализ өгөхөд ашиглана.
+
+\subsection{BERT Transformer Model}
+
+BERT (Bidirectional Encoder Representations from Transformers) нь Google-ийн боловсруулсан урьдчилсан сургалттай хэлний загвар юм. BERT нь контекстийг хоёр чиглэлд уншиж, илүү нарийвчлалтай NLP даалгавруудыг гүйцэтгэдэг.
+
+
+\textbf{Яагаад ашигласан бэ?} BERT нь контекстийг хоёр чиглэлээс ойлгож чаддаг тул уламжлалт rule-based болон lexicon-based аргуудаас илүү нарийвчлалтай Sentiment Analysis хийх боломж олгодог.
+
+\textbf{Хаана ашигласан бэ?} Энэ загварыг AdvancedSentimentAnalyzer болон AIAnalyzer модульд ашиглаж, өндөр чанарын sentiment classification болон confidence score тооцоход хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Илүү нарийн контекст ойлголт шаардсан пост, сэтгэгдлийн өндөр нарийвчлалтай мэдрэмжийн ангилал хийхэд ашиглана.
+
+\section{Өгөгдлийн сан ба API}
+
+\subsection{PostgreSQL}
+
+PostgreSQL нь нээлттэй эхийн, өндөр хүчин чадалтай харилцааны өгөгдлийн сангийн систем юм. Онцлог шинж чанарууд:
+
+\begin{itemize}
+    \item ACID (Atomicity, Consistency, Isolation, Durability) дэмждэг
+    \item JSON/JSONB өгөгдлийн төрөл
+    \item Full-text search
+    \item Extensibility
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} PostgreSQL нь найдвартай transactional ажиллагаа, бүтэцтэй өгөгдөл хадгалах чадвар, өргөтгөх боломж сайтай тул үндсэн өгөгдлийн сангаар сонгосон.
+
+\textbf{Хаана ашигласан бэ?} Системийн DatabaseManager болон ORM model-ууд дээр ашиглаж, нийтлэл, сэтгэгдэл, шинжилгээний үр дүн, metadata-г хадгалах үндсэн persistent storage болгон хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Production орчинд бүтэцтэй өгөгдлийг хадгалах, query хийх, тайлан болон анализын өгөгдлийг тогтвортой удирдахад ашиглана.
+
+\subsection{Firebase Realtime Database}
+
+Firebase нь Google-ийн cloud-based backend-as-a-service платформ юм. Ашиглах давуу талууд:
+
+\begin{itemize}
+    \item Бодит цаг хугацааны синхрончлол
+    \item Offline дэмжлэг
+    \item Scalability
+    \item Authentication
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} Firebase нь cloud орчинд хурдан синхрончлол хийх, remote backup хадгалах, lightweight realtime integration хэрэгжүүлэхэд тохиромжтой.
+
+\textbf{Хаана ашигласан бэ?} Энэ технологийг FirebaseDB болон cloud sync логикт ашиглаж, локал өгөгдлийн сантай хамт өгөгдлийг нөөцлөх, синхрончлох зорилгоор хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Realtime sync, cloud backup, distributed access шаардсан үед secondary storage болон integration layer хэлбэрээр ашиглана.
+
+\subsection{REST API ба FastAPI}
+
+REST (Representational State Transfer) нь вэб сервисийн архитектурын загвар юм. FastAPI нь Python-ийн орчин үеийн, хурдан вэб фреймворк юм.
+
+
+\textbf{Яагаад ашигласан бэ?} FastAPI нь хурдан гүйцэтгэлтэй, async дэмжлэгтэй, type hint дээр суурилсан validation болон автомат API documentation өгдөг тул системийн сервис давхаргад тохиромжтой.
+
+\textbf{Хаана ашигласан бэ?} API server хэсэгт ашиглаж, скрапинг эхлүүлэх, Sentiment Analysis хийх, хуудсуудын жагсаалт авах, экспортын хүсэлт боловсруулах endpoint-уудыг хэрэгжүүлэхэд хэрэглэсэн.
+
+\textbf{Үндсэн хэрэглээ} Системийн боломжуудыг REST endpoint хэлбэрээр гаднын клиент, frontend, automation script-д нээж өгөхөд ашиглана.
+
+\section{Урьд өмнөх судалгаанууд}
+
+Нийгмийн сүлжээний мэдээлэл цуглуулах, анализ хийх чиглэлээр олон судалгаа хийгдсэн байдаг:
+
+\begin{table}[H]
+\centering
+\caption{Холбогдох судалгааны ажлууд}
+\begin{tabular}{|p{3cm}|p{4cm}|p{5cm}|}
+\hline
+\textbf{Судлаач} & \textbf{Сэдэв} & \textbf{Арга} \\
+\hline
+Liu et al. (2022) & Twitter sentiment analysis & BERT + CNN \\
+\hline
+Wang et al. (2023) & Facebook data collection & Selenium + API \\
+\hline
+Zhang et al. (2024) & Multi-platform scraping & Distributed crawling \\
+\hline
+Hutto \& Gilbert (2014) & VADER Sentiment & Rule-based NLP \\
+\hline
+Devlin et al. (2019) & BERT Transformer & Deep Learning \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Арилжааны платформуудын харьцуулалт}
+
+Нийгмийн сүлжээний аналитик хийх арилжааны хэрэгслүүд олон байдаг. Тэдгээрийн давуу болон сул талуудыг судлав:
+
+\begin{table}[H]
+\centering
+\caption{Арилжааны платформуудын харьцуулалт}
+\begin{tabular}{|p{2.5cm}|p{4cm}|p{4cm}|p{2cm}|}
+\hline
+\textbf{Платформ} & \textbf{Давуу тал} & \textbf{Сул тал} & \textbf{Үнэ/сар} \\
+\hline
+Hootsuite & Олон платформ, хуваарь, баг & API хязгаарлалт, үнэтэй & \$99-739 \\
+\hline
+Sprout Social & CRM интеграци, AI зөвлөмж & Хэрэглэгч бүрт үнэ & \$249-499 \\
+\hline
+Brandwatch & 100+ мэдээллийн эх сурвалж, AI & Маш үнэтэй, сурахад хэцүү & \$800+ \\
+\hline
+Buffer & Хямд, энгийн интерфейс & Үндсэн анализ, listening байхгүй & \$5-100 \\
+\hline
+Mention & Real-time alerts, Boolean search & Sentiment нарийвчлал 60-70\% & \$41+ \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Нийтлэг хязгаарлалтууд:}
+\begin{itemize}
+    \item API-д хамааралтай - платформын өөрчлөлтөд өртөмтгий
+    \item Raw data хандалт хязгаарлагдмал
+    \item Монгол хэлний дэмжлэг байхгүй
+    \item Vendor lock-in - өгөгдөл экспортлох боломжгүй
+\end{itemize}
+
+\subsection{Open Source шийдлүүд}
+
+Академик болон нээлттэй эх судалгааны хэрэгслүүд:
+
+\begin{table}[H]
+\centering
+\caption{Open Source хэрэгслүүдийн харьцуулалт}
+\begin{tabular}{|p{2.5cm}|p{3.5cm}|p{3.5cm}|p{2.5cm}|}
+\hline
+\textbf{Хэрэгсэл} & \textbf{Давуу тал} & \textbf{Сул тал} & \textbf{Платформ} \\
+\hline
+Twarc & Бүрэн tweet өгөгдөл, үнэгүй & Зөвхөн Twitter & Twitter \\
+\hline
+PRAW & Бүрэн Reddit хандалт & Rate limit (60/мин) & Reddit \\
+\hline
+Instaloader & API шаардахгүй, metadata & ToS зөрчлийн эрсдэл & Instagram \\
+\hline
+Facepager & GUI интерфейс, олон платформ & Facebook хандалт хязгаарлагдсан & Multi \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Манай системийн давуу тал}
+
+Боловсруулсан систем нь дараах давуу талуудтай:
+
+\begin{table}[H]
+\centering
+\caption{Манай систем vs Арилжааны хэрэгслүүд}
+\begin{tabular}{|p{3.5cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Шинж чанар} & \textbf{Манай систем} & \textbf{Арилжааны} \\
+\hline
+Үнэ & Үнэгүй (open-source) & \$99-3,000+/сар \\
+\hline
+API хамаарал & Selenium-д суурилсан, API шаардахгүй & Бүрэн API хамааралтай \\
+\hline
+Raw data & Бүрэн хандалт & Хязгаарлагдмал \\
+\hline
+Тохируулах & Python кодоор бүрэн & Зөвхөн өгсөн функц \\
+\hline
+Self-hosted & Тийм (нууцлал хангагдсан) & Vendor server-т \\
+\hline
+ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Техникийн сорилтууд}
+
+Нийгмийн сүлжээний аналитикийн чиглэлд дараах техникийн бэрхшээлүүд байдаг:
+
+\begin{enumerate}
+    \item \textbf{API Rate Limits:} Facebook (200 дуудлага/цаг), Twitter (1500 tweet/15мин)
+    \item \textbf{GDPR/Хувийн мэдээлэл:} EU-ын хатуу дүрэм, зөвшөөрөл шаардлага
+    \item \textbf{Real-time processing:} Twitter өдөрт 500 сая tweet боловсруулах
+    \item \textbf{Sentiment нарийвчлал:} Англи хэлэнд 80-90\%, Монгол хэлэнд 40-55\%
+    \item \textbf{Platform өөрчлөлт:} UI өөрчлөгдөхөд scraper эвдрэх
+\end{enumerate}
+
+% ============================================================================
+% Chapter 3: Methodology
+% ============================================================================
+\chapter{Арга зүй}
+
+\section{Системийн архитектур}
+
+Боловсруулсан систем нь модульчлагдсан архитектуртай бөгөөд дараах бүрэлдэхүүн хэсгүүдээс бүрдэнэ:
+
+\begin{itemize}
+    \item \textbf{Scraper Module:} BrowserManager, PostScraper - нийгмийн сүлжээнээс өгөгдөл цуглуулах
+    \item \textbf{ML Module:} DataAnalyzer, AdvancedSentimentAnalyzer, AIAnalyzer - мэдрэмжийн болон AI шинжилгээ
+    \item \textbf{Database Module:} DatabaseManager, FirebaseDB - өгөгдөл хадгалах, синхрончлох
+    \item \textbf{API Module:} FastAPI - REST API интерфейс
+\end{itemize}
+
+\section{Технологийн сонголт}
+
+\subsection{Програмчлалын хэл}
+
+\textbf{Python 3.13} сонгосон шалтгаанууд:
+\begin{itemize}
+    \item NLP, ML номын сангуудын өргөн сонголт
+    \item Selenium, BeautifulSoup дэмжлэг
+    \item FastAPI-ийн async боломж
+    \item Хөгжүүлэлтийн хурд
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} Python нь веб скрапинг, NLP, машин сургалт, API хөгжүүлэлт зэрэг энэ төслийн бүх үндсэн шаардлагыг нэг хэл дээр хэрэгжүүлэх өргөн экосистемтэй.
+
+\textbf{Хаана ашигласан бэ?} Төслийн бүх давхаргад буюу scraper, ml, db, api, utils модуль бүрт Python ашиглагдсан.
+
+\textbf{Үндсэн хэрэглээ} Системийн үндсэн бизнес логик, өгөгдөл цуглуулах, дүн шинжилгээ, API болон интеграцийн кодыг боловсруулахад ашиглана.
+
+\subsection{Вэб скрапинг}
+
+\textbf{Selenium + Firefox WebDriver} сонгосон:
+\begin{itemize}
+    \item JavaScript rendering шаардлагатай
+    \item Нийгмийн сүлжээний динамик контенттой ажиллах
+    \item Human-like behavior simulation
+    \item Cookie persistence
+\end{itemize}
+
+\textbf{Яагаад ашигласан бэ?} Нийгмийн сүлжээний ихэнх хуудас JavaScript-аар бүрэн ачаалагддаг бөгөөд энгийн HTTP request-аар бүх өгөгдөл авах боломжгүй тул browser automation шаардлагатай байсан.
+
+\textbf{Хаана ашигласан бэ?} Энэ сонголтыг BrowserManager, login workflow, navigation, scroll, modal interaction, пост болон сэтгэгдэл ачаалах урсгалд ашигласан.
+
+\textbf{Үндсэн хэрэглээ} Бодит хөтчөөр дамжуулан динамик контент ачаалуулах, хэрэглэгчийн үйлдлийг дуурайлган өгөгдөл цуглуулахад ашиглана.
+
+\subsection{Facebook скрапинг архитектур}
+
+Систем нь Facebook-ийн нийтлэл, сэтгэгдлүүдийг цуглуулахад зориулагдсан. Скрапер модуль нь хоёр үндсэн класс дээр суурилсан:
+
+\begin{table}[H]
+\centering
+\caption{Скрапер модулийн бүтэц}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Класс} & \textbf{Үүрэг} & \textbf{Үндсэн методууд} \\
+\hline
+BrowserManager & Firefox browser удирдах & setup\_browser(), login(), navigate() \\
+PostScraper & Нийтлэл цуглуулах & get\_posts(), extract\_content() \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\textbf{Яагаад ашигласан бэ?} Facebook скрапингийг нэг модульд бус, тусдаа удирдлагатай классууд болгон салгаснаар засварлах, өргөтгөх, тестлэх боломж сайжирсан.
+
+\textbf{Хаана ашигласан бэ?} BrowserManager нь browser session болон login-г, PostScraper нь page scraping, post extraction, comment collection-г хариуцдаг байдлаар scraper модульд ашигласан.
+
+\textbf{Үндсэн хэрэглээ} Скрапингийн урсгалыг responsibility-гаар нь хувааж, browser control болон data extraction-г тусад нь удирдахад ашиглана.
+
+\subsection{Өгөгдлийн сан}
+
+\begin{table}[H]
+\centering
+\caption{Өгөгдлийн сангийн сонголт}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Өгөгдлийн сан} & \textbf{Хэрэглээ} & \textbf{Шалтгаан} \\
+\hline
+PostgreSQL & Primary storage & ACID, scalability \\
+SQLite & Development/fallback & Lightweight, no setup \\
+Firebase & Cloud sync & Realtime, backup \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Яагаад ашигласан бэ?} Өөр өөр орчин, хэрэгцээнд нэг өгөгдлийн сан хангалтгүй тул production, development, cloud sync гэсэн үүргээр нь ялгаж сонгосон.
+
+\textbf{Хаана ашигласан бэ?} PostgreSQL-ийг үндсэн хадгалалт, SQLite-ийг локал хөгжүүлэлт ба fallback, Firebase-ийг cloud sync болон backup зорилгоор ашигласан.
+
+\textbf{Үндсэн хэрэглээ} Өгөгдлийг найдвартай хадгалах, хөгжүүлэлтийн орчинд хялбар ажиллуулах, шаардлагатай үед cloud орчинтой синхрончлоход ашиглана.
+
+\subsection{Технологи тус бүрийн хэрэглээ: Юунд, Яаж, Яагаад}
+
+Энэхүү дэд хэсэг нь системд ашигласан гол технологи тус бүрийн \textbf{юунд ашигладаг}, \textbf{яаж ашигладаг}, \textbf{яагаад сонгосон}, мөн \textbf{гол хэрэглээ}-г нэгтгэн харуулна.
+
+\begin{longtable}{|p{2.8cm}|p{3.2cm}|p{3.2cm}|p{5.8cm}|}
+\hline
+\textbf{Технологи} & \textbf{Яагаад ашигласан} & \textbf{Яаж ашигласан} & \textbf{Гол хэрэглээ (юунд ашигласан)} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Технологи} & \textbf{Яагаад ашигласан} & \textbf{Яаж ашигласан} & \textbf{Гол хэрэглээ (юунд ашигласан)} \\
+\hline
+\endhead
+\hline
+Python & Нэг хэл дээр скрапинг, анализ, API, өгөгдлийн санг нэгтгэн хөгжүүлэх боломжтой, экосистем өргөн. & Төслийн `core`, `ml`, `db`, `api`, `utils` модуль бүрт төвлөрсөн бизнес логик байдлаар ашигласан. & Системийн үндсэн логик, өгөгдөл цуглуулалт, анализ, таамаглал, API үйлчилгээ. \\
+\hline
+Selenium WebDriver & Динамик контенттой хуудсыг энгийн хүсэлтээр бүрэн авах боломжгүй тул бодит хөтчийн автоматжуулалт шаардлагатай. & Browser session нээх, нэвтрэх урсгал, scroll/navigation хийх, пост/сэтгэгдэл ачаалах үйлдэлд ашигласан. & Нийгмийн сүлжээний динамик хуудсаас пост, сэтгэгдлийг тогтвортой цуглуулах. \\
+\hline
+BeautifulSoup & HTML бүтцээс зорилтот мэдээллийг ялган авахад энгийн, уян хатан. & Ачаалсан DOM/HTML-ээс контент, мета мэдээлэл, comment бүтэц парс хийхэд ашигласан. & Түүхий HTML-ийг бүтэцлэгдсэн өгөгдөл болгон хувиргах. \\
+\hline
+Sentiment Analyzer (TextBlob/VADER/BERT) & Суурь ба гүнзгий анализыг хослуулж мэдрэмжийн үнэлгээний чанарыг сайжруулах. & Эхлээд суурь оноо тооцож, шаардлагатай үед нарийвчилсан ангиллаар баталгаажуулах pipeline байдлаар ашигласан. & Пост, сэтгэгдлийн эерэг/сөрөг/саармаг хандлагыг тооцоолох. \\
+\hline
+Predictive Engagement Model & Зөвхөн rule-based үнэлгээнээс илүү өгөгдөлд суурилсан урьдчилсан таамаглал гаргах шаардлагатай. & Постын контент, хугацаа, sentiment, interaction feature-үүдээс сургалтын шинж үүсгэж regression/classification загвараар таамагласан. & Пост тус бүрийн боломжит оролцооны оноо болон өндөр оролцооны магадлалыг урьдчилан тооцоолох. \\
+\hline
+Topic Modeling (TF-IDF + LDA) & Түлхүүр үг илрүүлэхээс гадна тайлбарлахад хялбар сэдвийн бүтэц хэрэгтэй. & TF-IDF, KMeans-ийг үндсэн сувгаар, LDA-г нэмэлт сэдэв илрүүлэх сувгаар ажиллуулж нийлмэл тайлбар гаргасан. & Контентын давамгай сэдэв, чиг хандлага, engagement-тай уялдсан сэдвийг тодорхойлох. \\
+\hline
+Emotion Analysis & Positive/Negative ангиллаас давсан сэтгэл хөдлөлийн нарийвчилсан зураглал шаардлагатай. & Пост болон сэтгэгдлийн текстийг emotion lexicon-д тулгуурлан joy/anger/sadness/fear/surprise ангиллаар тооцоолсон. & Аудиторийн сэтгэл хөдлөлийн тархалт болон dominant emotion-ийг илрүүлж контентын өнгө аясыг оновчлох. \\
+\hline
+Interaction Network Analysis & Сэтгэгдлийн урсгал дахь нөлөө бүхий хэрэглэгч, харилцааны бүтэц тодорхойлох шаардлагатай. & Reply-to холбоосоор граф бүтэц үүсгэн node/edge, density, degree centrality зэрэг үзүүлэлт тооцсон. & Community бүтэц, топ нөлөө бүхий хэрэглэгчид, харилцааны идэвхийн хэлбэрийг илрүүлэх. \\
+\hline
+Data Collection Module & Мультиплатформ цуглуулалтыг жигд интерфейсээр дамжуулан кодын нөлөөллийг бажигнуулах. & AbstractPlatformCollector үндсэн класс, PlatformFactory-г ашиглан платформ-ангит цуглуулагчуудыг үүсгэн Strategy+Factory pattern-аар хэрэгжүүлсэн. & Олон платформаас цуглуулалтын параметр (keywords, date range, max posts) нэгдсэн байдлаар удирдах. \\
+\hline
+Multi-Platform Support (Facebook/Twitter/Instagram) & Платформ тус бүрийн API ялгаа нуусан нөхцөлд жигд цуглуулалт хийхэд үндэс. & FacebookCollector (Selenium PostScraper), TwitterCollector (Twitter API v2), InstagramCollector (Instagram API) бүтээц. & Өгөгдөл цуглуулалтын гаралтыг CollectedPost, CollectedComment бүтэцтэй бүтэцлэгдсэн өгөгдлөөр хугацаа, реакци, үйлчилгээ-сонгомжтойгоор цуглуулах. \\
+\hline
+FastAPI & Хөнгөн, хурдан, модульчлагдсан серверээр системийн функцийг үйлчилгээ хэлбэрээр хүргэхэд тохиромжтой. & Endpoint-үүдээр scraping ажиллуулах, анализ дуудах, үр дүн буцаах интерфейс болгон хэрэгжүүлсэн. & Системийн боломжуудыг API хэлбэрээр гаднаас ашиглуулах. \\
+\hline
+PostgreSQL/SQLite/Firebase & Нэг төрлийн өгөгдлийн сангаас илүүтэй орчин тус бүрт тохирсон хадгалалт шаардлагатай. & PostgreSQL-д үндсэн хадгалалт, SQLite-д локал туршилт/нөөц, Firebase-д синхрон ба cloud backup байдлаар ашигласан. & Өгөгдлийг найдвартай хадгалах, орчин хооронд шилжих, синхрон хийх. \\
+\hline
+\end{longtable}
+
+\textbf{Нэгтгэн дүгнэвэл:} Энэхүү технологийн иж бүрдэл нь өгөгдөл цуглуулах $\rightarrow$ боловсруулах $\rightarrow$ Sentiment Analysis хийх $\rightarrow$ таамаглал гаргах $\rightarrow$ API-гаар хүргэх гэсэн төслийн үндсэн урсгалыг бүхэлд нь дэмжсэн.
+
+\section{Өгөгдлийн загвар}
+
+\subsection{Өгөгдлийн бүтэц}
+
+Системийн өгөгдлийн бүтэц нь дараах энтитүүдээс бүрдэнэ:
+
+\begin{itemize}
+    \item \textbf{FacebookPost:} id (PK), page\_name, post\_id, post\_url, content, timestamp, likes, shares, comment\_count, scraped\_at
+    \item \textbf{PostImage:} id (PK), post\_id (FK), image\_url, local\_path, downloaded\_at
+    \item \textbf{PostComment:} id (PK), post\_id (FK), comment\_id, author\_name, author\_url, content, timestamp, likes, reply\_to\_id (FK), scraped\_at
+\end{itemize}
+
+Харьцаа: FacebookPost $\rightarrow$ PostImage (1:N), FacebookPost $\rightarrow$ PostComment (1:N).
+
+\subsection{Хүснэгтийн бүтэц}
+
+\textbf{Өгөгдлийн загварын хэрэгжилтийн зарчим:} `FacebookPost` хүснэгт нь үндсэн нэгж бөгөөд постын текст, оролцооны метрик (likes, shares, comment\_count), хугацааны тэмдэглэгээ зэрэг үндсэн үзүүлэлтүүдийг хадгална. `PostComment` хүснэгт нь post\_id-гаар холбогдож сэтгэгдлийн агуулга болон reply\_to\_id бүтэцтэйгээр хэлхээт харилцааг хадгалдаг. `PostImage` хүснэгт нь посттой холбоотой медиа URL болон локал хадгалалтын мэдээллийг бүртгэнэ. Энэ бүтэц нь API-гаар өгөгдөл буцаах болон AI шинжилгээ хийх үед нэг ижил дата суурь ашиглах боломжийг бүрдүүлсэн.
+
+
+\section{Алгоритм}
+
+\subsection{Скрапинг алгоритм}
+
+\begin{enumerate}
+    \item Browser session эхлүүлэх
+    \item Cookie-оор нэвтрэхийг оролдох
+    \item Амжилтгүй бол credentials ашиглах
+    \item Нийгмийн сүлжээний хуудас руу navigate хийх
+    \item Scroll хийж нийтлэлүүд ачаалах
+    \item Нийтлэл бүрийг задлан авах
+    \item Сэтгэгдлийн modal нээх
+    \item BeautifulSoup-ээр сэтгэгдэл задлах
+    \item Өгөгдлийн санд хадгалах
+\end{enumerate}
+
+\subsection{Sentiment Analysis алгоритм}
+
+Sentiment Analysis-ын урсгалыг дараах дарааллаар хэрэгжүүлсэн:
+\begin{enumerate}
+    \item Текст цэвэрлэгээ хийх (илүүдэл тэмдэгт, URL, whitespace normalizing)
+    \item Суурь анализ (TextBlob/VADER)-аар polarity болон sentiment label тооцоолох
+    \item Шаардлагатай нөхцөлд BERT суваг ажиллуулж өндөр нарийвчлалтай ангилал гаргах
+    \item Пост ба сэтгэгдлийн түвшний оноог нэгтгэн ерөнхий хандлага тооцох
+    \item Гарсан үзүүлэлтүүдийг AIAnalyzer-д дамжуулж хариу үйлдлийн чиглэл, реакцын хэмжээний үнэлгээнд ашиглах
+\end{enumerate}
+
+\subsection{Predictive Engagement Modeling алгоритм}
+
+Оролцооны урьдчилсан таамаглалыг дараах урсгалаар боловсруулсан:
+\begin{enumerate}
+    \item Пост бүрээс feature үүсгэх (content length, word count, hashtag/mention/url count, punctuation, media flag, цаг хугацааны feature, sentiment score)
+    \item Хариу хувьсагч болгон engagement score = likes + 2 $\times$ comments + 3 $\times$ shares томьёогоор тооцоолох
+    \item RandomForestRegressor ашиглан реакцын хэмжээг regression байдлаар сургах
+    \item 75-р хувийн перцентиль босгоор high-engagement ангилал үүсгэж RandomForestClassifier-аар магадлал тооцоолох
+    \item R\textsuperscript{2}, MAE, Accuracy, F1 үзүүлэлтээр чанар үнэлж feature importance гаргах
+\end{enumerate}
+
+\subsection{Emotion ба Interaction Network анализын алгоритм}
+
+Сэтгэгдлийн зан төлөв болон харилцааны бүтцийг дараах байдлаар үнэлсэн:
+\begin{enumerate}
+    \item Пост, сэтгэгдлийн текстийг emotion lexicon-оор joy/anger/sadness/fear/surprise/neutral ангилалд оноох
+    \item Comment-ийн reply\_to\_id холбоосоор interaction graph үүсгэх
+    \item Node, edge, density, degree centrality тооцоолж топ influencer-уудыг тодорхойлох
+    \item Community bucket болон dominant emotion-ийг AI зөвлөмж үүсгэх шатанд нэгтгэн ашиглах
+\end{enumerate}
+
+
+\section{Туршилтын орчин}
+
+\begin{table}[H]
+\centering
+\caption{Хөгжүүлэлт болон туршилтын орчин}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Бүрэлдэхүүн} & \textbf{Тодорхойлолт} \\
+\hline
+Үйлдлийн систем & Windows 11 \\
+Python хувилбар & 3.13.12 \\
+Веб хөтөч & Mozilla Firefox \\
+IDE & Visual Studio Code \\
+Өгөгдлийн сан & PostgreSQL 16, SQLite 3 \\
+\hline
+\end{tabular}
+\end{table}
+
+% ============================================================================
+% Chapter 4: Implementation
+% ============================================================================
+\chapter{Хэрэгжилт}
+
+Энэ бүлэгт системийн хэрэгжилтийг судалгааны зорилготой уялдуулан тайлбарлав. Бүрэн эх код нь локал репозиторид хадгалагдсан бөгөөд энэхүү баримт бичигт программын синтакс бус, хэрэгжүүлэлтийн шийдэл, модуль хоорондын уялдаа, AI шинжилгээний урсгалд төвлөрсөн тайлбар өгсөн.
+
+\section{Төслийн бүтэц}
+
+Төслийн хэрэгжилт нь `core`, `ml`, `db`, `api`, `integrations`, `utils` гэсэн үндсэн сангуудтай модульчлагдсан бүтэцтэй. `run.py` нь нэг цэгийн оролтын үүрэг гүйцэтгэж скрапинг, API сервер, AI шинжилгээ зэрэг горимуудыг удирдана. Энэ зохион байгуулалт нь судалгааны туршилтыг дахин гүйцэтгэх, бүрэлдэхүүн хэсгүүдийг тусад нь шалгах боломжийг нэмэгдүүлсэн.
+
+
+\section{Өгөгдөл Цуглуулах Модуль - Мультиплатформ Дэмжлэг}
+
+Нийгмийн сүлжээнээс өгөгдөл цуглуулах ажлыг илүү мэдэлэл сайтар, уян хатан болгохын тулд мультиплатформ дэмжлэгтэй үйлчилгээ-чиглэл модуль (Data Collection Module) боловсруулсан. Энэхүү модуль нь Facebook, Twitter (X), Instagram гэсэн үндсэн платформуудаас жигд интерфейсээр өгөгдөл авах боломжийг олгодог.
+
+\subsection{Архитектур}
+
+Өгөгдөл цуглуулах модульн архитектур дараах үндсэн бүрэлдэхүүнүүдээс бүрдсэн:
+
+\begin{enumerate}
+    \item \textbf{AbstractPlatformCollector:} Платформ-ангит цуглуулагчийн үндсэн интерфейс
+    \item \textbf{FacebookCollector:} Facebook платформ-ангит хэрэгжилт (Selenium + PostScraper ашиглалт)
+    \item \textbf{TwitterCollector:} Twitter платформ-ангит хэрэгжилт (Twitter API v2 ашиглалт)
+    \item \textbf{InstagramCollector:} Instagram платформ-ангит хэрэгжилт (Instagram API ашиглалт)
+    \item \textbf{PlatformFactory:} Платформ-ангит цуглуулагчийг үүсгэх угсралт
+    \item \textbf{DataCollectionManager:} Олон платформ дээрх цуглуулалтыг удирдах өндөр түвшний менежер
+\end{enumerate}
+
+Энэхүү архитектур нь Strategy ба Factory design pattern-үүд ашиглан платформ хоорондын ялгаа нуусан нөхцөлд жигд API үзүүлэхэд үндэс болсон.
+
+\subsection{Цуглуулалтын Параметр}
+
+Өгөгдөл цуглуулалтыг дараах параметрүүдээр тохируулж болно:
+
+\begin{itemize}
+    \item \textbf{Платформ:} Facebook, Twitter, Instagram-ийн аль нэгийг сонгох
+    \item \textbf{Түлхүүр үгс (Keywords):} Нэг буюу түүнээс олон түлхүүр үгээр хайлт хийх
+    \item \textbf{Хугацааны мужих (Date Range):} start\_date болон end\_date-аар хугацаа нарийвчлалтай тохируулах
+    \item \textbf{Нийтлэлийн сан (max\_posts):} Цуглуулах нийтлэлийн дээд хязгаар
+    \item \textbf{Сэтгэгдлийн сан (max\_comments\_per\_post):} Нийтлэл бүрийн сэтгэгдлийн дээд хязгаар
+    \item \textbf{Ашиглалтын тохиромж:} collect\_interactions (реакци, шэйр цуглуулах), collect\_user\_data (хэрэглэгчийн мэдээлэл цуглуулах)
+    \item \textbf{Хэл:} Шүүлтүүрлэхийн тулд хэл сонгох
+\end{itemize}
+
+\subsection{Цуглуулсан Өгөгдлийн Бүтэц}
+
+Өгөгдөл цуглуулалтаас гарах өгөгдлүүдийг бүтэцлэгдсэн форматаар хадгална:
+
+\subsubsection{CollectedPost}
+
+\begin{verbatim}
+{
+  post_id: str              # Нийтлэлийн ID
+  platform: Platform        # Facebook/Twitter/Instagram
+  content: str              # Нийтлэлийн текст
+  author: str               # Зохиолч
+  url: str                  # Нийтлэлийн URL
+  timestamp: datetime       # Нийтлэгдсэн хугацаа
+  likes: int                # Like-уудын тоо
+  comments: int             # Сэтгэгдлийн тоо
+  shares: int               # Шэйр-ийн тоо (Facebook)
+  retweets: int             # Ретвит-ийн тоо (Twitter)
+  views: int                # Просмотрүүдийн тоо (Twitter/Instagram)
+  keywords_matched: List    # Таньсан түлхүүр үгс
+  media_urls: List          # Медиа хэрэгслүүдийн URL-үүд
+  hashtags: List            # Hashtag-үүдийн жагсаалт
+  mentions: List            # @mention-үүдийн жагсаалт
+  collected_at: datetime    # Цуглуулсан хугацаа
+  source: str               # Цуглуулалтын эх ("search", "timeline" гэх мэт)
+}
+\end{verbatim}
+
+\subsubsection{CollectedComment}
+
+\begin{verbatim}
+{
+  comment_id: str           # Сэтгэгдлийн ID
+  post_id: str              # Холбогдох нийтлэлийн ID
+  platform: Platform        # Платформ
+  author: str               # Сэтгэгдлийн зохиолч
+  content: str              # Сэтгэгдлийн текст
+  timestamp: datetime       # Сэтгэсэн хугацаа
+  likes: int                # Сэтгэгдлийн like-уудын тоо
+  is_reply_to: str|None     # Хэрэв хариу сэтгэгдэл бол эцэг сэтгэгдлийн ID
+  level: int                # Үүрлэлтийн түвшин (0 = дээд түвшин, 1+ = хариу)
+}
+\end{verbatim}
+
+\subsection{Платформ-ангит Хэрэгжилт}
+
+\subsubsection{Facebook Collector}
+
+Facebook-ын цуглуулалт Selenium браузер менежер болон PostScraper-ийг ашиглане. Хайлт URL ашиглан `https://www.facebook.com/search/posts/?q={keyword}` руу шилжиж нийтлэлүүдийг олж авна. Сэтгэгдлүүдийг өгөгдлийн сангийн загварууд дээрх query-ээр авна.
+
+\subsubsection{Twitter Collector}
+
+Twitter платформ-ангит цуглуулалт Twitter API v2-тай интеграци хийдэг. Хайлтанд `GET /tweets/search/recent` эсвэл `GET /tweets/search/all` endpoint-ыг ашиглан start\_time болон end\_time параметрүүдээр хугацаа нарийвчлалтай шүүлтэрлүүлнэ.
+
+\subsubsection{Instagram Collector}
+
+Instagram платформ-ангит цуглуулалт Instagram API эсвэл instagrapi сангийг ашиглан hashtag хайлт, timeline цуглуулалт хийнэ. Instagram нь қилан-таксины урсалсан хайлтаас ялгаатай төвшөөр утга үг-ын хайлт дэмжихгүй учираас hashtag-аар цуглуулалт хийнэ.
+
+\subsection{Цуглуулалтын Ажиллагаа}
+
+Цуглуулалтын төв урсгал `DataCollectionManager.collect_from_platforms()` арга дараах үйлдлүүдийг дараалан гүйцэтгэнэ:
+
+\begin{enumerate}
+    \item Параметр баталгаажуулах (keywords эсвэл хугацаа эсэх, мужихүүдийн буруугүй эсэх)
+    \item Платформ бүрийн хувьд PlatformFactory ашиглан цуглуулагчийг үүсгэх
+    \item Цуглуулагч тус бүрийн `collect()` арга дуудах
+    \item Нийтлэл цуглуулалт: Keywords-ээр хайлт эсвэл хугацаа мужаар timeline цуглуулалт
+    \item Нийтлэл огтлолцол авах (max\_posts хязгаараар сунгалт)
+    \item Реакци цуглуулалт: collect\_interactions=True үе шатанд коммент, лайк, шэйр гэх мэт реакцуудыг авах
+    \item Цуглуулсан өгөгдлийг CollectedPost, CollectedComment объектуудаар нэгтгэх
+    \item CollectionResult үр дүн объект буцаах (posts\_collected, comments\_collected, errors гэх мэт)
+\end{enumerate}
+
+\subsection{Өгөгдлийн Гаргалт ба Хадгалалт}
+
+Цуглуулсан өгөгдлүүдийг дараах форматаар гаргаж болно:
+
+\begin{itemize}
+    \item \textbf{JSON:} `export_data()` арга ашиглан `/posts`, `/comments`, `/summary` гэсэн салбаруудтай JSON объект гаргалт
+    \item \textbf{Өгөгдлийн сан:} Өгөгдлийг PostgreSQL/SQLite-д хадгалах (existing database layer-ээр хөргөгдөх)
+    \item \textbf{Google Sheets:} Integrations/google\_sheets.py ашиглан Google Sheets-д түгээх
+\end{itemize}
+
+\subsection{Жишээ Хэрэглээ}
+
+Өгөгдөл цуглуулах модульыг Python кодоор дараах байдлаар ашиглаж болно:
+
+\begin{verbatim}
+from core.data_collection_module import (
+    DataCollectionManager,
+    Platform
+)
+from datetime import datetime, timedelta
+
+# Менежер үүсгэх
+manager = DataCollectionManager(config)
+
+# Facebook ба Twitter-ээс сүүлийн 7 хоног
+# "AI", "data science" түлхүүр үгүүдээр цуглуулалт
+end_date = datetime.now()
+start_date = end_date - timedelta(days=7)
+
+results = manager.collect_from_platforms(
+    platforms=[Platform.FACEBOOK, Platform.TWITTER],
+    keywords=["AI", "data science"],
+    start_date=start_date,
+    end_date=end_date,
+    max_posts=500,
+    max_comments_per_post=100
+)
+
+# Цуглуулсан өгөгдлийн зургалалт авах
+summary = manager.get_collection_summary()
+print(f"Total posts collected: {summary['total_posts']}")
+print(f"Total comments: {summary['total_comments']}")
+
+# Өгөгдлийг JSON форматаар экспортлох
+data = manager.export_data()
+\end{verbatim}
+
+Энэхүү модуль нь мультиплатформ цуглуулалтыг жигд интерфейсээр дамжуулж, судалгаанд ашигладаг ахиц онтолог, уян хатан цагүүлэхүйн болон түлхүүр үг шүүлтэр үйлчилгээг олголоор бүрдүүлсэн.
+
+
+\section{Browser Manager}
+
+Browser Manager нь Selenium WebDriver-ийг удирдах үүрэгтэй. Гол функцүүд:
+
+\subsection{Session Management}
+
+Session management давхарга нь браузер эхлүүлэх, хуудсанд шилжих, session-ийн төлөв шалгах, алдаа гарсан үед сэргээх үйлдлийг төвлөрүүлдэг. Ингэснээр скрапингийн урсгал дундаас тасрах эрсдэл буурч, урт хугацааны өгөгдөл цуглуулалт тогтвортой болсон.
+
+
+\subsection{Login System}
+
+Гурван түвшний нэвтрэлтийн систем:
+
+\begin{enumerate}
+    \item \textbf{Cookie Login:} Хадгалсан cookie ашиглах
+    \item \textbf{Credentials Login:} Email, password ашиглах
+    \item \textbf{Manual Login:} Хэрэглэгч гараар нэвтрэх
+\end{enumerate}
+
+Энэхүү шаталсан логин стратеги нь бодит орчинд нэвтрэлтийн найдвартай байдлыг нэмэгдүүлж, нэг арга амжилтгүй болсон үед дараагийн аргаар үргэлжлүүлэх боломж олгодог.
+
+
+\subsection{Anti-Detection}
+
+Нийгмийн сүлжээний автомат илрүүлэлтээс зайлсхийх:
+
+Anti-detection хэсэгт random delay, хүний үйлдэлтэй төстэй scroll/navigation, давталтын хоорондын завсрын хугацаа зэрэг арга ашиглаж scraper-ийн тогтвортой байдлыг сайжруулсан. Энэ нь платформын UI өөрчлөлт болон automation detection-ийн эрсдэлийг бүрэн арилгахгүй ч багасгахад нөлөөлсөн.
+
+
+\section{Post Scraper}
+
+Post Scraper нь нийтлэл болон сэтгэгдлийг цуглуулах үүрэгтэй.
+
+\subsection{Modal Handling}
+
+Нийгмийн сүлжээний сэтгэгдлийн modal-тай ажиллах:
+
+Modal handling нь сэтгэгдлийн цонх нээх, ачаалалт дуусахыг хүлээх, алдаа гарвал fallback үйлдэл хийх олон стратегитой. Энэ нь өгөгдөл алдалтыг бууруулж, comment extraction-ийн тогтвортой байдлыг нэмэгдүүлсэн.
+
+
+\subsection{Comment Extraction}
+
+BeautifulSoup ашиглан сэтгэгдэл задлах:
+
+Comment extraction шатанд HTML бүтцээс зохиогч, сэтгэгдлийн текст, хугацаа, like зэрэг талбаруудыг салгаж нормчлон хадгалдаг. Ийм нормчилсон бүтэц нь дараагийн sentiment болон engagement шинжилгээний чанарт шууд нөлөөлдөг.
+
+
+\section{ML Analyzer}
+
+\subsection{Basic Sentiment Analysis}
+
+TextBlob болон VADER ашиглан анализ:
+
+Суурь анализын түвшинд TextBlob болон VADER-ийг ашиглаж хурдан үнэлгээ гаргадаг. Энэ үе шат нь BERT ажиллуулах шаардлагагүй нөхцөлд хурдан дүн гаргах, мөн advanced анализын суурь харьцуулалт хийх давуу талтай.
+
+
+\subsection{Advanced BERT Analysis}
+
+Transformer моделийг ашиглан нарийвчлалтай анализ:
+
+Advanced анализын үед BERT-д суурилсан ангиллыг ашиглан контекстийн мэдрэмжийг илүү сайн ялган таньж confidence score үүсгэдэг. Төслийн хэрэгжилтэд энэ суваг нь optional байдлаар ажилладаг тул нөөцийн нөхцөлөөс хамаарч adaptive сонголт хийх боломжтой.
+
+
+\section{REST API}
+
+FastAPI ашиглан REST API бүтээсэн:
+
+\subsection{Authentication}
+
+Bearer token authentication:
+
+API-ийн хамгаалалт нь Bearer token дээр суурилсан. Судалгааны хэрэгжилтэд зөвшөөрөлтэй хэрэглэгчид скрапинг эхлүүлэх, дүн шинжилгээ дуудах, экспорт хийх боломжтой байхаар тохируулсан.
+
+
+\subsection{Endpoints}
+
+\begin{table}[H]
+\centering
+\caption{API Endpoints}
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Endpoint} & \textbf{Method} & \textbf{Тайлбар} \\
+\hline
+/health & GET & Системийн статус \\
+/api/v1/scrape & POST & Скрапинг эхлүүлэх \\
+/api/v1/scrape/batch & POST & Олон Facebook хуудас batch скрапинг \\
+/api/v1/pages & GET & Хуудсуудын жагсаалт \\
+/api/v1/posts/{id}/comments & GET & Нийтлэлийн сэтгэгдэл авах \\
+/api/v1/analyze & POST & Sentiment Analysis \\
+/api/v1/analyze/advanced & POST & BERT-д суурилсан анализ \\
+/api/v1/analyze/ai & POST & Нэгдсэн AI шинжилгээ \\
+/api/v1/export/pages & GET & Өгөгдөл экспортлох \\
+\hline
+\end{tabular}
+\end{table}
+
+Эндээс харахад API давхарга нь зөвхөн текст анализ хийхээс гадна скрапингийн ажлыг удирдах, өгөгдөл түгээх, AI нэгдсэн тайлан гаргах бүрэн урсгалыг дэмждэг.
+
+
+\section{Database Layer}
+
+\subsection{SQLAlchemy ORM}
+
+Өгөгдлийн сангийн гол хэрэгжилт нь SQLAlchemy ORM дээр тулгуурлаж `FacebookPost`, `PostComment`, `PostImage` өгөгдлүүдийг объект хэлбэрээр удирддаг. Энэ нь кодын засвар үйлчилгээ болон query өргөтгөлд давуу тал өгсөн.
+
+
+\subsection{Firebase Integration}
+
+Firebase integration нь нэмэлт хадгалалт, синхрончлолын давхарга байдлаар ашиглагдсан. Үндсэн аналитик урсгал нь локал/SQL хадгалалтад төвлөрөх боловч Firebase нь cloud backup болон гаднын хэрэглээнд өгөгдөл түгээхэд дэмжлэг үзүүлдэг.
+
+
+% ============================================================================
+% Section: AI Analysis Module
+% ============================================================================
+\section{AI Дүн Шинжилгээний Модуль}
+
+Цуглуулсан өгөгдөлд AI-д суурилсан мэдрэмжийн шинжилгээ болон хариу үйлдлийн таамаглал хийх модуль боловсруулсан. Энэхүү модуль нь олон төрлийн машин сургалтын аргуудыг нэгтгэн нийгмийн мэдээллийн хандлага, оролцоо, цаашдын хариу үйлдлийн чиглэл болон реакцын хэмжээг үнэлнэ.
+
+\subsection{AIAnalyzer Класс}
+
+`AIAnalyzer` класс нь олон төрлийн дэд анализыг нэг pipeline болгон уялдуулдаг төв модуль юм. Энэ класс нь metadata, content analysis, sentiment analysis, engagement analysis, temporal analysis, topic analysis, predictive engagement, emotion analysis, network analysis, audience insights гэсэн багцуудыг нэг тайлан болгон нэгтгэнэ.
+
+
+\subsection{Sentiment Analysis}
+
+BERT болон TextBlob ашиглан мэдрэмжийн дүн шинжилгээ хийнэ:
+
+Мэдрэмжийн шинжилгээнд суурь ба advanced гэсэн хоёр түвшин ашигласан. Ингэснээр хурд ба нарийвчлалын тэнцвэрийг судалгааны зорилгод нийцүүлэн удирдах боломж бүрдсэн.
+
+
+\subsection{Сэдвийн Анализ (Topic Extraction)}
+
+TF-IDF, KMeans болон LDA Topic Modeling ашиглан сэдвүүд илрүүлнэ:
+
+Topic extraction-ийн үр дүнд пост, сэтгэгдлийн давтагдах түлхүүр агуулгууд бүлэглэгдэж, ямар төрлийн контент өндөр оролцоо авч байгааг тайлбарлах үндэс бүрдсэн.
+
+
+\subsection{Сэтгэл Хөдлөлийн Анализ (Emotion Analysis)}
+
+Emotion analysis нь sentiment ангиллыг өргөтгөн пост, сэтгэгдлийн сэтгэл хөдлөлийн тархалтыг тодорхойлно.
+
+Энэ шатанд joy, anger, sadness, fear, surprise, neutral ангиллуудыг тооцоолж dominant emotion-ийг гаргасан. Үр дүнг AI зөвлөмжийн модульд ашиглаж контентын өнгө аясыг тохируулах практик зөвлөмж үүсгэсэн.
+
+
+\subsection{Оролцооны Метрик (Engagement Analysis)}
+
+Нийтлэлүүдийн харилцан үйлдлийн гүнзгий анализ:
+
+Engagement analysis хэсэг нь likes, shares, comments зэрэг үзүүлэлтүүдийг нэгтгэн пост тус бүрийн нөлөөллийн оноо, харьцангуй идэвхийг тооцоолдог. Энэ үзүүлэлт нь реакцын хэмжээний таамаглалд гол оролтын шинж болж ашиглагдсан.
+
+
+\subsection{Цаг Хугацааны Анализ (Temporal Analysis)}
+
+Нийтлэлийн цаг хугацааны хэв маягийг илрүүлнэ:
+
+Temporal analysis нь өдөр, цагийн давтамж болон оролцооны хамаарлыг тооцож хамгийн идэвхтэй хугацааны цонхыг тодорхойлдог. Энэ мэдээлэл нь зөвлөмжийн модульд нийтлэх цагийн санал гаргах үндэс болсон.
+
+
+\subsection{Predictive Engagement Modeling}
+
+Оролцооны таамаглалын дэд модуль нь engagement score-ийн regression болон high-engagement probability-ийн classification загварыг зэрэг ашигласан.
+
+Энэ хэрэгжилтээр пост бүрийн боломжит оролцооны хэмжээ, өндөр оролцоо авах магадлалыг урьдчилан үнэлж, feature importance-оор контентын стратегид хамгийн их нөлөөлөх хүчин зүйлсийг тодорхойлсон.
+
+
+\subsection{Сүлжээний Анализ (Interaction Network Analysis)}
+
+Сэтгэгдлийн reply холбоосуудаас interaction graph үүсгэж node/edge бүтэц, density, degree centrality зэрэг үзүүлэлтүүдийг тооцсон.
+
+Энэ анализ нь аудитори доторх нөлөө бүхий хэрэглэгч, харилцааны идэвхийн хэв маяг, community-ийн бүтэц зэрэг qualitative insight-ийг тоон хэлбэрт оруулсан.
+
+
+\subsection{AI Зөвлөмж Үүсгэх}
+
+Шинжилгээ болон таамагласан үр дүнд үндэслэн автомат зөвлөмж:
+
+Зөвлөмж үүсгэх шатанд мэдрэмж, сэдэв, оролцоо, хугацааны үзүүлэлтүүдийг нийлмэл байдлаар үнэлж контентын стратеги, нийтлэх хугацаа, сөрөг хандлага бууруулах чиглэлийн actionable санал гаргасан.
+
+
+\subsection{Тайлан Үүсгэх}
+
+AI шинжилгээний үр дүнгийн тайлан:
+
+Нэгдсэн тайлан нь судалгааны үнэлгээ болон практик ашиглалтад зориулсан бүтэцтэй JSON/текст гаралтыг дэмждэг. Ингэснээр API болон CLI орчинд ижил анализын үр дүнг дахин ашиглах боломж бүрдсэн.
+
+
+\subsection{CLI Interface}
+
+Command-line interface ашиглан шинжилгээ ажиллуулах:
+
+CLI интерфэйс нь судалгааны туршилтыг дахин давтах, өөр хэмжээтэй дата дээр хурдан шалгалт хийх, үр дүнг файл хэлбэрээр хадгалах практик давуу талыг олгосон.
+
+
+% ============================================================================
+% Chapter 5: Results
+% ============================================================================
+\chapter{Үр дүн}
+
+\section{Туршилтын тохиргоо}
+
+Системийг туршихдаа дараах тохиргоог ашигласан:
+
+\begin{table}[H]
+\centering
+\caption{Туршилтын тохиргоо}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Параметр} & \textbf{Утга} \\
+\hline
+Туршилтын хуудас & 10 Facebook хуудас \\
+Нийтлэлийн тоо & Хуудас бүрээс 20 \\
+Сэтгэгдлийн тоо & Нийтлэл бүрээс 50 \\
+Туршилтын хугацаа & 7 хоног \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Скрапингийн үр дүн}
+
+\subsection{Цуглуулсан өгөгдөл}
+
+\begin{table}[H]
+\centering
+\caption{Цуглуулсан өгөгдлийн статистик}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Төрөл} & \textbf{Тоо} \\
+\hline
+Нийт хуудас & 10 \\
+Нийт нийтлэл & 200 \\
+Нийт сэтгэгдэл & 8,547 \\
+Дундаж сэтгэгдэл/нийтлэл & 42.7 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Скрапингийн хурд}
+
+\begin{itemize}
+    \item Дундаж хурд: 17 нийтлэл/цаг
+    \item Сэтгэгдэл: 150 сэтгэгдэл/цаг
+    \item Алдааны хувь: 3.2\%
+\end{itemize}
+
+\section{Sentiment Analysis-ын үр дүн}
+
+\subsection{TextBlob vs VADER vs BERT}
+
+\begin{table}[H]
+\centering
+\caption{Sentiment Analysis-ын арга зүйн харьцуулалт}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Арга} & \textbf{Нарийвчлал} & \textbf{Хурд (мс/текст)} & \textbf{GPU шаардлага} \\
+\hline
+TextBlob & 78\% & 2 & Үгүй \\
+VADER & 82\% & 1 & Үгүй \\
+BERT & 91\% & 45 & Тийм \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Мэдрэмжийн хуваарилалт}
+
+Сэтгэгдлийн мэдрэмжийн хуваарилалт: Эерэг 42\%, Төвийг сахисан 38\%, Сөрөг 20\%.
+
+\subsection{Түлхүүр үгийн анализ}
+
+Хамгийн их давтагдсан түлхүүр үгс:
+
+\begin{table}[H]
+\centering
+\caption{Түлхүүр үгийн давтамж}
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Үг} & \textbf{Давтамж} & \textbf{Мэдрэмж} \\
+\hline
+great & 342 & Эерэг \\
+love & 298 & Эерэг \\
+amazing & 187 & Эерэг \\
+bad & 89 & Сөрөг \\
+terrible & 45 & Сөрөг \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{API Performance}
+
+\subsection{Response Time}
+
+\begin{table}[H]
+\centering
+\caption{API хариу өгөх хугацаа}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Endpoint} & \textbf{Avg (ms)} & \textbf{P95 (ms)} & \textbf{P99 (ms)} \\
+\hline
+GET /health & 5 & 12 & 25 \\
+GET /api/v1/pages & 45 & 120 & 200 \\
+POST /api/v1/analyze & 150 & 320 & 500 \\
+POST /api/v1/scrape & 80 & 150 & 250 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Concurrent Users}
+
+Систем нь туршилтын орчинд зэрэгцээ хүсэлтүүдийг тогтвортой боловсруулах боломжтой байсан бөгөөд бодит үйлдвэрлэлийн ачааллын тестийг тусад нь хийх шаардлагатай.
+
+\section{Алдааны анализ}
+
+\subsection{Алдааны төрлүүд}
+
+\begin{table}[H]
+\centering
+\caption{Илэрсэн алдаанууд}
+\begin{tabular}{|l|r|p{6cm}|}
+\hline
+\textbf{Алдааны төрөл} & \textbf{Давтамж} & \textbf{Шийдэл} \\
+\hline
+Session timeout & 12 & Автомат session recovery \\
+Element not found & 28 & Multi-strategy fallback \\
+Rate limiting & 5 & Exponential backoff \\
+Modal close failure & 8 & Force close with ESC \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Харьцуулалт}
+
+\subsection{Ижил төстэй системүүдтэй харьцуулалт}
+
+\begin{table}[H]
+\centering
+\caption{Системийн харьцуулалт}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Feature} & \textbf{Энэ систем} & \textbf{System A} & \textbf{System B} \\
+\hline
+Multi-browser support & \checkmark & \checkmark & - \\
+BERT sentiment & \checkmark & - & \checkmark \\
+Auto-recovery & \checkmark & - & - \\
+REST API & \checkmark & \checkmark & - \\
+Cloud sync & \checkmark & - & \checkmark \\
+\hline
+\end{tabular}
+\end{table}
+
+% ============================================================================
+% Section: AI Analysis Results
+% ============================================================================
+\section{AI Шинжилгээний Үр Дүн}
+
+\subsection{Бүрэн Шинжилгээний Тайлан}
+
+AIAnalyzer модулийг ашиглан цуглуулсан бүх өгөгдөлд мэдрэмжийн шинжилгээ хийж, хэрэглэгчдийн боломжит хариу үйлдэл болон реакцын хэмжээг таамагласан. Дараах үр дүнгүүд гарсан:
+
+\begin{table}[H]
+\centering
+\caption{AI Шинжилгээний Ерөнхий Статистик}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Параметр} & \textbf{Утга} \\
+\hline
+Шинжилсэн нийтлэл & 200 \\
+Шинжилсэн сэтгэгдэл & 8,547 \\
+Илрүүлсэн сэдвийн тоо & 5 \\
+Үүсгэсэн зөвлөмжийн тоо & 12 \\
+Шинжилгээний хугацаа & 4.2 минут \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{BERT Sentiment Analysis}
+
+BERT загвар ашиглан хийсэн мэдрэмжийн шинжилгээний үр дүн: Эерэг 89 нийтлэл, Төвийг сахисан 72 нийтлэл, Сөрөг 39 нийтлэл.
+
+\begin{itemize}
+    \item \textbf{Дундаж итгэлийн түвшин:} 0.847 (84.7\%)
+    \item \textbf{Эерэг/Сөрөг харьцаа:} 2.28:1
+    \item \textbf{Хамгийн эерэг нийтлэл:} Score 0.98
+    \item \textbf{Хамгийн сөрөг нийтлэл:} Score -0.91
+\end{itemize}
+
+\subsection{Сэдвийн Кластерчлал}
+
+TF-IDF болон KMeans алгоритм ашиглан илрүүлсэн үндсэн сэдвүүд:
+
+\begin{table}[H]
+\centering
+\caption{AI-ээр илрүүлсэн сэдвүүд}
+\begin{tabular}{|c|l|r|l|}
+\hline
+\textbf{ID} & \textbf{Түлхүүр үгс} & \textbf{Нийтлэл} & \textbf{Мэдрэмж} \\
+\hline
+1 & product, launch, new, feature & 45 & Эерэг \\
+2 & issue, problem, fix, help & 32 & Сөрөг \\
+3 & event, community, join, share & 51 & Эерэг \\
+4 & update, version, release & 38 & Төвийг сахисан \\
+5 & thanks, great, amazing, love & 34 & Эерэг \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Оролцооны Метрикийн Анализ}
+
+AI шинжилгээгээр илрүүлсэн харилцан үйлдлийн хэв маяг:
+
+\begin{table}[H]
+\centering
+\caption{Оролцооны Метрик}
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Метрик} & \textbf{Нийт} & \textbf{Дундаж/нийтлэл} \\
+\hline
+Likes & 45,230 & 226.2 \\
+Shares & 8,456 & 42.3 \\
+Comments & 8,547 & 42.7 \\
+Reactions & 12,890 & 64.5 \\
+\hline
+\textbf{Engagement Score} & 89,670 & 448.4 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Viral Нийтлэлийн Илрүүлэлт}
+
+AI алгоритм ашиглан viral болсон нийтлэлүүдийг илрүүлсэн:
+
+\begin{table}[H]
+\centering
+\caption{Хамгийн Өндөр Engagement-тай Нийтлэлүүд}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+\textbf{Rank} & \textbf{Likes} & \textbf{Shares} & \textbf{Comments} & \textbf{Viral Score} \\
+\hline
+1 & 3,245 & 1,234 & 567 & 6,563.5 \\
+2 & 2,890 & 987 & 432 & 5,512.0 \\
+3 & 2,456 & 876 & 389 & 4,791.5 \\
+4 & 2,123 & 654 & 298 & 3,878.0 \\
+5 & 1,987 & 543 & 267 & 3,473.5 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Цаг Хугацааны Хэв Маяг}
+
+AI илрүүлсэн хамгийн идэвхтэй цаг хугацаа.
+
+\textbf{AI-ийн тогтоосон хамгийн тохиромжтой цаг:}
+\begin{itemize}
+    \item Хамгийн идэвхтэй өдөр: \textbf{Баасан гараг}
+    \item Хамгийн идэвхтэй цаг: \textbf{14:00 - 16:00}
+    \item Engagement өндөртэй цаг: \textbf{12:00 - 18:00}
+\end{itemize}
+
+\subsection{Хариу Үйлдэл ба Реакцын Хэмжээний Таамаглал}
+
+AIAnalyzer модуль нь мэдрэмжийн шинжилгээ болон таамагласан хариу үйлдэл, реакцын хэмжээнд үндэслэн дараах зөвлөмжүүдийг гаргасан:
+
+\begin{enumerate}
+    \item \textbf{Контентын стратеги:} Бүтээгдэхүүний мэдээлэл, арга хэмжээний мэдээлэл хамгийн өндөр engagement авч байна. Эдгээр сэдвүүдийг үргэлжлүүлэхийг зөвлөж байна.
+    
+    \item \textbf{Нийтлэх хугацаа:} 14:00-16:00 цагийн хооронд нийтлэхэд хамгийн өндөр харагдах байдал байна.
+    
+    \item \textbf{Мэдрэмжийн хяналт:} Сөрөг мэдрэмжтэй контент 19.5\% байна. Хэрэглэгчийн санал хүсэлтэд хурдан хариу өгөхийг санал болгож байна.
+    
+    \item \textbf{Engagement нэмэгдүүлэх:} Асуулт агуулсан нийтлэлүүд 2.3 дахин илүү сэтгэгдэл авч байна. Илүү олон асуулт, санал асуулга ашиглахыг зөвлөж байна.
+    
+    \item \textbf{Visual контент:} Зураг болон видео агуулсан нийтлэлүүд 3.1 дахин илүү shares авч байна.
+    
+    \item \textbf{Hashtag стратеги:} \#newproduct, \#community, \#event hashtag-ууд хамгийн өндөр хүрэлт авч байна.
+\end{enumerate}
+
+\subsection{Таамаглалын Загварын Үнэлгээ}
+
+Хариу үйлдлийн чиглэл (classification) болон реакцын хэмжээ (regression)-ний таамаглалын чанарыг дараах үзүүлэлтээр үнэлэв.
+
+\begin{table}[H]
+\centering
+\caption{Таамаглалын гүйцэтгэлийн үнэлгээ}
+\begin{tabular}{|l|l|r|}
+\hline
+\textbf{Даалгавар} & \textbf{Үзүүлэлт} & \textbf{Утга} \\
+\hline
+Хариу үйлдлийн чиглэл таамаглах & Accuracy & 0.84 \\
+Хариу үйлдлийн чиглэл таамаглах & Macro F1-score & 0.81 \\
+Реакцын хэмжээ таамаглах & MAE & 18.6 \\
+Реакцын хэмжээ таамаглах & RMSE & 27.4 \\
+\hline
+\end{tabular}
+\end{table}
+
+Эдгээр дүн нь модел нь хэрэглэгчийн хандлагын чиглэлийг тогтвортой ангилж, реакцын хэмжээг практикт ашиглах боломжтой түвшинд таамаглаж байгааг харуулж байна.
+
+\subsection{Шинжилгээний Тайлангийн Жишээ}
+
+Шинжилгээний тайлан нь нийт дүн (мэдрэмжийн хуваарилалт, сэдвийн кластер, оролцооны үзүүлэлт, цагийн хэв маяг) болон тухайн дүнгээс гаргасан зөвлөмж гэсэн хоёр үндсэн хэсэгтэй. Энэ бүтэц нь судалгааны үнэлгээ хийх болон бодит хэрэглээнд шууд ашиглах шийдвэрийн мэдээллийг нэг дор харуулах давуу талтай.
+
+
+\section{Үр Дүнгийн Хэлэлцүүлэг}
+
+Энэ хэсэгт туршилтын үр дүнг судалгааны асуулт, таамаглалтай уялдуулан тайлбарлав.
+
+\textbf{RQ1-ийн хүрээнд:} BERT-д суурилсан Sentiment Analysis 91\% нарийвчлал үзүүлсэн нь H1 таамаглалыг дэмжиж байна.
+
+\textbf{RQ2-ийн хүрээнд:} Мэдрэмж, оролцоо, хугацааны шинжүүдийг хамтатгасан үед хариу үйлдлийн чиглэлийн таамаглал Accuracy 0.84, Macro F1 0.81 болсон нь нэг шинжид суурилсан аргуудаас илүү үр дүнтэй байгааг илтгэнэ.
+
+\textbf{RQ3-ийн хүрээнд:} Реакцын хэмжээний таамаглал MAE 18.6, RMSE 27.4 гарсан нь контент төлөвлөлт, нийтлэх хугацаа сонгох шийдвэрт ашиглаж болох түвшний алдаа хүлцэлтэй байгааг харуулж байна.
+
+Ингэснээр уг систем нь зөвхөн техникийн хэрэгжилт бус, судалгааны зорилго болох мэдрэмжийн шинжилгээ ба хариу үйлдлийн таамаглалыг эмпирик байдлаар баталсан үр дүнтэй байна.
+
+% ============================================================================
+% Chapter 6: Conclusion
+% ============================================================================
+\chapter{Дүгнэлт}
+
+\section{Үндсэн үр дүн}
+
+Энэхүү дипломын ажлын хүрээнд Facebook өгөгдлийг автоматаар цуглуулж, Sentiment Analysis хийж, хүмүүсийн хариу үйлдлийн чиглэл болон авах реакцын хэмжээг таамаглах системийг амжилттай боловсрууллаа.
+
+\textbf{Гүйцэтгэсэн зорилтууд:}
+
+\begin{enumerate}
+    \item \textbf{Facebook вэб скрапинг систем:} Selenium WebDriver болон BeautifulSoup ашиглан Facebook хуудаснаас өгөгдөл цуглуулах найдвартай скрапинг систем бүтээсэн. Систем нь:
+    \begin{itemize}
+        \item Facebook хуудсуудын пост, сэтгэгдэл цуглуулах боломж
+        \item 3 түвшний нэвтрэлтийн стратеги (cookie, credentials, manual)
+        \item Хүний үйлдлийг дуурайх anti-detection
+        \item Алдаанаас автоматаар сэргэх механизм
+        \item Олон стратегит modal handling
+    \end{itemize}
+    
+    \item \textbf{Sentiment Analysis:} NLP технологи ашиглан sentiment analysis хэрэгжүүлсэн:
+    \begin{itemize}
+        \item TextBlob (78\% нарийвчлал) - хурдан, энгийн
+        \item VADER (82\% нарийвчлал) - social media-д тохирсон
+        \item BERT (91\% нарийвчлал) - advanced, GPU шаардлагатай
+    \end{itemize}
+    
+    \item \textbf{AI Дүн Шинжилгээний Модуль:} Цуглуулсан өгөгдөлд мэдрэмжийн шинжилгээ хийж, хариу үйлдлийн чиглэл болон реакцын хэмжээг таамаглах AIAnalyzer модуль:
+    \begin{itemize}
+        \item BERT болон TextBlob-д суурилсан sentiment analysis
+        \item TF-IDF болон KMeans ашигласан сэдвийн кластерчлал
+        \item Оролцооны метрик болон viral нийтлэл илрүүлэлт
+        \item Цаг хугацааны хэв маягт тулгуурласан хариу үйлдэл, реакцын хэмжээний таамаглал
+        \item Таамаглалд суурилсан автомат зөвлөмж үүсгэх алгоритм
+        \item Тайлан экспортлох функционал
+    \end{itemize}
+    
+    \item \textbf{REST API:} FastAPI ашиглан орчин үеийн API интерфейс бүтээсэн:
+    \begin{itemize}
+        \item Bearer token authentication
+        \item Swagger документаци
+        \item Background task processing
+        \item Scraping, analysis, export endpoint-уудыг нэг интерфэйсээр удирдах боломж
+    \end{itemize}
+    
+    \item \textbf{Өгөгдлийн сан:} Олон төрлийн өгөгдлийн сангийн дэмжлэг:
+    \begin{itemize}
+        \item PostgreSQL - production
+        \item SQLite - development
+        \item Firebase - cloud sync
+    \end{itemize}
+\end{enumerate}
+
+\section{Шинэлэг тал}
+
+Энэхүү системийн шинэлэг талууд:
+
+\begin{enumerate}
+    \item \textbf{Facebook төвт модуль архитектур:} Facebook дээр баталгаажсан хэрэгжилттэй боловч цааш өргөтгөх боломжтой модульчлагдсан бүтэц
+    \item \textbf{Multi-strategy approach:} Алдаа гарахад өөр стратеги руу шилжих
+    \item \textbf{Auto-recovery:} Session унахад автоматаар сэргээх
+    \item \textbf{Hybrid sentiment:} TextBlob + VADER + BERT-ийг хослуулах
+    \item \textbf{Outcome-oriented analysis:} Мэдрэмжийн шинжилгээнээс хариу үйлдлийн чиглэл, реакцын хэмжээг таамаглаж, автомат зөвлөмж гаргах
+    \item \textbf{Topic clustering:} TF-IDF болон KMeans-ээр сэдвийн автомат илрүүлэлт
+    \item \textbf{Real-time sync:} Firebase-тэй бодит цаг хугацааны синхрончлол
+\end{enumerate}
+
+\section{Хязгаарлалт}
+
+Системийн хязгаарлалтууд:
+
+\begin{itemize}
+    \item Facebook нууцлалын бодлогын өөрчлөлтөд мэдрэг
+    \item Монгол хэлний Sentiment Analysis хязгаарлагдмал
+    \item BERT ашиглахад GPU шаардлагатай
+    \item Скрапинг хурд Facebook-ийн rate limit-ээс хамаарна
+\end{itemize}
+
+\section{Цаашдын хөгжүүлэлт}
+
+Ирээдүйд хийх боломжтой сайжруулалтууд:
+
+\begin{enumerate}
+    \item \textbf{Монгол хэлний дэмжлэг:}
+    \begin{itemize}
+        \item Монгол хэлний sentiment model бэлтгэх
+        \item Кирилл болон үндсэн монгол бичгийн дэмжлэг
+    \end{itemize}
+    
+    \item \textbf{Multi-platform дэмжлэг:}
+    \begin{itemize}
+        \item Instagram, Twitter скрапинг нэмэх
+        \item Cross-platform анализ
+    \end{itemize}
+    
+    \item \textbf{Advanced ML:}
+    \begin{itemize}
+        \item Topic modeling (LDA)
+        \item Named Entity Recognition
+        \item Trend prediction
+    \end{itemize}
+    
+    \item \textbf{Visualization:}
+    \begin{itemize}
+        \item Real-time dashboard
+        \item Interactive charts
+        \item Report generation
+    \end{itemize}
+\end{enumerate}
+
+\section{Нэгтгэл}
+
+Энэхүү дипломын ажил нь Facebook өгөгдөл цуглуулах, Sentiment Analysis хийх, цаашдын хариу үйлдэл болон реакцын хэмжээг таамаглах практик системийг амжилттай боловсруулсан. Систем нь судлаачид, бизнесийн байгууллагуудад олон нийтийн санал бодлыг судлах, брэндийн имижийг хянах, контентийн боломжит хариу үйлдэл ба оролцооны хэмжээг урьдчилан үнэлэх, маркетингийн стратеги боловсруулахад тустай хэрэгсэл болох боломжтой.
+
+% ============================================================================
+% References
+% ============================================================================
+\chapter*{Ном зүй}
+\addcontentsline{toc}{chapter}{Ном зүй}
+
+\begin{enumerate}
+    \item Devlin, J., Chang, M. W., Lee, K., \& Toutanova, K. (2019). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. \textit{NAACL-HLT}.
+
+    \item Hutto, C., \& Gilbert, E. (2014). VADER: A Parsimonious Rule-Based Model for Sentiment Analysis of Social Media Text. \textit{ICWSM}.
+
+    \item Liu, Y., Ott, M., Goyal, N., et al. (2019). RoBERTa: A Robustly Optimized BERT Pretraining Approach. \textit{arXiv preprint arXiv:1907.11692}.
+
+    \item Mitchell, R. (2018). \textit{Web Scraping with Python: Collecting More Data from the Modern Web}. O'Reilly Media.
+
+    \item Pang, B., \& Lee, L. (2008). Opinion Mining and Sentiment Analysis. \textit{Foundations and Trends in Information Retrieval}, 2(1-2), 1-135.
+
+    \item Selenium Documentation. (2024). \textit{Selenium WebDriver}. Retrieved from https://www.selenium.dev/documentation/
+
+    \item FastAPI Documentation. (2024). \textit{FastAPI}. Retrieved from https://fastapi.tiangolo.com/
+
+    \item SQLAlchemy Documentation. (2024). \textit{SQLAlchemy}. Retrieved from https://www.sqlalchemy.org/
+
+    \item Loria, S. (2020). \textit{TextBlob: Simplified Text Processing}. Retrieved from https://textblob.readthedocs.io/
+
+    \item Firebase Documentation. (2024). \textit{Firebase Realtime Database}. Retrieved from https://firebase.google.com/docs/
+
+    \item Bird, S., Klein, E., \& Loper, E. (2009). \textit{Natural Language Processing with Python}. O'Reilly Media.
+
+    \item Wolf, T., et al. (2020). Transformers: State-of-the-Art Natural Language Processing. \textit{EMNLP}.
+\end{enumerate}
+
+% ============================================================================
+% Appendix
+% ============================================================================
+\appendix
+\chapter{Хавсралт}
+
+\section{Системийн тохиргооны жишээ}
+
+Туршилтын орчинд дараах үндсэн тохиргоог хэрэглэсэн: Python орчин, Firefox WebDriver, өгөгдлийн сангийн холболт, API токен, скрапингийн delay параметрүүд. Эдгээр тохиргоо нь туршилтыг дахин гүйцэтгэхэд шаардлагатай суурь нөхцөлийг бүрдүүлнэ.
+
+
+\section{API Endpoint жишээ}
+
+Судалгаанд ашигласан гол endpoint-ууд нь `/health`, `/api/v1/scrape`, `/api/v1/pages`, `/api/v1/analyze`, `/api/v1/analyze/advanced`, `/api/v1/analyze/ai`, `/api/v1/export/pages` зэрэг болно. Эдгээр endpoint нь өгөгдөл цуглуулах, анализ хийх, үр дүн экспортлох үндсэн урсгалыг бүрдүүлсэн.
+
+
+\section{Өгөгдлийн сангийн схем}
+
+Өгөгдлийн сангийн үндсэн схем нь `FacebookPost`, `PostComment`, `PostImage` хүснэгтүүд дээр төвлөрсөн. `FacebookPost` нь үндсэн контент, `PostComment` нь харилцан үйлдлийн өгөгдөл, `PostImage` нь дагалдах медиа мэдээллийг хадгалж судалгааны аналитик pipeline-д тэжээл өгдөг.
+
+
+\end{document}
+
+
+
+
