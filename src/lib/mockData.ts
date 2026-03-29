@@ -35,3 +35,88 @@ export const dataSources = [
   { id: 'linkedin', name: 'LinkedIn', connected: false, lastSync: null },
   { id: 'tiktok', name: 'TikTok', connected: false, lastSync: null },
 ];
+
+export type MockCollectedPost = {
+  id: string;
+  platform: 'facebook' | 'twitter' | 'instagram';
+  date: string;
+  author: string;
+  content: string;
+  keywords: string[];
+  engagement: number;
+};
+
+export const mockCollectedPosts: MockCollectedPost[] = [
+  {
+    id: 'fb-001',
+    platform: 'facebook',
+    date: '2026-03-20',
+    author: 'Tech Mongolia Hub',
+    content: 'AI policy forum starts next week with open civic discussion.',
+    keywords: ['ai', 'policy', 'forum'],
+    engagement: 342,
+  },
+  {
+    id: 'fb-002',
+    platform: 'facebook',
+    date: '2026-03-22',
+    author: 'Data Club Ulaanbaatar',
+    content: 'Data science meetup focuses on youth participation analytics.',
+    keywords: ['data science', 'analytics', 'youth'],
+    engagement: 221,
+  },
+  {
+    id: 'tw-001',
+    platform: 'twitter',
+    date: '2026-03-21',
+    author: 'CivicWatchMN',
+    content: 'Election monitoring dashboard updated with sentiment signals.',
+    keywords: ['election', 'dashboard', 'sentiment'],
+    engagement: 411,
+  },
+  {
+    id: 'tw-002',
+    platform: 'twitter',
+    date: '2026-03-24',
+    author: 'OpenDataLab',
+    content: 'Real-time network analysis reveals key influence clusters.',
+    keywords: ['network', 'analysis', 'influence'],
+    engagement: 389,
+  },
+  {
+    id: 'ig-001',
+    platform: 'instagram',
+    date: '2026-03-23',
+    author: 'socialinsight.mn',
+    content: 'Visual recap of AI education campaign performance.',
+    keywords: ['ai', 'education', 'campaign'],
+    engagement: 512,
+  },
+  {
+    id: 'ig-002',
+    platform: 'instagram',
+    date: '2026-03-26',
+    author: 'trendpulse.mn',
+    content: 'Topic heatmap: policy and transparency dominated this week.',
+    keywords: ['topic', 'policy', 'transparency'],
+    engagement: 476,
+  },
+  {
+    id: 'fb-003',
+    platform: 'facebook',
+    date: '2026-03-25',
+    author: 'Insight Studio',
+    content: 'Keyword tracker shows sustained growth for data science posts.',
+    keywords: ['keyword', 'data science', 'tracker'],
+    engagement: 267,
+  },
+  {
+    id: 'tw-003',
+    platform: 'twitter',
+    date: '2026-03-26',
+    author: 'AIResearchMN',
+    content: 'New model predicts engagement spikes around civic events.',
+    keywords: ['ai', 'model', 'engagement'],
+    engagement: 438,
+  },
+];

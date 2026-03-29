@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import { mockCollectedPosts, type MockCollectedPost } from '../lib/mockData';
 
 export function AdminControl() {
   const [controls, setControls] = useState({
@@ -27,6 +28,7 @@ export function AdminControl() {
     endDate: '',
     lastRunSummary: '',
   });
+  const [queryResults, setQueryResults] = useState<MockCollectedPost[]>([]);
 
   const toggleControl = (key: keyof typeof controls) => {
     setControls((prev) => ({
@@ -39,14 +41,33 @@ export function AdminControl() {
     const keywordList = collectionQuery.keywords
       .split(',')
       .map((item) => item.trim())
-      .filter(Boolean);
+      .filter(Boolean)
+      .map((item) => item.toLowerCase());
+
+    const filtered = mockCollectedPosts.filter((post) => {
+      const platformOk =
+        !collectionQuery.platform ||
+        collectionQuery.platform.toLowerCase() === 'all' ||
+        post.platform === collectionQuery.platform.toLowerCase();
+
+      const startOk = !collectionQuery.startDate || post.date >= collectionQuery.startDate;
+      const endOk = !collectionQuery.endDate || post.date <= collectionQuery.endDate;
+
+      const postSearchText = `${post.content} ${post.keywords.join(' ')}`.toLowerCase();
+      const keywordOk =
+        keywordList.length === 0 || keywordList.some((keyword) => postSearchText.includes(keyword));
+
+      return platformOk && startOk && endOk && keywordOk;
+    });
 
     const summary = [
       `Platform: ${collectionQuery.platform || 'not set'}`,
       `Keywords: ${keywordList.length > 0 ? keywordList.join(', ') : 'none'}`,
       `Date range: ${collectionQuery.startDate || 'any'} -> ${collectionQuery.endDate || 'any'}`,
+      `Matched posts: ${filtered.length}`,
     ].join(' | ');
 
+    setQueryResults(filtered);
     setCollectionQuery((prev) => ({
       ...prev,
       lastRunSummary: summary,
@@ -199,15 +220,16 @@ export function AdminControl() {
                 <Button onClick={runCollectionQuery}>Query ажиллуулах</Button>
                 <Button
                   variant="outline"
-                  onClick={() =>
+                  onClick={() => {
                     setCollectionQuery((prev) => ({
                       ...prev,
                       keywords: '',
                       startDate: '',
                       endDate: '',
                       lastRunSummary: '',
-                    }))
-                  }
+                    }));
+                    setQueryResults([]);
+                  }}
                 >
                   Query цэвэрлэх
                 </Button>
@@ -216,6 +238,26 @@ export function AdminControl() {
               {collectionQuery.lastRunSummary && (
                 <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
                   {collectionQuery.lastRunSummary}
+                </div>
+              )}
+
+              {queryResults.length > 0 && (
+                <div className="space-y-2 rounded-md border p-3">
+                  <p className="text-sm font-medium">Mock Query Results</p>
+                  <div className="space-y-2">
+                    {queryResults.slice(0, 6).map((post) => (
+                      <div key={post.id} className="rounded border p-2 text-sm">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium">{post.author}</span>
+                          <Badge variant="secondary">{post.platform}</Badge>
+                        </div>
+                        <p className="mt-1 text-muted-foreground">{post.content}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {post.date} | Engagement: {post.engagement}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
