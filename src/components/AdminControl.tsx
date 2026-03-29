@@ -20,11 +20,36 @@ export function AdminControl() {
   });
 
   const [maintenanceMessage, setMaintenanceMessage] = useState('');
+  const [collectionQuery, setCollectionQuery] = useState({
+    platform: 'facebook',
+    keywords: '',
+    startDate: '',
+    endDate: '',
+    lastRunSummary: '',
+  });
 
   const toggleControl = (key: keyof typeof controls) => {
     setControls((prev) => ({
       ...prev,
       [key]: !prev[key],
+    }));
+  };
+
+  const runCollectionQuery = () => {
+    const keywordList = collectionQuery.keywords
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const summary = [
+      `Platform: ${collectionQuery.platform || 'not set'}`,
+      `Keywords: ${keywordList.length > 0 ? keywordList.join(', ') : 'none'}`,
+      `Date range: ${collectionQuery.startDate || 'any'} -> ${collectionQuery.endDate || 'any'}`,
+    ].join(' | ');
+
+    setCollectionQuery((prev) => ({
+      ...prev,
+      lastRunSummary: summary,
     }));
   };
 
@@ -46,6 +71,7 @@ export function AdminControl() {
         <TabsList>
           <TabsTrigger value="system">Систем</TabsTrigger>
           <TabsTrigger value="limits">Хязгаар</TabsTrigger>
+          <TabsTrigger value="collect">Түлхүүр үг хайлт</TabsTrigger>
           <TabsTrigger value="ops">Үйл ажиллагаа</TabsTrigger>
         </TabsList>
 
@@ -110,6 +136,88 @@ export function AdminControl() {
                 value={limits.scrapeIntervalMinutes}
                 onChange={(value) => setLimits((prev) => ({ ...prev, scrapeIntervalMinutes: value }))}
               />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="collect" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Keyword + Date Collection Query</CardTitle>
+              <CardDescription>
+                Платформ, түлхүүр үг болон хугацааны муж оруулж data collection query бэлдэнэ.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Platform</p>
+                  <Input
+                    placeholder="facebook / twitter / instagram"
+                    value={collectionQuery.platform}
+                    onChange={(event) =>
+                      setCollectionQuery((prev) => ({ ...prev, platform: event.target.value }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Keywords</p>
+                  <Input
+                    placeholder="AI, data science, election"
+                    value={collectionQuery.keywords}
+                    onChange={(event) =>
+                      setCollectionQuery((prev) => ({ ...prev, keywords: event.target.value }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Start Date</p>
+                  <Input
+                    type="date"
+                    value={collectionQuery.startDate}
+                    onChange={(event) =>
+                      setCollectionQuery((prev) => ({ ...prev, startDate: event.target.value }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">End Date</p>
+                  <Input
+                    type="date"
+                    value={collectionQuery.endDate}
+                    onChange={(event) =>
+                      setCollectionQuery((prev) => ({ ...prev, endDate: event.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={runCollectionQuery}>Query ажиллуулах</Button>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setCollectionQuery((prev) => ({
+                      ...prev,
+                      keywords: '',
+                      startDate: '',
+                      endDate: '',
+                      lastRunSummary: '',
+                    }))
+                  }
+                >
+                  Query цэвэрлэх
+                </Button>
+              </div>
+
+              {collectionQuery.lastRunSummary && (
+                <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
+                  {collectionQuery.lastRunSummary}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
