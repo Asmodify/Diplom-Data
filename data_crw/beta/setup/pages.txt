@@ -1,0 +1,2 @@
+# Add Facebook page names to scrape (one per line)
+# Example: meta

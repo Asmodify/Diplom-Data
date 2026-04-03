@@ -1,0 +1,6 @@
+# Facebook Pages to Scrape
+# ========================
+# Add one page name or URL per line
+# Lines starting with # are comments
+
+BBCNews

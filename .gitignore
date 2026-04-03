@@ -10,3 +10,12 @@ __pycache__/
 beta/exports/
 beta/firebase_credentials.json
 beta/.env
+
+# Frontend build artifacts
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+.env*
+!.env.example
