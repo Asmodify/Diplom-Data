@@ -38,11 +38,14 @@ class ContentSaver:
             bool: Whether save was successful
         """
         try:
+            post_id = post_data.get('post_id') or f"{page_name}_{datetime.now().strftime('%Y%m%d%H%M%S%f')}"
+            post_url = post_data.get('post_url') or f"https://www.facebook.com/{page_name}"
+
             # Create post record
             post = FacebookPost(
                 page_name=page_name,
-                post_id=post_data['post_id'],
-                post_url=post_data['post_url'],
+                post_id=post_id,
+                post_url=post_url,
                 content=post_data.get('content', ''),
                 timestamp=post_data.get('timestamp'),
                 likes=post_data.get('likes', 0),
@@ -54,14 +57,15 @@ class ContentSaver:
             for img_url in post_data.get('images', []):
                 image = PostImage(
                     image_url=img_url,
-                    local_path=self._download_image(img_url, page_name, post_data['post_id'])
+                    local_path=self._download_image(img_url, page_name, post_id)
                 )
                 post.images.append(image)
                 
             # Save comments if any
             for comment_data in post_data.get('comments', []):
+                comment_id = comment_data.get('comment_id') or f"{post_id}_c_{len(post.comments)+1}"
                 comment = PostComment(
-                    comment_id=comment_data['comment_id'],
+                    comment_id=comment_id,
                     author_name=comment_data.get('author', ''),
                     author_url=comment_data.get('author_url', ''),
                     content=comment_data.get('content', ''),
@@ -73,8 +77,9 @@ class ContentSaver:
                 # Handle replies
                 if 'replies' in comment_data:
                     for reply_data in comment_data['replies']:
+                        reply_comment_id = reply_data.get('comment_id') or f"{comment_id}_r_{len(post.comments)+1}"
                         reply = PostComment(
-                            comment_id=reply_data['comment_id'],
+                            comment_id=reply_comment_id,
                             author_name=reply_data.get('author', ''),
                             author_url=reply_data.get('author_url', ''),
                             content=reply_data.get('content', ''),
@@ -85,11 +90,11 @@ class ContentSaver:
                         post.comments.append(reply)
                 post.comments.append(comment)
                 
-            # Save to database
-            self.db.add(post)
-            self.db.commit()
+            # Save to database via managed SQLAlchemy session
+            self.db.session.add(post)
+            self.db.session.commit()
             
-            logger.info(f"Saved post {post_data['post_id']} from {page_name}")
+            logger.info(f"Saved post {post_id} from {page_name}")
             return True
             
         except Exception as e:

@@ -56,21 +56,48 @@ class PostScraper:
         """
         posts = []
         try:
-            # Wait for feed to load
-            feed = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[role="feed"]'))
-            )
-            
-            # Find all posts
-            post_elements = feed.find_elements(
-                By.CSS_SELECTOR, 
-                'div[role="article"][aria-posinset]'
-            )
+            # Facebook page variants may not expose role="feed". Try several containers.
+            feed_selectors = [
+                '[role="feed"]',
+                'div[data-pagelet="MainFeed"]',
+                'div[aria-label="Timeline: Timeline"]',
+                '[role="main"]',
+                'main'
+            ]
+            post_selectors = [
+                'div[role="article"][aria-posinset]',
+                'div[role="article"]',
+                '[data-ad-preview="message"]',
+                '[data-ad-comet-preview="message"]'
+            ]
+
+            feed = None
+            for selector in feed_selectors:
+                try:
+                    feed = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    break
+                except NoSuchElementException:
+                    continue
+
+            if feed is None:
+                logger.warning(f"No feed container found for {page_name}; falling back to document-wide search")
+
+            # Find posts inside feed when possible, then fall back to document-wide search.
+            post_elements = []
+            for selector in post_selectors:
+                elements = []
+                if feed is not None:
+                    elements = feed.find_elements(By.CSS_SELECTOR, selector)
+                if not elements:
+                    elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                if elements:
+                    post_elements = elements
+                    break
             
             for post in post_elements:
                 try:
                     post_data = self._extract_post_data(post)
-                    if post_data and post_data.get('comment_count', 0) > 0:
+                    if post_data and (post_data.get('content') or post_data.get('comment_count', 0) > 0):
                         posts.append(post_data)
                 except Exception as e:
                     logger.error(f"Error extracting post data: {str(e)}")
@@ -205,13 +232,28 @@ class PostScraper:
                 'comments': []
             }
             
-            # Get post content
-            content_elements = post_element.find_elements(
-                By.CSS_SELECTOR,
-                'div[data-ad-comet-preview="message"]'
-            )
-            if content_elements:
-                post_data['content'] = clean_text(content_elements[0].text.strip())
+            # Get post content with selector fallbacks across FB variants.
+            content_selectors = [
+                'div[data-ad-comet-preview="message"]',
+                'div[data-ad-preview="message"]',
+                'div[dir="auto"] span[dir="auto"]',
+                'div[dir="auto"]'
+            ]
+            for selector in content_selectors:
+                content_elements = post_element.find_elements(By.CSS_SELECTOR, selector)
+                for el in content_elements:
+                    text = clean_text((el.text or '').strip())
+                    if text:
+                        post_data['content'] = text
+                        break
+                if post_data['content']:
+                    break
+
+            # Last-resort fallback to element text if targeted selectors fail.
+            if not post_data['content']:
+                fallback_text = clean_text((post_element.text or '').strip())
+                if fallback_text:
+                    post_data['content'] = fallback_text[:2000]
                 
             # Get interaction counts
             interaction_bar = post_element.find_elements(

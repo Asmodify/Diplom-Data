@@ -44,6 +44,10 @@ class FacebookEventListener(AbstractEventListener):
         logger.debug("Clicked element")
         
     def on_exception(self, exception, driver):
+        # Avoid log spam for expected probing misses during selector checks.
+        if isinstance(exception, NoSuchElementException):
+            logger.debug(f"Element not found during probe: {exception}")
+            return
         logger.warning(f"Exception occurred: {exception}")
 
 class BrowserManager:

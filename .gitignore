@@ -5,3 +5,8 @@ geckodriver.log
 # Python cache artifacts
 __pycache__/
 *.py[cod]
+
+# Generated exports and local secrets
+beta/exports/
+beta/firebase_credentials.json
+beta/.env
