@@ -1,0 +1,7 @@
+# Repository-level runtime artifacts
+geckodriver.log
+*.log
+
+# Python cache artifacts
+__pycache__/
+*.py[cod]

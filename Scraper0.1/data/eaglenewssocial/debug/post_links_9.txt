@@ -1,7 +1,0 @@
-All <a> tags in post:
-href: https://www.facebook.com/eaglenewssocial?__cft__[0]=AZV2QFpcO4nz5lRrA9dWDlcIk76eUkgqOLBIoWEK5uNlQ_T6dT5ovCOGGo2XN0QmPl4pCMribhqxIM77fQ__gHIlgyVGLfhk4MtJlgBqp9ocpzVn-aNMZ3REajIIoXzayk6hiXY1VJUEAextsepVPV7o_b1h69f0zWL9P9_Nf79CcS4WVsoWnLuwk1BZkXjR5RiXEB1t_LI8DneCKDKWV56-&__tn__=%3C%3C%2CP-R, text: , aria-label: Eagle News
-href: https://www.facebook.com/eaglenewssocial?__cft__[0]=AZV2QFpcO4nz5lRrA9dWDlcIk76eUkgqOLBIoWEK5uNlQ_T6dT5ovCOGGo2XN0QmPl4pCMribhqxIM77fQ__gHIlgyVGLfhk4MtJlgBqp9ocpzVn-aNMZ3REajIIoXzayk6hiXY1VJUEAextsepVPV7o_b1h69f0zWL9P9_Nf79CcS4WVsoWnLuwk1BZkXjR5RiXEB1t_LI8DneCKDKWV56-&__tn__=-UC%2CP-R, text: Eagle News, aria-label: None
-href: https://www.facebook.com/eaglenewssocial/videos/686935241011487/?__cft__[0]=AZV2QFpcO4nz5lRrA9dWDlcIk76eUkgqOLBIoWEK5uNlQ_T6dT5ovCOGGo2XN0QmPl4pCMribhqxIM77fQ__gHIlgyVGLfhk4MtJlgBqp9ocpzVn-aNMZ3REajIIoXzayk6hiXY1VJUEAextsepVPV7o_b1h69f0zWL9P9_Nf79CcS4WVsoWnLuwk1BZkXjR5RiXEB1t_LI8DneCKDKWV56-&__tn__=%2CO%2CP-R, text: 1h, aria-label: 1h
-href: https://www.facebook.com/eaglenewssocial/videos/686935241011487/?__cft__[0]=AZV2QFpcO4nz5lRrA9dWDlcIk76eUkgqOLBIoWEK5uNlQ_T6dT5ovCOGGo2XN0QmPl4pCMribhqxIM77fQ__gHIlgyVGLfhk4MtJlgBqp9ocpzVn-aNMZ3REajIIoXzayk6hiXY1VJUEAextsepVPV7o_b1h69f0zWL9P9_Nf79CcS4WVsoWnLuwk1BZkXjR5RiXEB1t_LI8DneCKDKWV56-&__tn__=%2B%3FFH-R, text: , aria-label: Томруулах
-
-All <abbr> tags in post:

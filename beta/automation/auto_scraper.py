@@ -24,21 +24,30 @@ class AutoScraper:
     """Automates the Facebook scraping process"""
     def __init__(self, headless: bool = False, max_posts: int = 100,
                  take_screenshots: bool = True, download_images: bool = True,
-                 pages_file: str = "pages.txt"):
+                 pages_file: str = "pages.txt", max_retries: int = 3):
         self.headless = headless
         self.max_posts = max_posts
         self.take_screenshots = take_screenshots
         self.download_images = download_images
         self.pages_file = pages_file
+        self.max_retries = max_retries
         self.browser = None
         self.driver = None
         self.scraper = None
         self.content_saver = None
         self.logger = logging.getLogger(__name__)
-        self._ensure_browser_initialized()
+        self._initialize_browser()
 
-    def _ensure_browser_initialized(self):
-        if self.browser is None or self.driver is None:
+    def _initialize_browser(self):
+        """Initialize or reinitialize the browser and related components"""
+        try:
+            # Close existing browser if any
+            if self.browser:
+                try:
+                    self.browser.close()
+                except:
+                    pass
+                    
             self.browser = BrowserManager(headless=self.headless)
             self.driver = self.browser.start()
             self.scraper = PostScraper(
@@ -48,6 +57,19 @@ class AutoScraper:
                 download_images=self.download_images
             )
             self.content_saver = ContentSaver(base_dir=str(Path(__file__).parent.parent))
+            self.logger.info("Browser initialized successfully")
+            return True
+        except Exception as e:
+            self.logger.error(f"Failed to initialize browser: {e}")
+            return False
+    
+    def _ensure_browser_ready(self) -> bool:
+        """Ensure browser is ready, restart if necessary"""
+        if self.browser and self.browser.is_session_alive():
+            return True
+        
+        self.logger.warning("Browser session not ready, reinitializing...")
+        return self._initialize_browser()
 
     def start(self) -> bool:
         """
@@ -57,7 +79,8 @@ class AutoScraper:
             bool: Whether startup was successful
         """
         try:
-            self._ensure_browser_initialized()
+            if not self._ensure_browser_ready():
+                return False
                 
             # Attempt login
             if not self.browser.manual_login():
@@ -149,54 +172,94 @@ class AutoScraper:
         Returns:
             bool: Whether scraping was successful
         """
-        self._ensure_browser_initialized()
+        for attempt in range(self.max_retries):
+            try:
+                # Ensure browser is ready
+                if not self._ensure_browser_ready():
+                    self.logger.error("Cannot establish browser session")
+                    continue
+                
+                # Ensure we're logged in
+                if not self.browser.logged_in:
+                    self.logger.info("Attempting to log in...")
+                    if not self.browser.manual_login():
+                        self.logger.error("Failed to log in")
+                        # Try reinitializing browser for next attempt
+                        if attempt < self.max_retries - 1:
+                            self._initialize_browser()
+                        continue
+
+                # Build full URL
+                if not page_url.startswith('https://'):
+                    full_url = f'https://www.facebook.com/{page_url}'
+                else:
+                    full_url = page_url
+
+                # Robust navigation
+                if not self.browser.navigate_to(full_url):
+                    self.logger.error(f"Failed to navigate to {full_url}")
+                    # Check if session died during navigation
+                    if not self.browser.is_session_alive():
+                        self._initialize_browser()
+                    continue
+
+                # Simulate human scrolling to load content
+                self.browser.simulate_human_scroll(max_scrolls=8)
+
+                # Get the page name from the URL
+                page_name = page_url.split('/')[-1] if '/' in page_url else page_url
+                if '?' in page_name:
+                    page_name = page_name.split('?')[0]
+
+                # Scrape the page using get_posts
+                posts_data = self.scraper.get_posts(page_name)
+
+                # Save content
+                for post in posts_data:
+                    try:
+                        self.content_saver.save_post(post, page_name)
+                    except Exception as save_error:
+                        self.logger.warning(f"Error saving post: {save_error}")
+
+                self.logger.info(f"Successfully scraped {len(posts_data)} posts from {page_url}")
+                return True
+                
+            except Exception as e:
+                self.logger.error(f"Attempt {attempt + 1}/{self.max_retries} failed for {page_url}: {e}")
+                
+                # Check if we need to restart browser
+                if not self.browser or not self.browser.is_session_alive():
+                    self.logger.warning("Browser session died, reinitializing...")
+                    self._initialize_browser()
+                
+                if attempt < self.max_retries - 1:
+                    time.sleep(5)  # Wait before retry
         
-        try:
-            # Verify login status first
-            if not self.browser.verify_login():
-                self.logger.warning("Not logged in, attempting login...")
-                if not self.browser.manual_login():
-                    raise RuntimeError("Failed to log in")
-
-            # Build full URL
-            if not page_url.startswith('https://'):
-                full_url = f'https://www.facebook.com/{page_url}'
-            else:
-                full_url = page_url
-
-            # Robust navigation
-            if not self.browser.navigate_to(full_url):
-                self.logger.error(f"Failed to navigate to {full_url}")
-                return False
-
-            # Simulate human scrolling to load content
-            self.browser.simulate_human_scroll(max_scrolls=8)
-
-            # Scrape the page (assumes page is loaded and scrolled)
-            posts_data = self.scraper.scrape_posts()
-
-            # Save content
-            for post in posts_data:
-                self.content_saver.save_post_content(post)
-
-            return True
-        except Exception as e:
-            self.logger.error(f"Failed to scrape page {page_url}: {e}")
-            return False
+        self.logger.error(f"Failed to scrape page {page_url} after {self.max_retries} attempts")
+        return False
     
     def close(self):
         """Close the scraping session"""
-        if self.scraper:
-            self.scraper.close()
+        try:
+            if self.scraper:
+                self.scraper.close()
+        except Exception as e:
+            self.logger.debug(f"Error closing scraper: {e}")
             
     def stop(self):
         """Stop the scraper and clean up resources"""
         try:
-            if hasattr(self, 'browser_manager') and self.browser_manager.driver:
-                self.browser_manager.close()
-                logger.info("Browser session closed")
+            # Close scraper first
+            self.close()
+            
+            # Then close browser
+            if self.browser:
+                self.browser.close()
+                self.browser = None
+                self.driver = None
+                self.logger.info("Browser session closed")
         except Exception as e:
-            logger.error(f"Error during scraper cleanup: {e}")
+            self.logger.error(f"Error during scraper cleanup: {e}")
 
 if __name__ == "__main__":
     import argparse

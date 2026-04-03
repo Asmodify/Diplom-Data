@@ -2,14 +2,56 @@ from typing import Dict, Optional
 import os
 from pathlib import Path
 
-# Database configuration - Using PostgreSQL for better performance and features
+# ==================== DATABASE CONFIGURATION ====================
+
+# Database backend selection
+# Options: 'postgresql', 'sqlite', 'firebase'
+DATABASE_BACKEND = os.getenv('DATABASE_BACKEND', 'postgresql')
+
+# PostgreSQL configuration
 USE_SQLITE = False  # Set to False to use PostgreSQL
 DB_CONFIG = {
-    "username": "postgres",
-    "password": "Keqing17",
-    "host": "localhost",
-    "port": "5432",
-    "database": "facebook_scraper_beta"
+    "username": os.getenv('DB_USERNAME', 'postgres'),
+    "password": os.getenv('DB_PASSWORD', 'Keqing17'),
+    "host": os.getenv('DB_HOST', 'localhost'),
+    "port": os.getenv('DB_PORT', '5432'),
+    "database": os.getenv('DB_NAME', 'facebook_scraper_beta')
+}
+
+# ==================== FIREBASE CONFIGURATION ====================
+
+FIREBASE_CONFIG = {
+    # Path to Firebase service account credentials JSON
+    "credentials_path": os.getenv('FIREBASE_CREDENTIALS', None),
+    # Firestore collection names
+    "posts_collection": "facebook_posts",
+    "analysis_collection": "analysis_results"
+}
+
+# ==================== GOOGLE SHEETS CONFIGURATION ====================
+
+GOOGLE_SHEETS_CONFIG = {
+    # Path to Google service account credentials JSON
+    "credentials_path": os.getenv('GOOGLE_SHEETS_CREDENTIALS', None),
+    # Default spreadsheet name for exports
+    "default_spreadsheet": "Facebook_Scraper_Data"
+}
+
+# ==================== FASTAPI CONFIGURATION ====================
+
+API_CONFIG = {
+    "host": os.getenv('API_HOST', '0.0.0.0'),
+    "port": int(os.getenv('API_PORT', '8000')),
+    "reload": os.getenv('API_RELOAD', 'false').lower() == 'true',
+    "cors_origins": os.getenv('CORS_ORIGINS', '*').split(',')
+}
+
+# ==================== ML CONFIGURATION ====================
+
+ML_CONFIG = {
+    "models_dir": os.getenv('ML_MODELS_DIR', None),  # None = use default
+    "n_topics": int(os.getenv('ML_N_TOPICS', '5')),
+    "sentiment_threshold": float(os.getenv('ML_SENTIMENT_THRESHOLD', '0.1'))
 }
 
 # Project paths

@@ -53,6 +53,54 @@ class BrowserManager:
         self.headless = headless
         self.logged_in = False
         self.wait = None  # Will be set after driver initialization
+        self._session_active = False
+        self._max_restart_attempts = 3
+        self._restart_count = 0
+    
+    def is_session_alive(self) -> bool:
+        """Check if the browser session is still active"""
+        if not self.driver:
+            return False
+        try:
+            # Try a simple operation to test if session is alive
+            _ = self.driver.current_url
+            return True
+        except Exception:
+            self._session_active = False
+            return False
+    
+    def restart_session(self) -> bool:
+        """
+        Restart the browser session after a crash
+        
+        Returns:
+            bool: Whether restart was successful
+        """
+        if self._restart_count >= self._max_restart_attempts:
+            logger.error(f"Max restart attempts ({self._max_restart_attempts}) reached")
+            return False
+            
+        self._restart_count += 1
+        logger.info(f"Restarting browser session (attempt {self._restart_count}/{self._max_restart_attempts})")
+        
+        # Close existing driver if any
+        self.close()
+        time.sleep(2)  # Wait before restart
+        
+        # Start fresh
+        try:
+            self.start()
+            self._session_active = True
+            return True
+        except Exception as e:
+            logger.error(f"Failed to restart session: {e}")
+            return False
+    
+    def ensure_session(self) -> bool:
+        """Ensure the browser session is alive, restart if needed"""
+        if self.is_session_alive():
+            return True
+        return self.restart_session()
         
     def start(self):
         """Initialize and configure the browser with anti-detection measures"""
@@ -129,17 +177,28 @@ class BrowserManager:
                 logger.warning(f"Could not inject paywall hide script: {e}")
 
             logger.info("Browser initialization successful")
+            self._session_active = True
+            self._restart_count = 0  # Reset restart count on successful start
             return self.driver
 
         except Exception as e:
             error_msg = f"Browser initialization failed: {str(e)}"
             logger.error(error_msg)
+            self._session_active = False
             if hasattr(self, 'driver') and self.driver:
-                self.driver.quit()
+                try:
+                    self.driver.quit()
+                except:
+                    pass
             raise RuntimeError(error_msg)
 
     def verify_login(self):
         """Verify if user is logged in to Facebook"""
+        # First check if session is alive
+        if not self.is_session_alive():
+            logger.warning("Browser session is not alive during verify_login")
+            return False
+            
         try:
             # Default wait of 15 seconds for the Facebook UI to load
             wait = WebDriverWait(self.driver, 15)
@@ -193,19 +252,139 @@ class BrowserManager:
             logger.error(f"Error verifying login: {e}")
             return False
             
+    def login_with_cookies(self) -> bool:
+        """
+        Attempt to log in using saved cookies from fb_credentials.py
+        
+        Returns:
+            bool: Whether cookie-based login was successful
+        """
+        try:
+            from fb_credentials import cookies
+            logger.info("Attempting cookie-based login...")
+            
+            # First navigate to Facebook to set domain
+            self.driver.get('https://www.facebook.com')
+            time.sleep(2)
+            
+            # Clear existing cookies first
+            self.driver.delete_all_cookies()
+            
+            # Add saved cookies
+            for name, value in cookies.items():
+                try:
+                    self.driver.add_cookie({
+                        'name': name,
+                        'value': value,
+                        'domain': '.facebook.com',
+                        'path': '/'
+                    })
+                    logger.debug(f"Added cookie: {name}")
+                except Exception as e:
+                    logger.warning(f"Failed to add cookie {name}: {e}")
+            
+            # Refresh to apply cookies
+            self.driver.get('https://www.facebook.com')
+            time.sleep(3)
+            
+            # Verify login
+            if self.verify_login():
+                logger.info("Cookie-based login successful!")
+                self.logged_in = True
+                return True
+            else:
+                logger.warning("Cookie-based login failed - cookies may have expired")
+                return False
+                
+        except ImportError:
+            logger.warning("No cookies found in fb_credentials.py")
+            return False
+        except Exception as e:
+            logger.error(f"Cookie login error: {e}")
+            return False
+    
+    def login_with_credentials(self) -> bool:
+        """
+        Attempt to log in using email/password from fb_credentials.py
+        
+        Returns:
+            bool: Whether credential-based login was successful
+        """
+        try:
+            from fb_credentials import FB_EMAIL, FB_PASSWORD
+            
+            if not FB_EMAIL or not FB_PASSWORD:
+                logger.warning("No credentials found in fb_credentials.py")
+                return False
+            
+            logger.info("Attempting credential-based login...")
+            self.driver.get('https://www.facebook.com')
+            time.sleep(2)
+            
+            # Enter email
+            email_input = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, 'email'))
+            )
+            self.simulate_human_typing(email_input, FB_EMAIL)
+            time.sleep(random.uniform(0.5, 1))
+            
+            # Enter password
+            password_input = self.driver.find_element(By.ID, 'pass')
+            self.simulate_human_typing(password_input, FB_PASSWORD)
+            time.sleep(random.uniform(0.5, 1))
+            
+            # Click login button
+            login_button = self.driver.find_element(By.CSS_SELECTOR, '[name="login"], [data-testid="royal_login_button"]')
+            login_button.click()
+            
+            # Wait for login to complete
+            time.sleep(5)
+            
+            if self.verify_login():
+                logger.info("Credential-based login successful!")
+                self.logged_in = True
+                return True
+            else:
+                # Check for 2FA or security checks
+                if 'checkpoint' in self.driver.current_url.lower():
+                    logger.warning("Facebook security check detected - manual intervention required")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Credential login error: {e}")
+            return False
+
     def manual_login(self) -> bool:
         """
-        Handle manual login process with improved input handling and feedback
+        Handle login process - tries cookies first, then credentials, then manual
         
         Returns:
             bool: Whether login was successful
         """
         if not self.driver:
             if not self.start():
-                logger.error("Failed to start browser for manual login")
+                logger.error("Failed to start browser for login")
                 return False
+        
+        # Ensure session is alive
+        if not self.ensure_session():
+            logger.error("Cannot establish browser session for login")
+            return False
             
         try:
+            # Step 1: Try cookie-based login first (fastest)
+            logger.info("Step 1: Trying cookie-based login...")
+            if self.login_with_cookies():
+                return True
+            
+            # Step 2: Try credential-based login
+            logger.info("Step 2: Trying credential-based login...")
+            if self.login_with_credentials():
+                return True
+            
+            # Step 3: Fall back to manual login
+            logger.info("Step 3: Automatic login failed, requesting manual login...")
+            
             # Navigate to Facebook
             self.driver.get("https://www.facebook.com")
             time.sleep(2)  # Wait for initial page load
@@ -221,27 +400,39 @@ class BrowserManager:
             print("="*80)
             print("1. Log in to Facebook with your credentials in the browser window")
             print("2. Complete any security checks if prompted")
-            print("3. Return to this terminal when logged in")
-            print("4. Type 'done' when you're finished (the scraper will verify login)")
+            print("3. The scraper will auto-detect when you're logged in")
             print("\nNote: You have 5 minutes to complete the login process.")
-            print("The scraper will also detect when you've logged in successfully.")
             print("="*80 + "\n")
             
             # Wait for login with timeout (5 minutes)
             max_attempts = 300  # 5 minutes (1 check per second)
             attempt = 0
             
-            import msvcrt  # Windows-specific keyboard input
+            # Cross-platform keyboard input handling
+            try:
+                import msvcrt  # Windows-specific
+                HAS_MSVCRT = True
+            except ImportError:
+                HAS_MSVCRT = False
             
             while attempt < max_attempts:
-                # First check if already logged in
-                if self.verify_login():
-                    print("\nLogin detected automatically!")
-                    logger.info("Login successful - auto-detected")
-                    return True
+                # Check if session is still alive
+                if not self.is_session_alive():
+                    logger.warning("Browser session died during manual login wait")
+                    print("\nBrowser session was closed. Please restart the scraper.")
+                    return False
                 
-                # Check for keyboard input (Windows-specific)
-                if msvcrt.kbhit():
+                # First check if already logged in
+                try:
+                    if self.verify_login():
+                        print("\nLogin detected automatically!")
+                        logger.info("Login successful - auto-detected")
+                        return True
+                except Exception as e:
+                    logger.debug(f"Login verification error: {e}")
+                
+                # Check for keyboard input (Windows only)
+                if HAS_MSVCRT and msvcrt.kbhit():
                     # Read the input buffer until we get a complete line
                     input_buffer = []
                     while msvcrt.kbhit():
@@ -264,21 +455,16 @@ class BrowserManager:
                                         print("Retrying verification...")
                                 
                                 print("\nLogin verification failed. Please check if you're properly logged in.")
-                                print("Type 'done' when ready, or wait for auto-detection.")
+                                print("The scraper will keep checking automatically.")
                             break
                         else:
                             input_buffer.append(char)
                             print(char, end='', flush=True)  # Echo the character
                 
                 # Show progress every 30 seconds
-                if attempt % 30 == 0:
+                if attempt % 30 == 0 and attempt > 0:
                     remaining = int((max_attempts - attempt) / 60)  # Convert to minutes
                     print(f"Waiting for login... ({remaining} minutes remaining)")
-                    # Try to detect login again
-                    if self.verify_login():
-                        print("\nLogin detected automatically!")
-                        logger.info("Login successful - auto-detected during wait")
-                        return True
                 
                 time.sleep(1)  # Consistent 1-second sleep between checks
                 attempt += 1
@@ -298,6 +484,11 @@ class BrowserManager:
                 logger.info("Browser closed")
             except Exception as e:
                 logger.error(f"Error closing browser: {e}")
+            finally:
+                self.driver = None
+                self.wait = None
+                self._session_active = False
+                self.logged_in = False
                 
     def simulate_human_typing(self, element, text):
         """Simulate human-like typing patterns with random delays"""
