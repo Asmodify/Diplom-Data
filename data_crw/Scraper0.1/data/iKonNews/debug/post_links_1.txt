@@ -1,6 +1,0 @@
-All <a> tags in post:
-href: https://www.facebook.com/sun.kyo.sun.kyo.2025?comment_id=Y29tbWVudDoxMTcwNTgwODU1MDk3OTkxXzQwMzI4ODAyNzAyOTk1MDE%3D&__cft__[0]=AZXbpPTvjYjCoPPsb8NmZG6sqY4sccUbWu6OqhFu3au1vvR-jKjC2i-0baDi5eq3WeLpfDvk1qUwgr34fbzjg1_ExQOzRIWc9DEJfAl7Ttqjg4Eek-nIXeOSdG3ay4Ow0B7gk5CA9gLV4q6mOBCvpQoLFyqQ4ADDxByJ9TNXYKA-Gzd1xeXLcCukTTmmVRw7aNgoGIC4p1V4UgYaf_GtwJDd&__tn__=R-R, text: , aria-label: None
-href: https://www.facebook.com/sun.kyo.sun.kyo.2025?comment_id=Y29tbWVudDoxMTcwNTgwODU1MDk3OTkxXzQwMzI4ODAyNzAyOTk1MDE%3D&__cft__[0]=AZXbpPTvjYjCoPPsb8NmZG6sqY4sccUbWu6OqhFu3au1vvR-jKjC2i-0baDi5eq3WeLpfDvk1qUwgr34fbzjg1_ExQOzRIWc9DEJfAl7Ttqjg4Eek-nIXeOSdG3ay4Ow0B7gk5CA9gLV4q6mOBCvpQoLFyqQ4ADDxByJ9TNXYKA-Gzd1xeXLcCukTTmmVRw7aNgoGIC4p1V4UgYaf_GtwJDd&__tn__=R-R, text: Sun Kyo Sun Kyo, aria-label: None
-href: https://www.facebook.com/iKonNews/posts/pfbid02553RpRsisofdDLHnmKYMcDJt1PPTNmjvTM3j7XHoMsYbYGYHjbS3CFb8ucAmMyWRl?comment_id=4032880270299501&__cft__[0]=AZXbpPTvjYjCoPPsb8NmZG6sqY4sccUbWu6OqhFu3au1vvR-jKjC2i-0baDi5eq3WeLpfDvk1qUwgr34fbzjg1_ExQOzRIWc9DEJfAl7Ttqjg4Eek-nIXeOSdG3ay4Ow0B7gk5CA9gLV4q6mOBCvpQoLFyqQ4ADDxByJ9TNXYKA-Gzd1xeXLcCukTTmmVRw7aNgoGIC4p1V4UgYaf_GtwJDd&__tn__=R-R, text: 32m, aria-label: None
-
-All <abbr> tags in post:
