@@ -1,28 +1,102 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { mockSocialData } from '../lib/mockData';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { getBackendPosts, getBackendStats, normalizeBackendPosts, type LiveAdminPost } from '../lib/backend';
+
+type DashboardPoint = {
+  date: string;
+  Facebook?: number;
+  Twitter?: number;
+  Instagram?: number;
+  totalEngagement: number;
+};
 
 export function Dashboard() {
-  // Aggregate data by date
-  const aggregatedByDate = mockSocialData.reduce((acc, curr) => {
-    const existing = acc.find(item => item.date === curr.date);
+  const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
+  const [liveStats, setLiveStats] = useState<{ totalPosts: number; totalEngagement: number } | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadDashboard = async () => {
+      try {
+        const [posts, stats] = await Promise.all([getBackendPosts(100), getBackendStats()]);
+
+        if (!mounted) {
+          return;
+        }
+
+        setLivePosts(normalizeBackendPosts(posts));
+        setLiveStats({
+          totalPosts: stats.total_posts,
+          totalEngagement: posts.reduce(
+            (sum, post) => sum + (post.likes ?? 0) + (post.shares ?? 0) * 2 + (post.comment_count ?? 0),
+            0,
+          ),
+        });
+      } catch {
+        if (mounted) {
+          setLivePosts([]);
+          setLiveStats(null);
+        }
+      }
+    };
+
+    void loadDashboard();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const sourceData: LiveAdminPost[] = livePosts.length > 0
+    ? livePosts
+    : mockSocialData.map((item) => ({
+        id: `${item.platform}-${item.date}`,
+        platform: item.platform.toLowerCase(),
+        date: item.date,
+        author: item.platform,
+        content: '',
+        keywords: [],
+        engagement: item.engagement,
+        likes: item.engagement,
+        shares: 0,
+        commentCount: 0,
+      }));
+
+  const aggregatedByDate = sourceData.reduce((acc, curr) => {
+    const existing = acc.find((item) => item.date === curr.date);
+    const platformKey = curr.platform.toLowerCase();
+
     if (existing) {
-      existing[curr.platform] = curr.engagement;
+      if (platformKey === 'facebook') {
+        existing.Facebook = (existing.Facebook ?? 0) + curr.engagement;
+      }
+      if (platformKey === 'twitter') {
+        existing.Twitter = (existing.Twitter ?? 0) + curr.engagement;
+      }
+      if (platformKey === 'instagram') {
+        existing.Instagram = (existing.Instagram ?? 0) + curr.engagement;
+      }
       existing.totalEngagement += curr.engagement;
     } else {
       acc.push({
         date: curr.date,
-        [curr.platform]: curr.engagement,
+        ...(platformKey === 'facebook' ? { Facebook: curr.engagement } : {}),
+        ...(platformKey === 'twitter' ? { Twitter: curr.engagement } : {}),
+        ...(platformKey === 'instagram' ? { Instagram: curr.engagement } : {}),
         totalEngagement: curr.engagement,
       });
     }
     return acc;
-  }, [] as any[]);
+  }, [] as DashboardPoint[]);
 
-  const totalPosts = mockSocialData.reduce((sum, item) => sum + item.posts, 0);
-  const totalEngagement = mockSocialData.reduce((sum, item) => sum + item.engagement, 0);
+  const totalPosts = liveStats?.totalPosts ?? mockSocialData.reduce((sum, item) => sum + item.posts, 0);
+  const totalEngagement = liveStats?.totalEngagement ?? mockSocialData.reduce((sum, item) => sum + item.engagement, 0);
   const totalReach = mockSocialData.reduce((sum, item) => sum + item.reach, 0);
   const avgSentiment = mockSocialData.reduce((sum, item) => sum + item.sentiment, 0) / mockSocialData.length;
+  const activeSourceLabel = useMemo(() => (livePosts.length > 0 ? 'Live Render data' : 'Local demo data'), [livePosts.length]);
 
   return (
     <div className="space-y-6">
@@ -33,7 +107,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalPosts}</div>
-            <p className="text-xs text-muted-foreground">+12% өмнөх 7 хоногоос</p>
+            <p className="text-xs text-muted-foreground">{activeSourceLabel}</p>
           </CardContent>
         </Card>
         <Card>
@@ -42,7 +116,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalEngagement.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">+8% өмнөх 7 хоногоос</p>
+            <p className="text-xs text-muted-foreground">Backend synced metrics</p>
           </CardContent>
         </Card>
         <Card>

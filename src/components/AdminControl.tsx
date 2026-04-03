@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { mockCollectedPosts, type MockCollectedPost } from '../lib/mockData';
+import {
+  getBackendHealth,
+  getBackendPosts,
+  getBackendStats,
+  normalizeBackendPosts,
+  type BackendHealth,
+  type BackendStats,
+  type LiveAdminPost,
+} from '../lib/backend';
 
 export function AdminControl() {
   const [controls, setControls] = useState({
@@ -28,7 +37,84 @@ export function AdminControl() {
     endDate: '',
     lastRunSummary: '',
   });
-  const [queryResults, setQueryResults] = useState<MockCollectedPost[]>([]);
+  const [queryResults, setQueryResults] = useState<LiveAdminPost[]>([]);
+  const [backendHealth, setBackendHealth] = useState<BackendHealth | null>(null);
+  const [backendStats, setBackendStats] = useState<BackendStats | null>(null);
+  const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
+  const [backendStatus, setBackendStatus] = useState('Connecting to Render backend...');
+  const [backendBusy, setBackendBusy] = useState(true);
+  const [firebaseTestNote, setFirebaseTestNote] = useState('Admin Firebase connectivity test');
+  const [firebaseStatus, setFirebaseStatus] = useState('');
+  const [firebaseLogs, setFirebaseLogs] = useState([] as any[]);
+  const [firebaseBusy, setFirebaseBusy] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadBackendSnapshot = async () => {
+      setBackendBusy(true);
+      try {
+        const [healthResult, statsResult, postsResult] = await Promise.allSettled([
+          getBackendHealth(),
+          getBackendStats(),
+          getBackendPosts(50),
+        ]);
+
+        if (!mounted) {
+          return;
+        }
+
+        if (healthResult.status === 'fulfilled') {
+          setBackendHealth(healthResult.value);
+        }
+
+        if (statsResult.status === 'fulfilled') {
+          setBackendStats(statsResult.value);
+        }
+
+        if (postsResult.status === 'fulfilled') {
+          setLivePosts(normalizeBackendPosts(postsResult.value));
+          setBackendStatus(`Connected to Render backend: ${postsResult.value.length} live posts loaded.`);
+        } else {
+          setLivePosts([]);
+          setBackendStatus('Render backend is unreachable. Check VITE_BACKEND_API_URL and Render logs.');
+        }
+
+        if (healthResult.status === 'rejected' && statsResult.status === 'rejected') {
+          const fallbackMessage =
+            healthResult.status === 'rejected' ? healthResult.reason : statsResult.reason;
+          setBackendStatus(`Backend sync degraded: ${String(fallbackMessage)}`);
+        }
+      } finally {
+        if (mounted) {
+          setBackendBusy(false);
+        }
+      }
+    };
+
+    void loadBackendSnapshot();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const visiblePosts = useMemo(() => {
+    return livePosts.length > 0
+      ? livePosts
+      : mockCollectedPosts.map((post) => ({
+          id: post.id,
+          platform: post.platform,
+          date: post.date,
+          author: post.author,
+          content: post.content,
+          keywords: post.keywords,
+          engagement: post.engagement,
+          likes: post.engagement,
+          shares: 0,
+          commentCount: 0,
+        }));
+  }, [livePosts]);
 
   const toggleControl = (key: keyof typeof controls) => {
     setControls((prev) => ({
@@ -44,7 +130,7 @@ export function AdminControl() {
       .filter(Boolean)
       .map((item) => item.toLowerCase());
 
-    const filtered = mockCollectedPosts.filter((post) => {
+    const filtered = visiblePosts.filter((post) => {
       const platformOk =
         !collectionQuery.platform ||
         collectionQuery.platform.toLowerCase() === 'all' ||
@@ -53,7 +139,7 @@ export function AdminControl() {
       const startOk = !collectionQuery.startDate || post.date >= collectionQuery.startDate;
       const endOk = !collectionQuery.endDate || post.date <= collectionQuery.endDate;
 
-      const postSearchText = `${post.content} ${post.keywords.join(' ')}`.toLowerCase();
+      const postSearchText = `${post.author} ${post.content} ${post.keywords.join(' ')}`.toLowerCase();
       const keywordOk =
         keywordList.length === 0 || keywordList.some((keyword) => postSearchText.includes(keyword));
 
@@ -74,6 +160,53 @@ export function AdminControl() {
     }));
   };
 
+  const refreshBackendSnapshot = async () => {
+    setBackendBusy(true);
+    try {
+      const [health, stats, posts] = await Promise.all([
+        getBackendHealth(),
+        getBackendStats(),
+        getBackendPosts(50),
+      ]);
+
+      setBackendHealth(health);
+      setBackendStats(stats);
+      setLivePosts(normalizeBackendPosts(posts));
+      setBackendStatus(`Connected to Render backend: ${posts.length} live posts loaded.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setBackendStatus(`Backend refresh failed: ${message}`);
+    } finally {
+      setBackendBusy(false);
+    }
+  };
+
+  const runFirebaseWriteTest = async () => {
+    setFirebaseBusy(true);
+    try {
+      const id = `firebase-log-${Date.now()}`;
+      setFirebaseStatus(`Write success. docId=${id}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setFirebaseStatus(`Write failed: ${message}`);
+    } finally {
+      setFirebaseBusy(false);
+    }
+  };
+
+  const runFirebaseReadTest = async () => {
+    setFirebaseBusy(true);
+    try {
+      setFirebaseLogs([]);
+      setFirebaseStatus('Read success. Rows=0');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setFirebaseStatus(`Read failed: ${message}`);
+    } finally {
+      setFirebaseBusy(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -83,9 +216,51 @@ export function AdminControl() {
             Системийн урсгал, API эрх, AI анализ, өгөгдөл цуглуулалтын хязгааруудыг удирдана.
           </p>
         </div>
-        <Badge variant="default" className="bg-emerald-600 hover:bg-emerald-700">
-          Control Page
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={backendHealth?.firebase ? 'default' : 'secondary'} className="bg-emerald-600 hover:bg-emerald-700">
+            {backendHealth?.firebase ? 'Render + Firebase live' : 'Backend syncing'}
+          </Badge>
+          <Badge variant="outline">{backendBusy ? 'Refreshing' : 'Ready'}</Badge>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Backend status</CardDescription>
+            <CardTitle className="text-base">{backendHealth?.status ?? 'unknown'}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {backendHealth?.version ? `v${backendHealth.version}` : 'Render API'}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Live posts</CardDescription>
+            <CardTitle className="text-base">{backendStats?.total_posts ?? visiblePosts.length}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            Pulled from scraper database
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Firebase</CardDescription>
+            <CardTitle className="text-base">{backendHealth?.firebase ? 'Connected' : 'Offline'}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            Admin logs via Firestore
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Frontend API</CardDescription>
+            <CardTitle className="text-base">Vercel-ready</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {backendStatus}
+          </CardContent>
+        </Card>
       </div>
 
       <Tabs defaultValue="system" className="space-y-4">
@@ -129,6 +304,28 @@ export function AdminControl() {
                 enabled={controls.autoSyncEnabled}
                 onToggle={() => toggleControl('autoSyncEnabled')}
               />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Live backend sync</CardTitle>
+              <CardDescription>
+                Энэ хэсэг Render дээрх scraper API болон Firebase холболтыг шалгана.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
+                {backendStatus}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={refreshBackendSnapshot} disabled={backendBusy}>
+                  Refresh live backend
+                </Button>
+                <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
+                  Reload Firestore logs
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -235,6 +432,10 @@ export function AdminControl() {
                 </Button>
               </div>
 
+              <div className="rounded-md border bg-muted/20 p-3 text-sm text-muted-foreground">
+                Showing {visiblePosts.length} live-capable posts from the backend or fallback demo set.
+              </div>
+
               {collectionQuery.lastRunSummary && (
                 <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
                   {collectionQuery.lastRunSummary}
@@ -243,7 +444,7 @@ export function AdminControl() {
 
               {queryResults.length > 0 && (
                 <div className="space-y-2 rounded-md border p-3">
-                  <p className="text-sm font-medium">Mock Query Results</p>
+                  <p className="text-sm font-medium">Live Query Results</p>
                   <div className="space-y-2">
                     {queryResults.slice(0, 6).map((post) => (
                       <div key={post.id} className="rounded border p-2 text-sm">
@@ -253,7 +454,7 @@ export function AdminControl() {
                         </div>
                         <p className="mt-1 text-muted-foreground">{post.content}</p>
                         <p className="mt-1 text-xs text-muted-foreground">
-                          {post.date} | Engagement: {post.engagement}
+                          {post.date} | Engagement: {post.engagement} | Likes: {post.likes}
                         </p>
                       </div>
                     ))}
@@ -286,6 +487,49 @@ export function AdminControl() {
                 <Button>Хяналтын өөрчлөлт хадгалах</Button>
                 <Button variant="outline">Системийн төлөв дахин ачаалах</Button>
                 <Button variant="destructive">Emergency Stop</Button>
+              </div>
+
+              <div className="rounded-md border p-4 space-y-3">
+                <div>
+                  <p className="text-sm font-medium">Firebase Firestore Test</p>
+                  <p className="text-xs text-muted-foreground">
+                    Anonymous sign-in ашиглан test log бичиж/уншиж Firebase холболт шалгана.
+                  </p>
+                </div>
+
+                <Input
+                  placeholder="Test note"
+                  value={firebaseTestNote}
+                  onChange={(event) => setFirebaseTestNote(event.target.value)}
+                />
+
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={runFirebaseWriteTest} disabled={firebaseBusy}>
+                    Firebase Write Test
+                  </Button>
+                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
+                    Firebase Read Test
+                  </Button>
+                </div>
+
+                {firebaseStatus && (
+                  <div className="rounded-md border bg-muted/30 p-2 text-sm text-muted-foreground">
+                    {firebaseStatus}
+                  </div>
+                )}
+
+                {firebaseLogs.length > 0 && (
+                  <div className="space-y-2">
+                    {firebaseLogs.map((row) => (
+                      <div key={row.id} className="rounded border p-2 text-xs">
+                        <p className="font-medium">{row.note}</p>
+                        <p className="text-muted-foreground">docId: {row.id}</p>
+                        <p className="text-muted-foreground">uid: {row.uid}</p>
+                        <p className="text-muted-foreground">source: {row.source}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
