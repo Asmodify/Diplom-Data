@@ -31,27 +31,41 @@ This is a comprehensive system for automated collection, analysis, and predictiv
 
 ## 🏗️ System Architecture
 
+### Stack Overview
+
+**Frontend**: React 19 + Vite (Deployed on Vercel)  
+**Backend API**: FastAPI/uvicorn (Deployed on Render.com)  
+**Database**: Firebase Firestore (Cloud) + SQLite (Local Fallback)  
+**Data Collection**: Python Selenium Scraper (Runs on Render)  
+**Authentication**: Firebase anonymous sign-in  
+
 ### Four Main Modules
 
-1. **Data Collection Module**
+1. **Data Collection Module** (Python Scraper)
    - Automated collection of public social media content
+   - Runs on Render.com via Procfile scheduler
    - Robust error handling and rate limiting
    - Data validation and cleaning
+   - Stores results in Firebase Firestore
 
-2. **Data Processing Module**
-   - Text preprocessing and normalization
-   - Feature extraction
-   - Data enrichment
+2. **Backend API Module** (FastAPI on Render)
+   - REST endpoints: `/health`, `/api/v1/stats`, `/api/v1/posts`
+   - Connects frontend to live scraped data
+   - Serves aggregated statistics and post collections
+   - Manages Firebase Firestore queries
+   - **Graceful fallback**: Uses SQLite if Firebase unavailable
 
-3. **Sentiment Analysis Module**
+3. **Frontend Dashboard Module** (React on Vercel)
+   - Consumes live backend API via `src/lib/backend.ts` client
+   - Admin panel for scraper control and monitoring
+   - Top-level metrics dashboard with live engagement trends
+   - Data sources viewer with search and filtering
+   - Fallback to mock data if backend unavailable
+
+4. **Sentiment Analysis & Prediction Module**
    - Multi-method sentiment evaluation
-   - Emotion classification
-   - Trend analysis
-
-4. **Prediction & Recommendation Module**
-   - Engagement likelihood prediction
-   - Engagement volume forecasting
-   - Automated recommendation generation
+   - Engagement prediction and trend analysis
+   - Runs as part of backend data processing pipeline
 
 ## 📁 Project Structure
 
@@ -84,7 +98,7 @@ Diploma/
 
 ### Installation
 
-#### Frontend Setup
+#### Frontend Setup (Vercel)
 ```bash
 # Navigate to project root
 cd Diploma
@@ -94,10 +108,21 @@ npm install
 
 # Set environment variables
 # Create a .env.local file and add:
-# VITE_GEMINI_API_KEY=your_api_key_here
+VITE_BACKEND_API_URL=https://diplom-data-api.onrender.com
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+VITE_FIREBASE_MEASUREMENT_ID=your-measurement-id
+APP_URL=http://localhost:3000
 ```
 
-#### Backend Setup
+**Note**: See `.env.example` for all required variables
+
+#### Backend Setup (Render)
 ```bash
 # Navigate to scraper_v2 directory
 cd scraper_v2
@@ -109,25 +134,73 @@ source venv/Scripts/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure API credentials (if needed)
-# Edit fb_credentials.py and config.py as needed
+# Configure credentials
+# Create fb_credentials.py with Facebook API credentials
+# Set GEMINI_API_KEY for sentiment analysis
+# Configure Firebase with service account JSON
 ```
 
 ### Running the Application
 
-#### Start Frontend Dashboard
+#### Local Development
+
+**Start Frontend Dashboard**
 ```bash
+# From project root
 npm run dev
 ```
-Dashboard available at: `http://localhost:3000`
+Dashboard available at: `http://localhost:5173` (configured for Vite)  
+Frontend will connect to backend at `VITE_BACKEND_API_URL` or fall back to mock data
 
-#### Start Backend Services
+**Start Backend API (Local)**
 ```bash
 # From scraper_v2 directory
-python run.py
+python api_server.py
+# API runs at http://localhost:8000
+# Endpoints: GET /health, GET /api/v1/stats, GET /api/v1/posts
 ```
 
-## 📊 Data Analysis Features
+#### Production Deployment
+
+**Frontend**: Deployed to Vercel  
+- Connects to live Render backend via `VITE_BACKEND_API_URL`
+- Environment variables set in Vercel project settings
+
+**Backend**: Deployed to Render.com  
+- Runs FastAPI/uvicorn via `Procfile`: `uvicorn scraper_v2.api_server:app --host 0.0.0.0 --port $PORT`
+- Firebase credentials passed as environment variables
+- Auto-scales with traffic
+
+**Scraper**: Runs on Render scheduler  
+- Executed via Render cron jobs or background workers
+
+## � Backend API Client
+
+The frontend uses a centralized API client (`src/lib/backend.ts`) to communicate with the Render backend:
+
+```typescript
+// GET /health - Backend health check
+getBackendHealth(): Promise<BackendHealth>
+
+// GET /api/v1/stats - Aggregated engagement statistics
+getBackendStats(): Promise<BackendStats>
+
+// GET /api/v1/posts - Collected social media posts
+getBackendPosts(limit?: number): Promise<BackendPost[]>
+```
+
+**Features**:
+- Automatic retry on transient failures
+- 12-second request timeout
+- Type-safe request/response handling
+- Graceful fallback to mock data if backend unavailable
+- Automatic timestamp normalization and keyword parsing
+
+**Components Using Backend**:
+- `AdminControl.tsx` - Displays live backend status and post counts
+- `Dashboard.tsx` - Shows real-time engagement metrics and trends
+
+## �📊 Data Analysis Features
 
 ### Sentiment Analysis Capabilities
 - **Contextual understanding** of social media posts
