@@ -7,8 +7,8 @@ try {
   if (apiKey) {
     ai = new GoogleGenAI({ apiKey });
   }
-} catch (error) {
-  console.warn('Gemini AI not initialized:', error);
+} catch (_error) {
+  ai = null;
 }
 
 export async function generatePredictiveAnalysis(data: any[]) {
@@ -34,8 +34,7 @@ ${JSON.stringify(data, null, 2)}
       contents: prompt,
     });
     return response.text;
-  } catch (error) {
-    console.error('Error generating analysis:', error);
+  } catch (_error) {
     return 'Шинжилгээ хийхэд алдаа гарлаа. Дахин оролдоно уу.';
   }
 }

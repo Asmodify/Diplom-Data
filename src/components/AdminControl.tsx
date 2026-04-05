@@ -43,10 +43,6 @@ export function AdminControl() {
   const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
   const [backendStatus, setBackendStatus] = useState('Connecting to Render backend...');
   const [backendBusy, setBackendBusy] = useState(true);
-  const [firebaseTestNote, setFirebaseTestNote] = useState('Admin Firebase connectivity test');
-  const [firebaseStatus, setFirebaseStatus] = useState('');
-  const [firebaseLogs, setFirebaseLogs] = useState([] as any[]);
-  const [firebaseBusy, setFirebaseBusy] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -181,32 +177,6 @@ export function AdminControl() {
     }
   };
 
-  const runFirebaseWriteTest = async () => {
-    setFirebaseBusy(true);
-    try {
-      const id = `firebase-log-${Date.now()}`;
-      setFirebaseStatus(`Write success. docId=${id}`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      setFirebaseStatus(`Write failed: ${message}`);
-    } finally {
-      setFirebaseBusy(false);
-    }
-  };
-
-  const runFirebaseReadTest = async () => {
-    setFirebaseBusy(true);
-    try {
-      setFirebaseLogs([]);
-      setFirebaseStatus('Read success. Rows=0');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      setFirebaseStatus(`Read failed: ${message}`);
-    } finally {
-      setFirebaseBusy(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -321,9 +291,6 @@ export function AdminControl() {
               <div className="flex flex-wrap gap-2">
                 <Button onClick={refreshBackendSnapshot} disabled={backendBusy}>
                   Refresh live backend
-                </Button>
-                <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
-                  Reload Firestore logs
                 </Button>
               </div>
             </CardContent>
@@ -487,49 +454,6 @@ export function AdminControl() {
                 <Button>Хяналтын өөрчлөлт хадгалах</Button>
                 <Button variant="outline">Системийн төлөв дахин ачаалах</Button>
                 <Button variant="destructive">Emergency Stop</Button>
-              </div>
-
-              <div className="rounded-md border p-4 space-y-3">
-                <div>
-                  <p className="text-sm font-medium">Firebase Firestore Test</p>
-                  <p className="text-xs text-muted-foreground">
-                    Anonymous sign-in ашиглан test log бичиж/уншиж Firebase холболт шалгана.
-                  </p>
-                </div>
-
-                <Input
-                  placeholder="Test note"
-                  value={firebaseTestNote}
-                  onChange={(event) => setFirebaseTestNote(event.target.value)}
-                />
-
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={runFirebaseWriteTest} disabled={firebaseBusy}>
-                    Firebase Write Test
-                  </Button>
-                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
-                    Firebase Read Test
-                  </Button>
-                </div>
-
-                {firebaseStatus && (
-                  <div className="rounded-md border bg-muted/30 p-2 text-sm text-muted-foreground">
-                    {firebaseStatus}
-                  </div>
-                )}
-
-                {firebaseLogs.length > 0 && (
-                  <div className="space-y-2">
-                    {firebaseLogs.map((row) => (
-                      <div key={row.id} className="rounded border p-2 text-xs">
-                        <p className="font-medium">{row.note}</p>
-                        <p className="text-muted-foreground">docId: {row.id}</p>
-                        <p className="text-muted-foreground">uid: {row.uid}</p>
-                        <p className="text-muted-foreground">source: {row.source}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>

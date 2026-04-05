@@ -15,8 +15,7 @@ export function PredictiveAnalysis() {
     try {
       const result = await generatePredictiveAnalysis(mockSocialData);
       setAnalysis(result);
-    } catch (error) {
-      console.error(error);
+    } catch (_error) {
       setAnalysis('Шинжилгээ хийхэд алдаа гарлаа.');
     } finally {
       setLoading(false);
