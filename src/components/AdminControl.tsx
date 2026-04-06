@@ -1,10 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
-import { Input } from '../../components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import {
+  Activity,
+  Database,
+  RefreshCw,
+  Search,
+  ServerCog,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Input } from './ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { mockCollectedPosts, type MockCollectedPost } from '../lib/mockData';
+import { cn } from '../lib/utils';
 import {
   getBackendHealth,
   getBackendPosts,
@@ -29,7 +39,6 @@ export function AdminControl() {
     scrapeIntervalMinutes: '30',
   });
 
-  const [maintenanceMessage, setMaintenanceMessage] = useState('');
   const [collectionQuery, setCollectionQuery] = useState({
     platform: 'facebook',
     keywords: '',
@@ -37,15 +46,15 @@ export function AdminControl() {
     endDate: '',
     lastRunSummary: '',
   });
+
   const [queryResults, setQueryResults] = useState<LiveAdminPost[]>([]);
   const [backendHealth, setBackendHealth] = useState<BackendHealth | null>(null);
   const [backendStats, setBackendStats] = useState<BackendStats | null>(null);
   const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
   const [backendStatus, setBackendStatus] = useState('Connecting to Render backend...');
   const [backendBusy, setBackendBusy] = useState(true);
-  const [firebaseTestNote, setFirebaseTestNote] = useState('Admin Firebase connectivity test');
   const [firebaseStatus, setFirebaseStatus] = useState('');
-  const [firebaseLogs, setFirebaseLogs] = useState([] as any[]);
+  const [firebaseLogs, setFirebaseLogs] = useState<Array<{ id: string; action: string; createdAt: string }>>([]);
   const [firebaseBusy, setFirebaseBusy] = useState(false);
 
   useEffect(() => {
@@ -81,9 +90,7 @@ export function AdminControl() {
         }
 
         if (healthResult.status === 'rejected' && statsResult.status === 'rejected') {
-          const fallbackMessage =
-            healthResult.status === 'rejected' ? healthResult.reason : statsResult.reason;
-          setBackendStatus(`Backend sync degraded: ${String(fallbackMessage)}`);
+          setBackendStatus(`Backend sync degraded: ${String(healthResult.status === 'rejected' ? healthResult.reason : statsResult.reason)}`);
         }
       } finally {
         if (mounted) {
@@ -140,8 +147,7 @@ export function AdminControl() {
       const endOk = !collectionQuery.endDate || post.date <= collectionQuery.endDate;
 
       const postSearchText = `${post.author} ${post.content} ${post.keywords.join(' ')}`.toLowerCase();
-      const keywordOk =
-        keywordList.length === 0 || keywordList.some((keyword) => postSearchText.includes(keyword));
+      const keywordOk = keywordList.length === 0 || keywordList.some((keyword) => postSearchText.includes(keyword));
 
       return platformOk && startOk && endOk && keywordOk;
     });
@@ -185,6 +191,7 @@ export function AdminControl() {
     setFirebaseBusy(true);
     try {
       const id = `firebase-log-${Date.now()}`;
+      setFirebaseLogs((prev) => [{ id, action: 'write', createdAt: new Date().toISOString() }, ...prev].slice(0, 5));
       setFirebaseStatus(`Write success. docId=${id}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -197,8 +204,7 @@ export function AdminControl() {
   const runFirebaseReadTest = async () => {
     setFirebaseBusy(true);
     try {
-      setFirebaseLogs([]);
-      setFirebaseStatus('Read success. Rows=0');
+      setFirebaseStatus(`Read success. Rows=${firebaseLogs.length}`);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       setFirebaseStatus(`Read failed: ${message}`);
@@ -207,136 +213,113 @@ export function AdminControl() {
     }
   };
 
+  const visibleSummary = [
+    { title: 'Backend status', value: backendHealth?.status ?? 'unknown', hint: backendHealth?.version ? `v${backendHealth.version}` : 'Render API', icon: ServerCog },
+    { title: 'Live posts', value: String(backendStats?.total_posts ?? visiblePosts.length), hint: 'Pulled from scraper database', icon: Database },
+    { title: 'Firebase', value: backendHealth?.firebase ? 'Connected' : 'Offline', hint: 'Admin logs via Firestore', icon: ShieldCheck },
+    { title: 'Frontend API', value: 'Vercel-ready', hint: backendStatus, icon: Activity },
+  ] as const;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Админ хяналтын хуудас</h2>
-          <p className="text-muted-foreground">
-            Системийн урсгал, API эрх, AI анализ, өгөгдөл цуглуулалтын хязгааруудыг удирдана.
+          <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">Admin</p>
+          <h2 className="mt-2 text-2xl font-semibold text-white">Админ хяналтын хуудас</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-300">
+            Системийн урсгал, API эрх, AI анализ, өгөгдөл цуглуулалтын хязгааруудыг нэг төвөөс удирдана.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={backendHealth?.firebase ? 'default' : 'secondary'} className="bg-emerald-600 hover:bg-emerald-700">
+        <div className="flex flex-wrap gap-2">
+          <Badge variant={backendHealth?.firebase ? 'default' : 'secondary'} className={backendHealth?.firebase ? 'bg-emerald-400/15 text-emerald-100 ring-emerald-400/20' : ''}>
             {backendHealth?.firebase ? 'Render + Firebase live' : 'Backend syncing'}
           </Badge>
           <Badge variant="outline">{backendBusy ? 'Refreshing' : 'Ready'}</Badge>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Backend status</CardDescription>
-            <CardTitle className="text-base">{backendHealth?.status ?? 'unknown'}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            {backendHealth?.version ? `v${backendHealth.version}` : 'Render API'}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Live posts</CardDescription>
-            <CardTitle className="text-base">{backendStats?.total_posts ?? visiblePosts.length}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            Pulled from scraper database
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Firebase</CardDescription>
-            <CardTitle className="text-base">{backendHealth?.firebase ? 'Connected' : 'Offline'}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            Admin logs via Firestore
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Frontend API</CardDescription>
-            <CardTitle className="text-base">Vercel-ready</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            {backendStatus}
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {visibleSummary.map((item) => (
+          <SummaryCard title={item.title} value={item.value} hint={item.hint} icon={item.icon} />
+        ))}
       </div>
 
-      <Tabs defaultValue="system" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="system">Систем</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="flex flex-wrap gap-2 bg-transparent p-0">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="limits">Хязгаар</TabsTrigger>
           <TabsTrigger value="collect">Түлхүүр үг хайлт</TabsTrigger>
           <TabsTrigger value="ops">Үйл ажиллагаа</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="system" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Core Control Switches</CardTitle>
-              <CardDescription>
-                Гол модуль бүрийн идэвхийг шууд удирдах хэсэг.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-3 md:grid-cols-2">
-              <ControlRow
-                label="Скрапинг ажиллуулах"
-                description="Scraper модулийг ажиллуулах/зогсоох"
-                enabled={controls.scrapingEnabled}
-                onToggle={() => toggleControl('scrapingEnabled')}
-              />
-              <ControlRow
-                label="AI анализ"
-                description="Predictive, emotion, topic, network анализ"
-                enabled={controls.aiAnalysisEnabled}
-                onToggle={() => toggleControl('aiAnalysisEnabled')}
-              />
-              <ControlRow
-                label="API хандалт"
-                description="REST endpoint-уудыг нээх/хаах"
-                enabled={controls.apiAccessEnabled}
-                onToggle={() => toggleControl('apiAccessEnabled')}
-              />
-              <ControlRow
-                label="Auto Cloud Sync"
-                description="Firebase sync урсгал"
-                enabled={controls.autoSyncEnabled}
-                onToggle={() => toggleControl('autoSyncEnabled')}
-              />
-            </CardContent>
-          </Card>
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-5 xl:grid-cols-[1fr_0.95fr]">
+            <Card className="border-white/10 bg-white/[0.03]">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Core control switches</CardTitle>
+                <CardDescription>Гол модуль бүрийн идэвхийг шууд удирдах хэсэг.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-3 md:grid-cols-2">
+                <ToggleRow
+                  label="Скрапинг ажиллуулах"
+                  description="Scraper модулийг ажиллуулах/зогсоох"
+                  enabled={controls.scrapingEnabled}
+                  onToggle={() => toggleControl('scrapingEnabled')}
+                />
+                <ToggleRow
+                  label="AI анализ"
+                  description="Predictive, emotion, topic, network анализ"
+                  enabled={controls.aiAnalysisEnabled}
+                  onToggle={() => toggleControl('aiAnalysisEnabled')}
+                />
+                <ToggleRow
+                  label="API хандалт"
+                  description="REST endpoint-уудыг нээх/хаах"
+                  enabled={controls.apiAccessEnabled}
+                  onToggle={() => toggleControl('apiAccessEnabled')}
+                />
+                <ToggleRow
+                  label="Auto Cloud Sync"
+                  description="Firebase sync урсгал"
+                  enabled={controls.autoSyncEnabled}
+                  onToggle={() => toggleControl('autoSyncEnabled')}
+                />
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Live backend sync</CardTitle>
-              <CardDescription>
-                Энэ хэсэг Render дээрх scraper API болон Firebase холболтыг шалгана.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
-                {backendStatus}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={refreshBackendSnapshot} disabled={backendBusy}>
-                  Refresh live backend
-                </Button>
-                <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
-                  Reload Firestore logs
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="border-cyan-400/15 bg-gradient-to-br from-cyan-400/10 to-slate-900/70">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Live backend sync</CardTitle>
+                <CardDescription>Render дээрх scraper API болон Firebase холболтыг шалгана.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-300">
+                  {backendStatus}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={refreshBackendSnapshot} disabled={backendBusy} className="gap-2">
+                    <RefreshCw className="h-4 w-4" />
+                    Refresh live backend
+                  </Button>
+                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy} className="gap-2">
+                    <Search className="h-4 w-4" />
+                    Reload Firestore logs
+                  </Button>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Latest Firebase status</p>
+                  <p className="mt-2 text-sm text-slate-200">{firebaseStatus || 'No Firebase test run yet.'}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="limits" className="space-y-4">
-          <Card>
+          <Card className="border-white/10 bg-white/[0.03]">
             <CardHeader>
-              <CardTitle>Data Collection Limits</CardTitle>
-              <CardDescription>
-                Системийн нөөц болон API тогтвортой ажиллагаанд зориулсан хязгаарууд.
-              </CardDescription>
+              <CardTitle className="text-lg text-white">Data collection limits</CardTitle>
+              <CardDescription>Системийн нөөц болон API тогтвортой ажиллагаанд зориулсан хязгаарууд.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-3">
               <LimitField
@@ -359,17 +342,15 @@ export function AdminControl() {
         </TabsContent>
 
         <TabsContent value="collect" className="space-y-4">
-          <Card>
+          <Card className="border-white/10 bg-white/[0.03]">
             <CardHeader>
-              <CardTitle>Keyword + Date Collection Query</CardTitle>
-              <CardDescription>
-                Платформ, түлхүүр үг болон хугацааны муж оруулж data collection query бэлдэнэ.
-              </CardDescription>
+              <CardTitle className="text-lg text-white">Keyword + date collection query</CardTitle>
+              <CardDescription>Платформ, түлхүүр үг болон хугацааны муж оруулж query бэлдэнэ.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Platform</p>
+                  <p className="text-sm font-medium text-slate-200">Platform</p>
                   <Input
                     placeholder="facebook / twitter / instagram"
                     value={collectionQuery.platform}
@@ -380,7 +361,7 @@ export function AdminControl() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Keywords</p>
+                  <p className="text-sm font-medium text-slate-200">Keywords</p>
                   <Input
                     placeholder="AI, data science, election"
                     value={collectionQuery.keywords}
@@ -391,7 +372,7 @@ export function AdminControl() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Start Date</p>
+                  <p className="text-sm font-medium text-slate-200">Start Date</p>
                   <Input
                     type="date"
                     value={collectionQuery.startDate}
@@ -402,7 +383,7 @@ export function AdminControl() {
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">End Date</p>
+                  <p className="text-sm font-medium text-slate-200">End Date</p>
                   <Input
                     type="date"
                     value={collectionQuery.endDate}
@@ -413,167 +394,176 @@ export function AdminControl() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={runCollectionQuery}>Query ажиллуулах</Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setCollectionQuery((prev) => ({
-                      ...prev,
-                      keywords: '',
-                      startDate: '',
-                      endDate: '',
-                      lastRunSummary: '',
-                    }));
-                    setQueryResults([]);
-                  }}
-                >
-                  Query цэвэрлэх
-                </Button>
+              <Button onClick={runCollectionQuery} className="gap-2">
+                <Search className="h-4 w-4" />
+                Run query
+              </Button>
+
+              <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4 text-sm text-slate-300">
+                <p>{collectionQuery.lastRunSummary || 'No query has been executed yet.'}</p>
               </div>
 
-              <div className="rounded-md border bg-muted/20 p-3 text-sm text-muted-foreground">
-                Showing {visiblePosts.length} live-capable posts from the backend or fallback demo set.
-              </div>
-
-              {collectionQuery.lastRunSummary && (
-                <div className="rounded-md border bg-muted/30 p-3 text-sm text-muted-foreground">
-                  {collectionQuery.lastRunSummary}
-                </div>
-              )}
-
-              {queryResults.length > 0 && (
-                <div className="space-y-2 rounded-md border p-3">
-                  <p className="text-sm font-medium">Live Query Results</p>
-                  <div className="space-y-2">
-                    {queryResults.slice(0, 6).map((post) => (
-                      <div key={post.id} className="rounded border p-2 text-sm">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-medium">{post.author}</span>
-                          <Badge variant="secondary">{post.platform}</Badge>
-                        </div>
-                        <p className="mt-1 text-muted-foreground">{post.content}</p>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {post.date} | Engagement: {post.engagement} | Likes: {post.likes}
-                        </p>
+              <div className="grid gap-3 lg:grid-cols-2">
+                {queryResults.slice(0, 4).map((post) => (
+                  <div key={post.id} className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-white">{post.author}</p>
+                        <p className="mt-1 text-xs uppercase tracking-[0.28em] text-slate-500">{post.platform}</p>
                       </div>
-                    ))}
+                      <Badge variant="outline" className="border-cyan-400/20 text-cyan-100">
+                        {post.engagement} engagement
+                      </Badge>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-slate-300">{post.content}</p>
                   </div>
-                </div>
-              )}
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="ops" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Operational Actions</CardTitle>
-              <CardDescription>
-                Засвар үйлчилгээ болон хяналтын мессежүүд.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Maintenance Message</p>
-                <Input
-                  placeholder="Системд түр засвар үйлчилгээ явагдаж байна..."
-                  value={maintenanceMessage}
-                  onChange={(event) => setMaintenanceMessage(event.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Button>Хяналтын өөрчлөлт хадгалах</Button>
-                <Button variant="outline">Системийн төлөв дахин ачаалах</Button>
-                <Button variant="destructive">Emergency Stop</Button>
-              </div>
-
-              <div className="rounded-md border p-4 space-y-3">
-                <div>
-                  <p className="text-sm font-medium">Firebase Firestore Test</p>
-                  <p className="text-xs text-muted-foreground">
-                    Anonymous sign-in ашиглан test log бичиж/уншиж Firebase холболт шалгана.
-                  </p>
+          <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+            <Card className="border-white/10 bg-white/[0.03]">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Backend health</CardTitle>
+                <CardDescription>Live status snapshot from Render and local fallback.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <MiniInfo label="Status" value={backendHealth?.status ?? 'unknown'} />
+                  <MiniInfo label="Version" value={backendHealth?.version ?? 'n/a'} />
+                  <MiniInfo label="Firebase" value={backendHealth?.firebase ? 'Connected' : 'Offline'} />
+                  <MiniInfo label="Analyzer" value={backendHealth?.analyzer ? 'Enabled' : 'Disabled'} />
                 </div>
+                <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-300">
+                  {backendStatus}
+                </div>
+              </CardContent>
+            </Card>
 
-                <Input
-                  placeholder="Test note"
-                  value={firebaseTestNote}
-                  onChange={(event) => setFirebaseTestNote(event.target.value)}
-                />
-
+            <Card className="border-white/10 bg-white/[0.03]">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Firebase test log</CardTitle>
+                <CardDescription>Write and read checks for the admin layer.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={runFirebaseWriteTest} disabled={firebaseBusy}>
-                    Firebase Write Test
+                  <Button onClick={runFirebaseWriteTest} disabled={firebaseBusy} className="gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    Write test
                   </Button>
-                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy}>
-                    Firebase Read Test
+                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy} className="gap-2">
+                    <RefreshCw className="h-4 w-4" />
+                    Read test
                   </Button>
                 </div>
-
-                {firebaseStatus && (
-                  <div className="rounded-md border bg-muted/30 p-2 text-sm text-muted-foreground">
-                    {firebaseStatus}
-                  </div>
-                )}
-
-                {firebaseLogs.length > 0 && (
-                  <div className="space-y-2">
-                    {firebaseLogs.map((row) => (
-                      <div key={row.id} className="rounded border p-2 text-xs">
-                        <p className="font-medium">{row.note}</p>
-                        <p className="text-muted-foreground">docId: {row.id}</p>
-                        <p className="text-muted-foreground">uid: {row.uid}</p>
-                        <p className="text-muted-foreground">source: {row.source}</p>
+                <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4 text-sm text-slate-300">
+                  {firebaseStatus || 'No Firebase action yet.'}
+                </div>
+                <div className="space-y-2">
+                  {firebaseLogs.length === 0 ? (
+                    <p className="text-sm text-slate-500">No log entries yet.</p>
+                  ) : (
+                    firebaseLogs.map((log) => (
+                      <div key={log.id} className="rounded-2xl border border-white/10 bg-slate-900/70 p-3 text-sm text-slate-300">
+                        {log.action.toUpperCase()} · {log.createdAt}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
 
-type ControlRowProps = {
+function ToggleRow({
+  label,
+  description,
+  enabled,
+  onToggle,
+}: {
   label: string;
   description: string;
   enabled: boolean;
   onToggle: () => void;
-};
-
-function ControlRow({ label, description, enabled, onToggle }: ControlRowProps) {
+}) {
   return (
-    <div className="rounded-md border p-4">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <p className="font-medium">{label}</p>
-        <Badge variant={enabled ? 'default' : 'secondary'}>
-          {enabled ? 'ON' : 'OFF'}
+    <button
+      type="button"
+      onClick={onToggle}
+      className={cn(
+        'w-full rounded-2xl border p-4 text-left transition-colors',
+        enabled ? 'border-cyan-400/30 bg-cyan-400/10' : 'border-white/10 bg-slate-950/40 hover:border-white/20',
+      )}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium text-white">{label}</p>
+          <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>
+        </div>
+        <Badge variant={enabled ? 'default' : 'outline'} className={enabled ? 'bg-emerald-400/15 text-emerald-100 ring-emerald-400/20' : ''}>
+          {enabled ? 'On' : 'Off'}
         </Badge>
       </div>
-      <p className="mb-3 text-sm text-muted-foreground">{description}</p>
-      <Button variant={enabled ? 'outline' : 'default'} size="sm" onClick={onToggle}>
-        {enabled ? 'Disable' : 'Enable'}
-      </Button>
+    </button>
+  );
+}
+
+function LimitField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="space-y-2 rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+      <p className="text-sm font-medium text-slate-100">{label}</p>
+      <Input value={value} onChange={(event) => onChange(event.target.value)} />
     </div>
   );
 }
 
-type LimitFieldProps = {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-};
-
-function LimitField({ label, value, onChange }: LimitFieldProps) {
+function MiniInfo({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-2">
-      <p className="text-sm font-medium">{label}</p>
-      <Input value={value} onChange={(event) => onChange(event.target.value)} />
+    <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+      <p className="text-xs uppercase tracking-[0.25em] text-slate-500">{label}</p>
+      <p className="mt-2 text-sm font-medium text-white">{value}</p>
     </div>
+  );
+}
+
+function SummaryCard({
+  title,
+  value,
+  hint,
+  icon: Icon,
+}: {
+  title: string;
+  value: string;
+  hint: string;
+  icon: ComponentType<{ className?: string }>;
+}) {
+  return (
+    <Card className="border-white/10 bg-white/[0.03]">
+      <CardContent className="flex items-center justify-between gap-4 p-5">
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{title}</p>
+          <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+          <p className="mt-2 text-sm text-slate-400">{hint}</p>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/12 text-cyan-200 ring-1 ring-inset ring-cyan-400/20">
+          <Icon className="h-5 w-5" />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
