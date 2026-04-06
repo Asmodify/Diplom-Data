@@ -9,27 +9,32 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T2A]{fontenc}
 \usepackage[mongolian,english]{babel}
+\usepackage{newtxtext}
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage[table]{xcolor}
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\usepackage{xurl}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{ragged2e}
 \usepackage{multirow}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{titlesec}
-\usepackage[table]{xcolor}
 \usepackage{tocloft}
 \usepackage{appendix}
 \usepackage{pdfpages}
+\usepackage{pdflscape}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 
 % ============================================================================
 % Page Layout
@@ -61,16 +66,15 @@
 % ============================================================================
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[R]{\thepage}
-\fancyhead[L]{\leftmark}
-\renewcommand{\headrulewidth}{0.4pt}
-\setlength{\headheight}{15.05pt}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{14pt}
 
 % Reduce overfull/underfull line warnings in long mixed-language paragraphs.
-\emergencystretch=2em
+\emergencystretch=3em
+\Urlmuskip=0mu plus 1mu
 
-% ============================================================================
-% Document Info
 % ============================================================================
 \newcommand{\thesistitle}{Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем}
 \newcommand{\thesissubtitle}{Sentiment Analysis ба ойролцоогоор хэрэглэгч оролцооны таамаглал}
@@ -82,46 +86,88 @@
 \newcommand{\department}{Мэдээллийн технологийн тэнхим}
 \newcommand{\thesisyear}{2026}
 
+\newcommand{\coverbadge}{%
+    \begingroup
+    \setlength{\fboxsep}{0pt}%
+    \fcolorbox{black!60!brown}{white}{%
+        \begin{minipage}[c][4.8cm][c]{2.9cm}
+            \centering
+            \colorbox{red!75!black}{%
+                \parbox[c][0.6cm][c]{2.9cm}{\centering\textcolor{white}{\bfseries ШУТИС}}%
+            }\par
+            \vspace{0.35cm}
+            \colorbox{violet!75!black}{%
+                \parbox[c][3.55cm][c]{2.9cm}{%
+                    \centering
+                    {\Huge\color{yellow!80!white}$\blacklozenge$}\par
+                    \vspace{0.35cm}
+                    {\color{yellow!80!white}\rule{1.65cm}{0.5pt}}\par
+                    \vspace{0.4cm}
+                    {\Large\color{yellow!80!white}\textbullet}
+                }%
+            }
+        \end{minipage}%
+    }%
+    \endgroup
+}
+
+\newcommand{\coverlogo}{%
+    \IfFileExists{images/shutis-logo.png}{%
+        \includegraphics[height=4.8cm]{images/shutis-logo.png}%
+    }{%
+        \coverbadge
+    }%
+}
+
 % ============================================================================
 % Begin Document
 % ============================================================================
 \begin{document}
+\hypersetup{pageanchor=false}
 
 % ============================================================================
 % Title Page
 % ============================================================================
 \begin{titlepage}
+    \thispagestyle{empty}
+    \pagecolor{cyan!45}
     \centering
-    \vspace*{1cm}
-    
-    {\Large \university \par}
-    \vspace{0.5cm}
-    {\large \faculty \par}
-    {\large \department \par}
-    
-    \vspace{2cm}
-    
-    {\Huge\bfseries \thesistitle \par}
-    \vspace{0.5cm}
-    {\Large \thesissubtitle \par}
-    
-    \vspace{2cm}
-    
-    {\Large\bfseries Дипломын ажил \par}
-    
-    \vfill
-    
-    \begin{flushleft}
-        \large
-        \textbf{Оюутан:} \authorname \\
-        \textbf{Оюутны ID:} \studentid \\
-        \textbf{Удирдагч:} \supervisor \\
-    \end{flushleft}
-    
+
+    \vspace*{0.8cm}
+
+    {\Large\scshape \university \par}
+    \vspace{0.45cm}
+    {\Large\scshape \faculty \par}
+    \vspace{0.2cm}
+    {\Large\scshape \department \par}
+
+    \vspace{1.4cm}
+
+    \coverlogo
+
+    \vspace{1.05cm}
+
+    \hfill {\Large \authorname \par}
+
     \vspace{1cm}
-    
-    {\large Улаанбаатар, \thesisyear \par}
+
+    {\fontsize{24}{28}\selectfont\bfseries \thesistitle \par}
+    \vspace{0.35cm}
+    {\large \thesissubtitle \par}
+
+    \vspace{1.15cm}
+
+    {\Large\scshape Дипломын ажил \par}
+
+    \vfill
+
+    {\Large Улаанбаатар хот \par}
+    {\Large \thesisyear~он \par}
 \end{titlepage}
+\nopagecolor
+
+\pagenumbering{roman}
+\hypersetup{pageanchor=true}
 
 % ============================================================================
 % Abstract (Mongolian)
@@ -137,13 +183,11 @@
     \item Цуглуулсан мэдээлэлд байгалийн хэлийн боловсруулалт ашиглан Sentiment Analysis хийх
     \item Мэдрэмж, оролцооны метрик, цаг хугацааны өгөгдөлд тулгуурлан хүмүүсийн оролцоотой байх магадлал болон оролцооны хэмжээг таамаглах
     \item Таамагласан үр дүнд үндэслэн автомат зөвлөмж үүсгэх алгоритм боловсруулах
-    \item Системийг хэрэглэхэд хялбар болгох интерфейс.nашиглах
+    \item Системийг хэрэглэхэд хялбар болгох интерфейс ашиглах
     \item Цуглуулсан өгөгдлийг безопаснаар хадгалах ба удирдах
 \end{itemize}
 
 Систем нь өгөгдлийн цуглуулга, боловсруулалт, Sentiment Analysis, таамаглалт болон зөвлөмжийн модультай байна. Мэдрэмжийн шинжилгээнд бүтээлэг байгалийн хэлийн боловсруулалтын аргуудыг ашигласан. Таамаглалтын хэсэгт сурсан машины аргуудыг ашиглан мэдрэмж, оролцоо, хугацааны хэв маяг, сэдвийн кластерчлалыг нэгтгэн оролцооны төрөл (идэвхтэй/идэвхгүй/сайрхаж) болон оролцооны хэмжээг үнэлж, практик зөвлөмж гарган байна.
-
-Туршилтын үр дүнд систем нь нийгмийн сүлжээний хуудаснаас тогтвортой өгөгдөл цуглуулж, Sentiment Analysis-ын нарийвчлал 91\%-д хүрсэн бөгөөд оролцоотой байхуу болон оролцооны хэмжээний таамаглалд суурилсан зөвлөмжийн практик хамаарал 87\% гарсан.
 
 \textbf{Түлхүүр үгс:} Нийгмийн сүлжээ, вэб цуглуулга, sentiment analysis, оролцооны таамаглал, байгалийн хэлийн боловсруулалт, сурсан машин, таамаглалтын загвар
 
@@ -167,15 +211,18 @@ This thesis presents an automated system for collecting social media public data
 
 The system comprises four major modules: data collection, data processing, sentiment analysis, and engagement prediction with recommendation generation. The sentiment analysis component employs advanced natural language processing methods. The prediction component combines machine learning techniques with sentiment signals, engagement metrics, temporal patterns, and topic clustering to estimate engagement likelihood (active/inactive/neutral) and expected engagement volume, then generate actionable insights.
 
-Experimental results show that the system can reliably collect public social media content with sentiment analysis accuracy of 91\% and engagement prediction/recommendation relevance of 87\%.
-
 \textbf{Keywords:} Social Media, Data Collection, Sentiment Analysis, Engagement Prediction, Natural Language Processing, Machine Learning, Predictive Modeling
 
 % ============================================================================
 % Table of Contents
 % ============================================================================
 \tableofcontents
+\clearpage
 \listoftables
+\clearpage
+\listoffigures
+\clearpage
+\pagenumbering{arabic}
 
 % ============================================================================
 % Chapter 1: Introduction
@@ -619,57 +666,182 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \item \textbf{API Module:} FastAPI - REST API интерфейс
 \end{itemize}
 
-\section{Use Case диаграм}
+\subsection{Use Case диаграм}
 
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{%
+\resizebox{0.9\textwidth}{!}{%
 \begin{tikzpicture}[
-    actor/.style={draw, rounded corners, align=center, minimum width=2.7cm, minimum height=1cm, fill=gray!10},
-    usecase/.style={draw, ellipse, align=center, minimum width=4.3cm, minimum height=1.05cm},
+    actor/.style={draw, rounded corners, align=center, minimum width=2.8cm, minimum height=1.1cm, fill=gray!10, font=\normalsize, text width=2.3cm},
+    usecase/.style={draw, ellipse, align=center, minimum width=4.4cm, minimum height=1.25cm, font=\normalsize, text width=3.8cm},
     rel/.style={-Latex, thick}
 ]
-    % System boundary
-    \node[draw, minimum width=12.5cm, minimum height=8.2cm, anchor=north west] (system) at (0,0) {};
-    \node[anchor=north] at ([yshift=-2mm]system.north) {Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем};
+    \node[draw, minimum width=14.0cm, minimum height=9.2cm, anchor=north west] (sys) at (0,0) {};
+    \node[anchor=north] at ([yshift=-2mm]sys.north) {Системийн Use Case хил};
 
-    % Use cases inside boundary
-    \node[usecase] (uc1) at (2.8,-1.6) {Өгөгдөл цуглуулах};
-    \node[usecase] (uc2) at (6.4,-1.6) {Скрапинг ажиллуулах\ ба хянах};
-    \node[usecase] (uc3) at (2.8,-3.4) {Sentiment Analysis хийх};
-    \node[usecase] (uc4) at (6.4,-3.4) {Оролцооны таамаглал\ гаргах};
-    \node[usecase] (uc5) at (2.8,-5.2) {Статистик/тайлан\ харах};
-    \node[usecase] (uc6) at (6.4,-5.2) {API-ээр өгөгдөл\ авах};
-    \node[usecase] (uc7) at (4.6,-7.0) {Өгөгдөл хадгалах\ ба синхрончлох};
+    \node[usecase] (u1) at (3.2,-1.8) {Өгөгдөл цуглуулах};
+    \node[usecase] (u2) at (8.6,-1.8) {Скрапинг удирдах};
+    \node[usecase] (u3) at (3.2,-4.0) {Sentiment анализ};
+    \node[usecase] (u4) at (8.6,-4.0) {AI тайлбар, зөвлөмж};
+    \node[usecase] (u5) at (3.2,-6.2) {Тайлан харах};
+    \node[usecase] (u6) at (8.6,-6.2) {API өгөгдөл авах};
+    \node[usecase] (u7) at (5.9,-8.0) {Хадгалалт, синхрончлол};
 
-    % External actors
-    \node[actor] (a1) at (-2.0,-3.4) {\textit{<<actor>>}\\Судлаач/Админ};
-    \node[actor] (a2) at (14.6,-2.2) {\textit{<<actor>>}\\Facebook\\(Нийгмийн сүлжээ)};
-    \node[actor] (a3) at (14.6,-6.2) {\textit{<<actor>>}\\Firebase/Cloud\\Service};
+    \node[actor] (a1) at (-2.4,-4.5) {Судлаач\\Админ};
+    \node[actor] (a2) at (14.6,-2.1) {Facebook};
+    \node[actor] (a3) at (14.6,-4.8) {Gemini\\Claude};
+    \node[actor] (a4) at (14.6,-8.0) {Firebase\\Cloud};
 
-    % Associations
-    \draw[rel] (a1.east) -- (uc2.west);
-    \draw[rel] (a1.east) -- (uc5.west);
-    \draw[rel] (a1.east) -- (uc6.west);
+    \draw[rel] ([yshift=10pt]a1.east) -- (u2.west);
+    \draw[rel] (a1.east) -- (u5.west);
+    \draw[rel] ([yshift=-10pt]a1.east) -- (u6.west);
+    \draw[rel] ([yshift=8pt]a2.west) -- (u1.east);
+    \draw[rel] ([yshift=-8pt]a2.west) -- (u2.east);
+    \draw[rel] (a3.west) -- (u4.east);
+    \draw[rel] (a4.west) -- (u7.east);
 
-    \draw[rel] (a2.west) -- (uc1.east);
-    \draw[rel] (a2.west) -- (uc2.east);
-
-    \draw[rel] (a3.west) -- (uc7.east);
-    \draw[rel] (uc1.south) -- (uc7.north);
-    \draw[rel] (uc3.south) -- (uc7.north west);
-    \draw[rel] (uc4.south) -- (uc7.north east);
+    \draw[rel] (u1.south) -- ++(0,-0.6) -| ([xshift=-16pt]u7.north);
+    \draw[rel] (u3.south) -- ++(0,-0.6) -- ([xshift=0pt]u7.north);
+    \draw[rel] (u4.south) -- ++(0,-0.6) -| ([xshift=16pt]u7.north);
 \end{tikzpicture}%
 }
-\caption{Use Case диаграм: Нийгмийн сүлжээний өгөгдөл цуглуулалт, шинжилгээ, таамаглал}
-\label{fig:use-case-diagram}
+\caption{Use Case диаграм}
+\label{fig:use-case-system}
 \end{figure}
 
-\textbf{Use Case диаграмын оролцогчид:}
+\subsection{Системийн архитектурын диаграм}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1.2cm, align=center, fill=blue!5, font=\normalsize},
+    ext/.style={draw, rounded corners, minimum width=2.8cm, minimum height=1.1cm, align=center, fill=gray!10, font=\normalsize},
+    arr/.style={-Latex, thick}
+]
+    \node[ext] (user) at (0,0) {Хэрэглэгч};
+    \node[box] (frontend) at (4.2,0) {Frontend\\React/Vite};
+    \node[box] (api) at (8.4,0) {FastAPI\\Backend};
+
+    \node[box] (scraper) at (8.4,-3.0) {Scraper\\Selenium+BS4};
+    \node[box] (analysis) at (8.4,-5.8) {Analysis\\TextBlob/VADER/BERT};
+
+    \node[box] (db) at (13.0,-3.0) {Database\\PostgreSQL/SQLite/Firebase};
+    \node[box] (ai) at (13.0,-5.8) {AIAnalyzer};
+
+    \node[ext] (social) at (17.2,-3.0) {Facebook};
+    \node[ext] (llm) at (17.2,-5.8) {Gemini/Claude};
+
+    \draw[arr] (user.east) -- (frontend.west);
+    \draw[arr] (frontend.east) -- (api.west);
+
+    \draw[arr] (api.south) -- (scraper.north);
+    \draw[arr] (api.south) -- ++(0,-0.9) -- ++(0,-0.9) -- (analysis.north);
+
+    \draw[arr] (scraper.east) -- (db.west);
+    \draw[arr] (analysis.east) -- (ai.west);
+    \draw[arr] (analysis.east) -- ++(1.2,0) |- (db.south);
+
+    \draw[arr] (ai.east) -- (llm.west);
+    \draw[arr] (social.west) -- (db.east);
+\end{tikzpicture}%
+}
+\caption{Системийн архитектурын диаграм}
+\label{fig:architecture-diagram}
+\end{figure}
+
+\subsection{Өгөгдлийн урсгалын диаграм}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+    flowstep/.style={draw, rounded corners, minimum width=3.3cm, minimum height=1.1cm, align=center, fill=green!7, font=\normalsize},
+    arr/.style={-Latex, thick}
+]
+    \node[flowstep] (s1) at (0,0) {Facebook\\Scraping};
+    \node[flowstep] (s2) at (4.2,0) {Cleaning\\Parsing};
+    \node[flowstep] (s3) at (8.4,0) {Sentiment/Topic\\Analysis};
+    \node[flowstep] (s4) at (12.6,0) {AI Inference\\Gemini/Claude};
+    \node[flowstep] (s5) at (16.8,0) {Engagement\\Prediction};
+
+    \node[flowstep] (s6) at (8.4,-3.2) {API Response\\Dashboard/Report};
+
+    \draw[arr] (s1.east) -- (s2.west);
+    \draw[arr] (s2.east) -- (s3.west);
+    \draw[arr] (s3.east) -- (s4.west);
+    \draw[arr] (s4.east) -- (s5.west);
+    \draw[arr] (s5.south) -- ++(0,-1.1) -| (s6.east);
+    \draw[arr] (s6.west) -- ++(-1.3,0) |- (s2.south);
+\end{tikzpicture}%
+}
+\caption{Судалгааны системийн өгөгдлийн урсгал}
+\label{fig:dataflow-diagram}
+\end{figure}
+
+\subsection{API харилцан үйлдлийн дарааллын диаграм}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+    lifeline/.style={draw, minimum width=2.5cm, minimum height=0.9cm, align=center, fill=gray!8, font=\normalsize},
+    msg/.style={-Latex, thick}
+]
+    \node[lifeline] (l1) at (0,0) {Frontend};
+    \node[lifeline] (l2) at (4.2,0) {FastAPI};
+    \node[lifeline] (l3) at (8.4,0) {Scraper};
+    \node[lifeline] (l4) at (12.6,0) {AIAnalyzer};
+
+    \draw[dashed] (l1.south) -- (0,-5.2);
+    \draw[dashed] (l2.south) -- (4.2,-5.2);
+    \draw[dashed] (l3.south) -- (8.4,-5.2);
+    \draw[dashed] (l4.south) -- (12.6,-5.2);
+
+    \draw[msg] (0,-1.0) -- (4.2,-1.0) node[midway, above, fill=white, inner sep=2pt, font=\small] {POST /scrape};
+    \draw[msg] (4.2,-2.0) -- (8.4,-2.0) node[midway, above, fill=white, inner sep=2pt, font=\small] {collect posts/comments};
+    \draw[msg] (8.4,-3.0) -- (12.6,-3.0) node[midway, above, fill=white, inner sep=2pt, font=\small] {analyze\_all()};
+    \draw[msg] (12.6,-4.0) -- (4.2,-4.0) node[midway, above, fill=white, inner sep=2pt, font=\small] {analysis result};
+    \draw[msg] (4.2,-4.8) -- (0,-4.8) node[midway, above, fill=white, inner sep=2pt, font=\small] {JSON response};
+\end{tikzpicture}
+}
+\caption{FastAPI, Scraper, AIAnalyzer хоорондын API урсгал}
+\label{fig:api-sequence}
+\end{figure}
+
+\subsection{Deployment диаграм}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[
+    nodebox/.style={draw, rounded corners, minimum width=3.6cm, minimum height=1.2cm, align=center, fill=blue!6, font=\normalsize},
+    cloudnode/.style={draw, ellipse, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=gray!12, font=\normalsize},
+    link/.style={-Latex, thick}
+]
+    \node[nodebox] (vercel) at (0,0) {Vercel\\Frontend};
+    \node[nodebox] (render) at (5.0,0) {Render\\FastAPI + Scraper};
+    \node[cloudnode] (fb) at (10.0,2.0) {Facebook};
+    \node[nodebox] (db) at (10.0,-2.0) {PostgreSQL\\SQLite/Firebase};
+    \node[nodebox] (llm) at (15.0,0) {Gemini + Claude\\LLM API};
+
+    \draw[link] (vercel.east) -- (render.west);
+    \draw[link] (render.east) -- (llm.west);
+    \draw[link] (fb.west) -- ++(-1.6,0) |- (render.north);
+    \draw[link] (render.south) |- ++(1.6,-1.6) -- (db.west);
+\end{tikzpicture}
+}
+\caption{Системийн deployment зураглал}
+\label{fig:deployment-diagram}
+\end{figure}
+
+\textbf{Диаграмын багцын товч дүгнэлт:}
 \begin{itemize}
-    \item \textbf{Судлаач/Админ:} Скрапинг ажиллуулах, API дуудах, тайлан харах үндсэн хэрэглэгч
-    \item \textbf{Facebook:} Пост болон сэтгэгдлийн эх өгөгдөл нийлүүлэгч гадаад орчин
-    \item \textbf{Firebase/Cloud Service:} Цуглуулсан болон боловсруулсан өгөгдөл хадгалах/синхрончлох гадаад үйлчилгээ
+    \item Use Case диаграм нь оролцогч болон үндсэн үйлдлүүдийг тодорхойлсон.
+    \item Архитектурын диаграм нь модуль хоорондын уялдааг харуулсан.
+    \item Өгөгдлийн урсгалын диаграм нь data pipeline-ийн дарааллыг нэг мөр болгосон.
+    \item API sequence диаграм нь системийн runtime харилцан үйлдлийг тайлбарласан.
+    \item Deployment диаграм нь үүлэн орчин дахь байршуулалтыг харуулсан.
 \end{itemize}
 
 \section{Технологийн сонголт}
@@ -756,7 +928,11 @@ Firebase & Cloud sync & Realtime, backup \\
 
 Энэхүү дэд хэсэг нь системд ашигласан гол технологи тус бүрийн \textbf{юунд ашигладаг}, \textbf{яаж ашигладаг}, \textbf{яагаад сонгосон}, мөн \textbf{гол хэрэглээ}-г нэгтгэн харуулна.
 
-\begin{longtable}{|p{2.8cm}|p{3.2cm}|p{3.2cm}|p{5.8cm}|}
+\begin{landscape}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{|L{3.4cm}|L{4.6cm}|L{4.6cm}|L{8.8cm}|}
 \hline
 \textbf{Технологи} & \textbf{Яагаад ашигласан} & \textbf{Яаж ашигласан} & \textbf{Гол хэрэглээ (юунд ашигласан)} \\
 \hline
@@ -766,31 +942,33 @@ Firebase & Cloud sync & Realtime, backup \\
 \hline
 \endhead
 \hline
-Python & Нэг хэл дээр скрапинг, анализ, API, өгөгдлийн санг нэгтгэн хөгжүүлэх боломжтой, экосистем өргөн. & Төслийн `core`, `ml`, `db`, `api`, `utils` модуль бүрт төвлөрсөн бизнес логик байдлаар ашигласан. & Системийн үндсэн логик, өгөгдөл цуглуулалт, анализ, таамаглал, API үйлчилгээ. \\
+Python & Нэг хэл дээр скрапинг, анализ, API, өгөгдлийн санг нэгтгэн хөгжүүлэх боломжтой, экосистем өргөн. & Төслийн \texttt{core}, \texttt{ml}, \texttt{db}, \texttt{api}, \texttt{utils} модуль бүрт төвлөрсөн бизнес логик байдлаар ашигласан. & Системийн үндсэн логик, өгөгдөл цуглуулалт, анализ, таамаглал, API үйлчилгээ. \\
 \hline
 Selenium WebDriver & Динамик контенттой хуудсыг энгийн хүсэлтээр бүрэн авах боломжгүй тул бодит хөтчийн автоматжуулалт шаардлагатай. & Browser session нээх, нэвтрэх урсгал, scroll/navigation хийх, пост/сэтгэгдэл ачаалах үйлдэлд ашигласан. & Нийгмийн сүлжээний динамик хуудсаас пост, сэтгэгдлийг тогтвортой цуглуулах. \\
 \hline
 BeautifulSoup & HTML бүтцээс зорилтот мэдээллийг ялган авахад энгийн, уян хатан. & Ачаалсан DOM/HTML-ээс контент, мета мэдээлэл, comment бүтэц парс хийхэд ашигласан. & Түүхий HTML-ийг бүтэцлэгдсэн өгөгдөл болгон хувиргах. \\
 \hline
-Sentiment Analyzer (TextBlob/VADER/BERT) & Суурь ба гүнзгий анализыг хослуулж мэдрэмжийн үнэлгээний чанарыг сайжруулах. & Эхлээд суурь оноо тооцож, шаардлагатай үед нарийвчилсан ангиллаар баталгаажуулах pipeline байдлаар ашигласан. & Пост, сэтгэгдлийн эерэг/сөрөг/саармаг хандлагыг тооцоолох. \\
+Sentiment Analyzer\newline (TextBlob/VADER/BERT) & Суурь ба гүнзгий анализыг хослуулж үнэлгээний чанарыг сайжруулна. & Суурь оноо тооцоод, шаардлагатай үед нарийвчилсан ангиллаар баталгаажуулна. & Пост, сэтгэгдлийн эерэг/сөрөг/саармаг хандлагыг тооцоолно. \\
 \hline
-Predictive Engagement Model & Зөвхөн rule-based үнэлгээнээс илүү өгөгдөлд суурилсан урьдчилсан таамаглал гаргах шаардлагатай. & Постын контент, хугацаа, sentiment, interaction feature-үүдээс сургалтын шинж үүсгэж regression/classification загвараар таамагласан. & Пост тус бүрийн боломжит оролцооны оноо болон өндөр оролцооны магадлалыг урьдчилан тооцоолох. \\
+Predictive Engagement Model & Rule-based үнэлгээнээс илүү өгөгдөлд суурилсан урьдчилсан таамаглалд ашиглана. & Контент, хугацаа, sentiment, interaction feature-үүдээс шинж үүсгэж regression/classification загвараар таамагладаг. & Пост тус бүрийн оролцооны оноо болон өндөр оролцооны магадлалыг тооцоолно. \\
 \hline
-Topic Modeling (TF-IDF + LDA) & Түлхүүр үг илрүүлэхээс гадна тайлбарлахад хялбар сэдвийн бүтэц хэрэгтэй. & TF-IDF, KMeans-ийг үндсэн сувгаар, LDA-г нэмэлт сэдэв илрүүлэх сувгаар ажиллуулж нийлмэл тайлбар гаргасан. & Контентын давамгай сэдэв, чиг хандлага, engagement-тай уялдсан сэдвийг тодорхойлох. \\
+Topic Modeling\newline (TF-IDF + LDA) & Түлхүүр үг болон тайлбарлахад хялбар сэдвийн бүтэц тодорхойлоход хэрэглэнэ. & TF-IDF, KMeans, LDA-г хослуулж сэдэв илрүүлэн тайлбар үүсгэдэг. & Контентын давамгай сэдэв, чиг хандлага, оролцоотой уялдсан сэдвийг тодорхойлно. \\
 \hline
-Emotion Analysis & Positive/Negative ангиллаас давсан сэтгэл хөдлөлийн нарийвчилсан зураглал шаардлагатай. & Пост болон сэтгэгдлийн текстийг emotion lexicon-д тулгуурлан joy/anger/sadness/fear/surprise ангиллаар тооцоолсон. & Аудиторийн сэтгэл хөдлөлийн тархалт болон dominant emotion-ийг илрүүлж контентын өнгө аясыг оновчлох. \\
+Emotion Analysis & Positive, Negative ангиллаас давсан сэтгэл хөдлөлийн нарийвчилсан зураглал гаргана. & Пост болон сэтгэгдлийн текстийг emotion lexicon-д тулгуурлан joy, anger, sadness, fear, surprise ангиллаар тооцоолсон. & Аудиторийн сэтгэл хөдлөлийн тархалт, dominant emotion-ийг илрүүлж контентын өнгө аясыг оновчлоход ашиглана. \\
 \hline
-Interaction Network Analysis & Сэтгэгдлийн урсгал дахь нөлөө бүхий хэрэглэгч, харилцааны бүтэц тодорхойлох шаардлагатай. & Reply-to холбоосоор граф бүтэц үүсгэн node/edge, density, degree centrality зэрэг үзүүлэлт тооцсон. & Community бүтэц, топ нөлөө бүхий хэрэглэгчид, харилцааны идэвхийн хэлбэрийг илрүүлэх. \\
+Interaction Network Analysis & Сэтгэгдлийн урсгал дахь нөлөө бүхий хэрэглэгч, харилцааны бүтцийг тодорхойлоход ашиглана. & Reply-to холбоосоор граф бүтэц үүсгэн node, edge, density, degree centrality үзүүлэлт тооцсон. & Community бүтэц, топ нөлөө бүхий хэрэглэгчид, харилцааны идэвхийн хэлбэрийг илрүүлнэ. \\
 \hline
-Data Collection Module & Мультиплатформ цуглуулалтыг жигд интерфейсээр дамжуулан кодын нөлөөллийг бажигнуулах. & AbstractPlatformCollector үндсэн класс, PlatformFactory-г ашиглан платформ-ангит цуглуулагчуудыг үүсгэн Strategy+Factory pattern-аар хэрэгжүүлсэн. & Олон платформаас цуглуулалтын параметр (keywords, date range, max posts) нэгдсэн байдлаар удирдах. \\
+Data Collection Module & Олон платформоос цуглуулах үйлдлийг нэг интерфейсээр удирдана. & Abstract collector ба factory загвараар платформ тус бүрийн collector-ийг үүсгэнэ. & Keywords, date range, max posts параметрүүдийг нэгдсэн байдлаар удирдана. \\
 \hline
-Multi-Platform Support (Facebook/Twitter/Instagram) & Платформ тус бүрийн API ялгаа нуусан нөхцөлд жигд цуглуулалт хийхэд үндэс. & FacebookCollector (Selenium PostScraper), TwitterCollector (Twitter API v2), InstagramCollector (Instagram API) бүтээц. & Өгөгдөл цуглуулалтын гаралтыг CollectedPost, CollectedComment бүтэцтэй бүтэцлэгдсэн өгөгдлөөр хугацаа, реакци, үйлчилгээ-сонгомжтойгоор цуглуулах. \\
+Multi-Platform Support\newline (Facebook/Twitter/Instagram) & API ялгааг нууж жигд цуглуулалт хийх боломж олгоно. & Facebook, Twitter, Instagram-д тусгай collector хэрэгжүүлсэн. & CollectedPost болон CollectedComment бүтэцтэй стандарт өгөгдөл цуглуулна. \\
 \hline
 FastAPI & Хөнгөн, хурдан, модульчлагдсан серверээр системийн функцийг үйлчилгээ хэлбэрээр хүргэхэд тохиромжтой. & Endpoint-үүдээр scraping ажиллуулах, анализ дуудах, үр дүн буцаах интерфейс болгон хэрэгжүүлсэн. & Системийн боломжуудыг API хэлбэрээр гаднаас ашиглуулах. \\
 \hline
-PostgreSQL/SQLite/Firebase & Нэг төрлийн өгөгдлийн сангаас илүүтэй орчин тус бүрт тохирсон хадгалалт шаардлагатай. & PostgreSQL-д үндсэн хадгалалт, SQLite-д локал туршилт/нөөц, Firebase-д синхрон ба cloud backup байдлаар ашигласан. & Өгөгдлийг найдвартай хадгалах, орчин хооронд шилжих, синхрон хийх. \\
+PostgreSQL / SQLite / Firebase & Нэг төрлийн өгөгдлийн сангаас илүүтэй орчин тус бүрт тохирсон хадгалалт шаардлагатай. & PostgreSQL-д үндсэн хадгалалт, SQLite-д локал туршилт/нөөц, Firebase-д синхрон ба cloud backup байдлаар ашигласан. & Өгөгдлийг найдвартай хадгалах, орчин хооронд шилжих, синхрон хийх. \\
 \hline
 \end{longtable}
+\endgroup
+\end{landscape}
 
 \textbf{Нэгтгэн дүгнэвэл:} Энэхүү технологийн иж бүрдэл нь өгөгдөл цуглуулах $\rightarrow$ боловсруулах $\rightarrow$ Sentiment Analysis хийх $\rightarrow$ таамаглал гаргах $\rightarrow$ API-гаар хүргэх гэсэн төслийн үндсэн урсгалыг бүхэлд нь дэмжсэн.
 
@@ -844,10 +1022,11 @@ Sentiment Analysis-ын урсгалыг дараах дарааллаар хэ�
 
 Оролцооны урьдчилсан таамаглалыг дараах урсгалаар боловсруулсан:
 \begin{enumerate}
-    \item Пост бүрээс feature үүсгэх (content length, word count, hashtag/mention/url count, punctuation, media flag, цаг хугацааны feature, sentiment score)
-    \item Хариу хувьсагч болгон engagement score = likes + 2 $\times$ comments + 3 $\times$ shares томьёогоор тооцоолох
+    \item Пост бүрээс feature үүсгэх (content length, word count, hashtag/mention/url count, punctuation, media flag)
+    \item Цаг хугацааны feature болон sentiment score-ийг нэмэлт шинж болгон оруулах
+    \item Хариу хувьсагч: engagement score = likes + 2 $\times$ comments + 3 $\times$ shares
     \item RandomForestRegressor ашиглан реакцын хэмжээг regression байдлаар сургах
-    \item 75-р хувийн перцентиль босгоор high-engagement ангилал үүсгэж RandomForestClassifier-аар магадлал тооцоолох
+    \item 75-р перцентиль босгоор high-engagement ангилал үүсгэж RandomForestClassifier-аар магадлал тооцоолох
     \item R\textsuperscript{2}, MAE, Accuracy, F1 үзүүлэлтээр чанар үнэлж feature importance гаргах
 \end{enumerate}
 
@@ -855,8 +1034,9 @@ Sentiment Analysis-ын урсгалыг дараах дарааллаар хэ�
 
 Сэтгэгдлийн зан төлөв болон харилцааны бүтцийг дараах байдлаар үнэлсэн:
 \begin{enumerate}
-    \item Пост, сэтгэгдлийн текстийг emotion lexicon-оор joy/anger/sadness/fear/surprise/neutral ангилалд оноох
-    \item Comment-ийн reply\_to\_id холбоосоор interaction graph үүсгэх
+    \item Пост, сэтгэгдлийн текстийг emotion lexicon-оор ангилж,
+    joy, anger, sadness, fear, surprise, neutral шошго оноох
+    \item Comment-ийн reply-to-id холбоосоор interaction graph үүсгэх
     \item Node, edge, density, degree centrality тооцоолж топ influencer-уудыг тодорхойлох
     \item Community bucket болон dominant emotion-ийг AI зөвлөмж үүсгэх шатанд нэгтгэн ашиглах
 \end{enumerate}
@@ -1061,7 +1241,9 @@ data = manager.export_data()
 
 Үр дүнг админ хуудсанд \texttt{Matched posts} хэмжүүр болон эхний багц постын жагсаалтаар харуулсан нь системийн query интерфейсийг backend интеграци хийхээс өмнө UI түвшинд баталгаажуулахад ашиглагдсан.
 
-\section{Gemini API Тохиргоо (Vite Environment)}
+\section{Gemini ба Claude AI Тохиргоо}
+
+AI inference давхарга нь \textbf{Gemini + Claude} provider стратегитайгаар загварчлагдсан. Одоогийн frontend хэрэгжилтэд Gemini ашиглагдаж байгаа бөгөөд AI orchestrator давхаргад Claude provider нэмэх өргөтгөх бүтэц тусгасан.
 
 Predictive analysis хэсэгт Gemini API ашиглахдаа frontend орчноос \texttt{import.meta.env.VITE\_GEMINI\_API\_KEY} хувьсагчийг уншиж \texttt{GoogleGenAI} клиентийг инициализац хийдэг. Хэрэв энэхүү хувьсагч тохируулаагүй бол систем fallback мессеж буцааж, AI шинжилгээг зогсооно.
 
@@ -1072,6 +1254,8 @@ VITE_GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 \end{verbatim}
 
 Vite нь \texttt{VITE\_} префикстэй хувьсагчдыг frontend руу дамжуулдаг тул development болон туршилтын орчинд шууд ажиллана. Аюулгүй байдлын үүднээс production орчинд нууц түлхүүрийг frontend-д шууд хадгалахгүй, сервер талын proxy endpoint-оор дамжуулах загвар руу шилжих нь зөв.
+
+\textbf{Claude integration note:} Claude provider-ийг production орчинд backend прокси давхаргаар (жишээ нь \texttt{ANTHROPIC\_API\_KEY} орчны хувьсагчтай) холбож, AI orchestrator дотор provider сонголт/route хийх байдлаар нэгтгэнэ.
 
 
 \section{Browser Manager}
@@ -1718,15 +1902,15 @@ AIAnalyzer модуль нь мэдрэмжийн шинжилгээ болон 
 
     \item Pang, B., \& Lee, L. (2008). Opinion Mining and Sentiment Analysis. \textit{Foundations and Trends in Information Retrieval}, 2(1-2), 1-135.
 
-    \item Selenium Documentation. (2024). \textit{Selenium WebDriver}. Retrieved from https://www.selenium.dev/documentation/
+    \item Selenium Documentation. (2024). \textit{Selenium WebDriver}. Retrieved from \url{https://www.selenium.dev/documentation/}
 
-    \item FastAPI Documentation. (2024). \textit{FastAPI}. Retrieved from https://fastapi.tiangolo.com/
+    \item FastAPI Documentation. (2024). \textit{FastAPI}. Retrieved from \url{https://fastapi.tiangolo.com/}
 
-    \item SQLAlchemy Documentation. (2024). \textit{SQLAlchemy}. Retrieved from https://www.sqlalchemy.org/
+    \item SQLAlchemy Documentation. (2024). \textit{SQLAlchemy}. Retrieved from \url{https://www.sqlalchemy.org/}
 
-    \item Loria, S. (2020). \textit{TextBlob: Simplified Text Processing}. Retrieved from https://textblob.readthedocs.io/
+    \item Loria, S. (2020). \textit{TextBlob: Simplified Text Processing}. Retrieved from \url{https://textblob.readthedocs.io/}
 
-    \item Firebase Documentation. (2024). \textit{Firebase Realtime Database}. Retrieved from https://firebase.google.com/docs/
+    \item Firebase Documentation. (2024). \textit{Firebase Realtime Database}. Retrieved from \url{https://firebase.google.com/docs/}
 
     \item Bird, S., Klein, E., \& Loper, E. (2009). \textit{Natural Language Processing with Python}. O'Reilly Media.
 
@@ -1746,7 +1930,10 @@ AIAnalyzer модуль нь мэдрэмжийн шинжилгээ болон 
 
 \section{API Endpoint жишээ}
 
-Судалгаанд ашигласан гол endpoint-ууд нь `/health`, `/api/v1/scrape`, `/api/v1/pages`, `/api/v1/analyze`, `/api/v1/analyze/advanced`, `/api/v1/analyze/ai`, `/api/v1/export/pages` зэрэг болно. Эдгээр endpoint нь өгөгдөл цуглуулах, анализ хийх, үр дүн экспортлох үндсэн урсгалыг бүрдүүлсэн.
+Судалгаанд ашигласан гол endpoint-ууд нь \texttt{/health}, \texttt{/api/v1/scrape}, \texttt{/api/v1/pages},
+\texttt{/api/v1/analyze}, \texttt{/api/v1/analyze/advanced}, \texttt{/api/v1/analyze/ai},
+\texttt{/api/v1/export/pages} зэрэг болно. Эдгээр endpoint нь өгөгдөл цуглуулах, анализ хийх,
+үр дүн экспортлох үндсэн урсгалыг бүрдүүлсэн.
 
 
 \section{Өгөгдлийн сангийн схем}
