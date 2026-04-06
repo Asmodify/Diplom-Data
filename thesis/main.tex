@@ -24,9 +24,12 @@
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{titlesec}
+\usepackage[table]{xcolor}
 \usepackage{tocloft}
 \usepackage{appendix}
 \usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
 
 % ============================================================================
 % Page Layout
@@ -39,6 +42,27 @@
 }
 
 \onehalfspacing
+
+% ============================================================================
+% Chapter Formatting - Full Page Style (like MUST-Thesis example)
+% ============================================================================
+\definecolor{ChapterColor}{RGB}{255,220,180} % Light tan for chapter pages
+
+\titleformat{\chapter}[display]
+{\pagecolor{ChapterColor}\normalfont\Large\filcenter\bfseries}
+{
+    \vspace*{\fill}
+    \titlerule[1pt]
+    \vspace{1pt}
+    \titlerule
+    \vspace{1pc}
+    \Large БҮЛЭГ~\thechapter
+}
+{1pc}
+{\titlerule\Huge}
+[\vspace*{\fill}\thispagestyle{empty}\pagecolor{white}\clearpage]
+
+\titlespacing*{\chapter}{0pt}{-50pt}{40pt}
 
 % ============================================================================
 % Header/Footer
@@ -601,6 +625,59 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \item \textbf{ML Module:} DataAnalyzer, AdvancedSentimentAnalyzer, AIAnalyzer - мэдрэмжийн болон AI шинжилгээ
     \item \textbf{Database Module:} DatabaseManager, FirebaseDB - өгөгдөл хадгалах, синхрончлох
     \item \textbf{API Module:} FastAPI - REST API интерфейс
+\end{itemize}
+
+\section{Use Case диаграм}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    actor/.style={draw, rounded corners, align=center, minimum width=2.7cm, minimum height=1cm, fill=gray!10},
+    usecase/.style={draw, ellipse, align=center, minimum width=4.3cm, minimum height=1.05cm},
+    rel/.style={-Latex, thick}
+]
+    % System boundary
+    \node[draw, minimum width=12.5cm, minimum height=8.2cm, anchor=north west] (system) at (0,0) {};
+    \node[anchor=north] at ([yshift=-2mm]system.north) {Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем};
+
+    % Use cases inside boundary
+    \node[usecase] (uc1) at (2.8,-1.6) {Өгөгдөл цуглуулах};
+    \node[usecase] (uc2) at (6.4,-1.6) {Скрапинг ажиллуулах\ ба хянах};
+    \node[usecase] (uc3) at (2.8,-3.4) {Sentiment Analysis хийх};
+    \node[usecase] (uc4) at (6.4,-3.4) {Оролцооны таамаглал\ гаргах};
+    \node[usecase] (uc5) at (2.8,-5.2) {Статистик/тайлан\ харах};
+    \node[usecase] (uc6) at (6.4,-5.2) {API-ээр өгөгдөл\ авах};
+    \node[usecase] (uc7) at (4.6,-7.0) {Өгөгдөл хадгалах\ ба синхрончлох};
+
+    % External actors
+    \node[actor] (a1) at (-2.0,-3.4) {\textit{<<actor>>}\\Судлаач/Админ};
+    \node[actor] (a2) at (14.6,-2.2) {\textit{<<actor>>}\\Facebook\\(Нийгмийн сүлжээ)};
+    \node[actor] (a3) at (14.6,-6.2) {\textit{<<actor>>}\\Firebase/Cloud\\Service};
+
+    % Associations
+    \draw[rel] (a1.east) -- (uc2.west);
+    \draw[rel] (a1.east) -- (uc5.west);
+    \draw[rel] (a1.east) -- (uc6.west);
+
+    \draw[rel] (a2.west) -- (uc1.east);
+    \draw[rel] (a2.west) -- (uc2.east);
+
+    \draw[rel] (a3.west) -- (uc7.east);
+    \draw[rel] (uc1.south) -- (uc7.north);
+    \draw[rel] (uc3.south) -- (uc7.north west);
+    \draw[rel] (uc4.south) -- (uc7.north east);
+\end{tikzpicture}%
+}
+\caption{Use Case диаграм: Нийгмийн сүлжээний өгөгдөл цуглуулалт, шинжилгээ, таамаглал}
+\label{fig:use-case-diagram}
+\end{figure}
+
+\textbf{Use Case диаграмын оролцогчид:}
+\begin{itemize}
+    \item \textbf{Судлаач/Админ:} Скрапинг ажиллуулах, API дуудах, тайлан харах үндсэн хэрэглэгч
+    \item \textbf{Facebook:} Пост болон сэтгэгдлийн эх өгөгдөл нийлүүлэгч гадаад орчин
+    \item \textbf{Firebase/Cloud Service:} Цуглуулсан болон боловсруулсан өгөгдөл хадгалах/синхрончлох гадаад үйлчилгээ
 \end{itemize}
 
 \section{Технологийн сонголт}
