@@ -690,37 +690,37 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
 \centering
 \begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
-    actor/.style={draw, rounded corners, align=center, minimum width=2.8cm, minimum height=1.1cm, fill=gray!10, font=\normalsize, text width=2.3cm},
-    usecase/.style={draw, ellipse, align=center, minimum width=4.4cm, minimum height=1.25cm, font=\normalsize, text width=3.8cm},
+    actor/.style={draw, rounded corners, align=center, minimum width=2.6cm, minimum height=1.0cm, fill=gray!10, font=\normalsize, text width=2.1cm},
+    usecase/.style={draw, ellipse, align=center, minimum width=3.9cm, minimum height=1.15cm, font=\normalsize, text width=3.3cm},
     rel/.style={-Latex, thick}
 ]
-    \node[draw, minimum width=14.0cm, minimum height=9.2cm, anchor=north west] (sys) at (0,0) {};
+    \node[draw, minimum width=11.2cm, minimum height=7.9cm, anchor=north] (sys) at (0,0) {};
     \node[anchor=north] at ([yshift=-2mm]sys.north) {Системийн Use Case хил};
 
-    \node[usecase] (u1) at (3.2,-1.8) {Өгөгдөл цуглуулах};
-    \node[usecase] (u2) at (8.6,-1.8) {Скрапинг удирдах};
-    \node[usecase] (u3) at (3.2,-4.0) {Sentiment анализ};
-    \node[usecase] (u4) at (8.6,-4.0) {AI тайлбар, зөвлөмж};
-    \node[usecase] (u5) at (3.2,-6.2) {Тайлан харах};
-    \node[usecase] (u6) at (8.6,-6.2) {API өгөгдөл авах};
-    \node[usecase] (u7) at (5.9,-8.0) {Хадгалалт, синхрончлол};
+    \node[usecase] (u1) at (-2.5,-1.5) {Өгөгдөл цуглуулах};
+    \node[usecase] (u2) at (2.5,-1.5) {Скрапинг удирдах};
+    \node[usecase] (u3) at (-2.5,-3.5) {Sentiment анализ};
+    \node[usecase] (u4) at (2.5,-3.5) {AI тайлбар, зөвлөмж};
+    \node[usecase] (u5) at (-2.5,-5.5) {Тайлан харах};
+    \node[usecase] (u6) at (2.5,-5.5) {API өгөгдөл авах};
+    \node[usecase] (u7) at (0,-7.0) {Хадгалалт, синхрончлол};
 
-    \node[actor] (a1) at (-2.4,-4.5) {Судлаач\\Админ};
-    \node[actor] (a2) at (14.6,-2.1) {Facebook};
-    \node[actor] (a3) at (14.6,-4.8) {Gemini\\Claude};
-    \node[actor] (a4) at (14.6,-8.0) {Firebase\\Cloud};
+    \node[actor] (a1) at (-6.8,-3.8) {Судлаач\\Админ};
+    \node[actor] (a2) at (6.8,-1.3) {Facebook};
+    \node[actor] (a3) at (6.8,-3.6) {Gemini\\Claude};
+    \node[actor] (a4) at (6.8,-6.2) {Firebase\\Cloud};
 
-    \draw[rel] ([yshift=10pt]a1.east) -- (u2.west);
+    \draw[rel] ([yshift=8pt]a1.east) -- (u2.west);
     \draw[rel] (a1.east) -- (u5.west);
-    \draw[rel] ([yshift=-10pt]a1.east) -- (u6.west);
-    \draw[rel] ([yshift=8pt]a2.west) -- (u1.east);
-    \draw[rel] ([yshift=-8pt]a2.west) -- (u2.east);
+    \draw[rel] ([yshift=-8pt]a1.east) -- (u6.west);
+    \draw[rel] ([yshift=6pt]a2.west) -- (u1.east);
+    \draw[rel] ([yshift=-6pt]a2.west) -- (u2.east);
     \draw[rel] (a3.west) -- (u4.east);
     \draw[rel] (a4.west) -- (u7.east);
 
-    \draw[rel] (u1.south) -- ++(0,-0.6) -| ([xshift=-16pt]u7.north);
-    \draw[rel] (u3.south) -- ++(0,-0.6) -- ([xshift=0pt]u7.north);
-    \draw[rel] (u4.south) -- ++(0,-0.6) -| ([xshift=16pt]u7.north);
+    \draw[rel] (u1.south) -- ++(0,-0.45) -| ([xshift=-14pt]u7.north);
+    \draw[rel] (u3.south) -- ++(0,-0.45) -- ([xshift=0pt]u7.north);
+    \draw[rel] (u4.south) -- ++(0,-0.45) -| ([xshift=14pt]u7.north);
 \end{tikzpicture}
 \end{adjustbox}
 \caption{Use Case диаграм}
