@@ -20,12 +20,14 @@ try:
     from db.firebase_db import get_firebase_db, FirebaseDB
     from ml.analyzer import DataAnalyzer
     from ml.advanced_sentiment import get_advanced_analyzer, AdvancedSentimentAnalyzer
+    from ml.gemini_analyzer import get_gemini_analyzer, GeminiAnalyzer
     from integrations.google_sheets import GoogleSheetsExporter
 except ImportError:
     # Fallback for different import contexts
     from .db.firebase_db import get_firebase_db, FirebaseDB
     from .ml.analyzer import DataAnalyzer
     from .ml.advanced_sentiment import get_advanced_analyzer, AdvancedSentimentAnalyzer
+    from .ml.gemini_analyzer import get_gemini_analyzer, GeminiAnalyzer
     from .integrations.google_sheets import GoogleSheetsExporter
 
 # Security
@@ -137,6 +139,21 @@ class ExportRequest(BaseModel):
     include_analysis: bool = True
 
 
+class GeminiAnalysisRequest(BaseModel):
+    """Request for Gemini content analysis"""
+    text: str = Field(..., description="Text to analyze")
+    analysis_type: str = Field(
+        default="summary",
+        description="Type: summary, insights, questions, improvement, critique"
+    )
+
+
+class GeminiQuestionRequest(BaseModel):
+    """Request for Gemini Q&A"""
+    question: str = Field(..., description="Question to answer")
+    context: Optional[str] = Field(default=None, description="Optional context")
+
+
 class StatsResponse(BaseModel):
     total_posts: int
     total_pages: int
@@ -188,12 +205,13 @@ firebase_db: Optional[FirebaseDB] = None
 analyzer: Optional[DataAnalyzer] = None
 advanced_analyzer: Optional[AdvancedSentimentAnalyzer] = None
 sheets_exporter: Optional[GoogleSheetsExporter] = None
+gemini_analyzer: Optional[GeminiAnalyzer] = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Initialize services on startup"""
-    global firebase_db, analyzer, advanced_analyzer, sheets_exporter
+    global firebase_db, analyzer, advanced_analyzer, sheets_exporter, gemini_analyzer
     
     try:
         firebase_db = get_firebase_db()
@@ -218,6 +236,12 @@ async def startup_event():
         print("✓ Google Sheets exporter initialized")
     except Exception as e:
         print(f"⚠ Google Sheets not initialized: {e}")
+    
+    try:
+        gemini_analyzer = get_gemini_analyzer()
+        print("✓ Gemini AI analyzer initialized")
+    except Exception as e:
+        print(f"⚠ Gemini AI not initialized: {e}")
 
 
 # ==================== Health Check ====================
@@ -231,7 +255,8 @@ async def health_check():
         "firebase": firebase_db is not None,
         "analyzer": analyzer is not None,
         "advanced_analyzer": advanced_analyzer is not None,
-        "sheets": sheets_exporter is not None
+        "sheets": sheets_exporter is not None,
+        "gemini": gemini_analyzer is not None
     }
 
 
@@ -726,6 +751,75 @@ async def list_spreadsheets():
         raise HTTPException(status_code=503, detail="Google Sheets not initialized")
     
     return sheets_exporter.list_spreadsheets()
+
+
+# ==================== Gemini AI Analysis ====================
+
+@app.post("/gemini/analyze")
+async def gemini_analyze(request: GeminiAnalysisRequest):
+    """
+    Analyze content using Google Gemini AI
+    
+    Supported analysis types:
+    - summary: Generate a concise summary
+    - insights: Extract key insights
+    - questions: Generate discussion questions
+    - improvement: Suggest content improvements
+    - critique: Provide constructive feedback
+    """
+    if gemini_analyzer is None:
+        raise HTTPException(status_code=503, detail="Gemini AI not initialized")
+    
+    result = gemini_analyzer.analyze_content(request.text, request.analysis_type)
+    return result
+
+
+@app.post("/gemini/ask")
+async def gemini_ask(request: GeminiQuestionRequest):
+    """Ask Gemini a question with optional context"""
+    if gemini_analyzer is None:
+        raise HTTPException(status_code=503, detail="Gemini AI not initialized")
+    
+    try:
+        answer = gemini_analyzer.generate_response(request.question, request.context)
+        return {
+            "status": "success",
+            "question": request.question,
+            "answer": answer
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/gemini/topics")
+async def gemini_detect_topics(request: GeminiAnalysisRequest):
+    """Detect main topics in text using Gemini"""
+    if gemini_analyzer is None:
+        raise HTTPException(status_code=503, detail="Gemini AI not initialized")
+    
+    result = gemini_analyzer.detect_topics(request.text)
+    return result
+
+
+@api_v1.post("/gemini/batch-analyze")
+async def gemini_batch_analyze(
+    texts: List[str] = Field(..., description="List of texts to analyze"),
+    analysis_type: str = Field(default="summary", description="Analysis type"),
+    authenticated: bool = Depends(verify_token)
+):
+    """Batch analyze multiple texts with Gemini (protected endpoint)"""
+    if gemini_analyzer is None:
+        raise HTTPException(status_code=503, detail="Gemini AI not initialized")
+    
+    if len(texts) > 20:
+        raise HTTPException(status_code=400, detail="Maximum 20 texts per batch")
+    
+    results = gemini_analyzer.batch_analyze(texts, analysis_type)
+    return {
+        "status": "success",
+        "count": len(results),
+        "results": results
+    }
 
 
 # ==================== Include Versioned Router ====================
