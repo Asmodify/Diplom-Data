@@ -3,7 +3,7 @@ services:
     name: diplom-backend
     runtime: python
     pythonVersion: 3.11
-    buildCommand: "pip install -r beta/requirements.txt"
+    buildCommand: "pip install --prefer-binary -r beta/requirements.txt"
     startCommand: "python -m uvicorn beta.api_server:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
