@@ -105,6 +105,17 @@ Text: {text}"""
             }
 
 
-def get_gemini_analyzer() -> GeminiAnalyzer:
-    """Factory function to get Gemini analyzer instance"""
-    return GeminiAnalyzer()
+def get_gemini_analyzer() -> Optional[GeminiAnalyzer]:
+    """Factory function to get Gemini analyzer instance
+    
+    Returns:
+        GeminiAnalyzer instance if GEMINI_API_KEY is set, None otherwise
+    """
+    try:
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            return None
+        return GeminiAnalyzer(api_key=api_key)
+    except Exception as e:
+        print(f"Failed to initialize Gemini analyzer: {e}")
+        return None
