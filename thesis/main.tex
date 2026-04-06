@@ -28,6 +28,7 @@
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{titlesec}
+\usepackage{adjustbox}
 \usepackage{tocloft}
 \usepackage{appendix}
 \usepackage{pdfpages}
@@ -685,9 +686,9 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
 
 \subsection{Use Case диаграм}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\resizebox{0.9\textwidth}{!}{%
+\begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
     actor/.style={draw, rounded corners, align=center, minimum width=2.8cm, minimum height=1.1cm, fill=gray!10, font=\normalsize, text width=2.3cm},
     usecase/.style={draw, ellipse, align=center, minimum width=4.4cm, minimum height=1.25cm, font=\normalsize, text width=3.8cm},
@@ -720,17 +721,17 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \draw[rel] (u1.south) -- ++(0,-0.6) -| ([xshift=-16pt]u7.north);
     \draw[rel] (u3.south) -- ++(0,-0.6) -- ([xshift=0pt]u7.north);
     \draw[rel] (u4.south) -- ++(0,-0.6) -| ([xshift=16pt]u7.north);
-\end{tikzpicture}%
-}
+\end{tikzpicture}
+\end{adjustbox}
 \caption{Use Case диаграм}
 \label{fig:use-case-system}
 \end{figure}
 
 \subsection{Системийн архитектурын диаграм}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\resizebox{0.9\textwidth}{!}{%
+\begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
     box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1.2cm, align=center, fill=blue!5, font=\normalsize},
     ext/.style={draw, rounded corners, minimum width=2.8cm, minimum height=1.1cm, align=center, fill=gray!10, font=\normalsize},
@@ -761,17 +762,17 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
 
     \draw[arr] (ai.east) -- (llm.west);
     \draw[arr] (social.west) -- (db.east);
-\end{tikzpicture}%
-}
+\end{tikzpicture}
+\end{adjustbox}
 \caption{Системийн архитектурын диаграм}
 \label{fig:architecture-diagram}
 \end{figure}
 
 \subsection{Өгөгдлийн урсгалын диаграм}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\resizebox{0.9\textwidth}{!}{%
+\begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
     flowstep/.style={draw, rounded corners, minimum width=3.3cm, minimum height=1.1cm, align=center, fill=green!7, font=\normalsize},
     arr/.style={-Latex, thick}
@@ -790,17 +791,17 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \draw[arr] (s4.east) -- (s5.west);
     \draw[arr] (s5.south) -- ++(0,-1.1) -| (s6.east);
     \draw[arr] (s6.west) -- ++(-1.3,0) |- (s2.south);
-\end{tikzpicture}%
-}
+\end{tikzpicture}
+\end{adjustbox}
 \caption{Судалгааны системийн өгөгдлийн урсгал}
 \label{fig:dataflow-diagram}
 \end{figure}
 
 \subsection{API харилцан үйлдлийн дарааллын диаграм}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\resizebox{0.9\textwidth}{!}{%
+\begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
     lifeline/.style={draw, minimum width=2.5cm, minimum height=0.9cm, align=center, fill=gray!8, font=\normalsize},
     msg/.style={-Latex, thick}
@@ -821,16 +822,16 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \draw[msg] (12.6,-4.0) -- (4.2,-4.0) node[midway, above, fill=white, inner sep=2pt, font=\small] {analysis result};
     \draw[msg] (4.2,-4.8) -- (0,-4.8) node[midway, above, fill=white, inner sep=2pt, font=\small] {JSON response};
 \end{tikzpicture}
-}
+\end{adjustbox}
 \caption{FastAPI, Scraper, AIAnalyzer хоорондын API урсгал}
 \label{fig:api-sequence}
 \end{figure}
 
 \subsection{Deployment диаграм}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\resizebox{0.9\textwidth}{!}{%
+\begin{adjustbox}{max width=\textwidth,max totalheight=0.72\textheight,center}
 \begin{tikzpicture}[
     nodebox/.style={draw, rounded corners, minimum width=3.6cm, minimum height=1.2cm, align=center, fill=blue!6, font=\normalsize},
     cloudnode/.style={draw, ellipse, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=gray!12, font=\normalsize},
@@ -847,7 +848,7 @@ ML pipeline & BERT, scikit-learn, аливаа & Тогтмол алгоритм
     \draw[link] (fb.west) -- ++(-1.6,0) |- (render.north);
     \draw[link] (render.south) |- ++(1.6,-1.6) -- (db.west);
 \end{tikzpicture}
-}
+\end{adjustbox}
 \caption{Системийн deployment зураглал}
 \label{fig:deployment-diagram}
 \end{figure}
