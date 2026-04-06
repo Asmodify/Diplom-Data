@@ -51,15 +51,32 @@
 % ============================================================================
 % Chapter Formatting - Full Page Style (like MUST-Thesis example)
 % ============================================================================
-\definecolor{ChapterTint}{RGB}{255,236,214}
-\definecolor{ChapterLine}{RGB}{168,102,64}
+\definecolor{Chapter}{RGB}{255,220,180}
 
 \titleformat{\chapter}[display]
-    {\normalfont}
-    {\filleft\colorbox{ChapterTint}{\parbox{0.92\textwidth}{\vspace{0.24cm}\hfill\large\bfseries БҮЛЭГ \thechapter\\[-0.12cm]\hfill\textcolor{ChapterLine}{\rule{0.28\textwidth}{1.1pt}}\vspace{0.2cm}}}}
-    {1.1ex}
-    {\filleft\Huge\bfseries}
-\titlespacing*{\chapter}{0pt}{10pt}{22pt}
+    {\pagecolor{Chapter}\normalfont\Large\filcenter\bfseries}
+    {%
+        \vspace*{\fill}
+        \titlerule[1pt]
+        \vspace{1pt}
+        \titlerule
+        \vspace{1pc}
+        \LARGE\MakeUppercase{\chaptername}~\thechapter
+    }
+    {1pc}
+    {%
+        \titlerule
+        \Huge
+    }
+    [%
+        \vspace*{\fill}
+        \thispagestyle{empty}
+        \clearpage
+        \addtocounter{page}{-1}
+        \pagecolor{white}
+    ]
+
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
 % ============================================================================
 % Header/Footer
