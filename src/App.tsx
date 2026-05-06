@@ -245,17 +245,38 @@ export default function App() {
               {activeTab === 'settings' && (
                 <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
                   <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6">
-                    <h4 className="text-lg font-semibold text-white">Settings playground</h4>
+                    <h4 className="text-lg font-semibold text-white">Системийн тохиргоо</h4>
                     <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-300">
-                      This area is intentionally minimal for now. If you want, I can extend it into a full theme, account, and environment settings workspace.
+                      Системийн ерөнхий тохиргоо, API холболт, мэдэгдлийн тохируулга зэрэг нэмэлт функцүүд энд нэмэгдэнэ. Одоогоор бүх тохиргоо backend environment variables-ээр удирдагдаж байна.
                     </p>
+                    <div className="mt-4 space-y-3">
+                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-300">Backend API</span>
+                          <Badge variant="default" className="bg-emerald-400/15 text-emerald-100 ring-emerald-400/20">Холбогдсон</Badge>
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-300">Firebase</span>
+                          <Badge variant="outline">Environment-аас</Badge>
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-slate-300">Gemini AI</span>
+                          <Badge variant="outline">VITE_GEMINI_API_KEY</Badge>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div className="rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-cyan-400/10 to-emerald-400/10 p-6">
-                    <h4 className="text-lg font-semibold text-white">Design language</h4>
+                    <h4 className="text-lg font-semibold text-white">Дизайн систем</h4>
                     <ul className="mt-4 space-y-3 text-sm text-slate-200">
-                      <li>• Deep slate base with cyan accent</li>
-                      <li>• Rounded surfaces and strong spacing</li>
-                      <li>• Live data surfaces from Render + Firebase</li>
+                      <li>• Slate-950 үндсэн өнгө, cyan accent</li>
+                      <li>• Дугуйрсан гадаргуу, тогтвортой зай</li>
+                      <li>• Render + Firebase-аас шууд өгөгдөл</li>
+                      <li>• Responsive бүх төхөөрөмжид</li>
                     </ul>
                   </div>
                 </div>

@@ -6,7 +6,6 @@ import {
   Search,
   ServerCog,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -53,9 +52,7 @@ export function AdminControl() {
   const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
   const [backendStatus, setBackendStatus] = useState('Connecting to Render backend...');
   const [backendBusy, setBackendBusy] = useState(true);
-  const [firebaseStatus, setFirebaseStatus] = useState('');
-  const [firebaseLogs, setFirebaseLogs] = useState<Array<{ id: string; action: string; createdAt: string }>>([]);
-  const [firebaseBusy, setFirebaseBusy] = useState(false);
+  const [backendBusy, setBackendBusy] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -187,32 +184,6 @@ export function AdminControl() {
     }
   };
 
-  const runFirebaseWriteTest = async () => {
-    setFirebaseBusy(true);
-    try {
-      const id = `firebase-log-${Date.now()}`;
-      setFirebaseLogs((prev) => [{ id, action: 'write', createdAt: new Date().toISOString() }, ...prev].slice(0, 5));
-      setFirebaseStatus(`Write success. docId=${id}`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      setFirebaseStatus(`Write failed: ${message}`);
-    } finally {
-      setFirebaseBusy(false);
-    }
-  };
-
-  const runFirebaseReadTest = async () => {
-    setFirebaseBusy(true);
-    try {
-      setFirebaseStatus(`Read success. Rows=${firebaseLogs.length}`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      setFirebaseStatus(`Read failed: ${message}`);
-    } finally {
-      setFirebaseBusy(false);
-    }
-  };
-
   const visibleSummary = [
     { title: 'Backend status', value: backendHealth?.status ?? 'unknown', hint: backendHealth?.version ? `v${backendHealth.version}` : 'Render API', icon: ServerCog },
     { title: 'Live posts', value: String(backendStats?.total_posts ?? visiblePosts.length), hint: 'Pulled from scraper database', icon: Database },
@@ -301,14 +272,6 @@ export function AdminControl() {
                     <RefreshCw className="h-4 w-4" />
                     Refresh live backend
                   </Button>
-                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy} className="gap-2">
-                    <Search className="h-4 w-4" />
-                    Reload Firestore logs
-                  </Button>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Latest Firebase status</p>
-                  <p className="mt-2 text-sm text-slate-200">{firebaseStatus || 'No Firebase test run yet.'}</p>
                 </div>
               </CardContent>
             </Card>
@@ -424,14 +387,14 @@ export function AdminControl() {
         </TabsContent>
 
         <TabsContent value="ops" className="space-y-4">
-          <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+          <div className="grid gap-5 xl:grid-cols-1">
             <Card className="border-white/10 bg-white/[0.03]">
               <CardHeader>
                 <CardTitle className="text-lg text-white">Backend health</CardTitle>
                 <CardDescription>Live status snapshot from Render and local fallback.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <MiniInfo label="Status" value={backendHealth?.status ?? 'unknown'} />
                   <MiniInfo label="Version" value={backendHealth?.version ?? 'n/a'} />
                   <MiniInfo label="Firebase" value={backendHealth?.firebase ? 'Connected' : 'Offline'} />
@@ -439,39 +402,6 @@ export function AdminControl() {
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-300">
                   {backendStatus}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-white/10 bg-white/[0.03]">
-              <CardHeader>
-                <CardTitle className="text-lg text-white">Firebase test log</CardTitle>
-                <CardDescription>Write and read checks for the admin layer.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={runFirebaseWriteTest} disabled={firebaseBusy} className="gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    Write test
-                  </Button>
-                  <Button variant="outline" onClick={runFirebaseReadTest} disabled={firebaseBusy} className="gap-2">
-                    <RefreshCw className="h-4 w-4" />
-                    Read test
-                  </Button>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4 text-sm text-slate-300">
-                  {firebaseStatus || 'No Firebase action yet.'}
-                </div>
-                <div className="space-y-2">
-                  {firebaseLogs.length === 0 ? (
-                    <p className="text-sm text-slate-500">No log entries yet.</p>
-                  ) : (
-                    firebaseLogs.map((log) => (
-                      <div key={log.id} className="rounded-2xl border border-white/10 bg-slate-900/70 p-3 text-sm text-slate-300">
-                        {log.action.toUpperCase()} · {log.createdAt}
-                      </div>
-                    ))
-                  )}
                 </div>
               </CardContent>
             </Card>
@@ -541,17 +471,19 @@ function MiniInfo({ label, value }: { label: string; value: string }) {
   );
 }
 
+interface SummaryCardProps {
+  title: string;
+  value: string;
+  hint: string;
+  icon: ComponentType<{ className?: string }>;
+}
+
 function SummaryCard({
   title,
   value,
   hint,
   icon: Icon,
-}: {
-  title: string;
-  value: string;
-  hint: string;
-  icon: ComponentType<{ className?: string }>;
-}) {
+}: SummaryCardProps) {
   return (
     <Card className="border-white/10 bg-white/[0.03]">
       <CardContent className="flex items-center justify-between gap-4 p-5">

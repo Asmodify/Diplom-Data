@@ -1,13 +1,16 @@
 /**
  * Gemini Q&A Component
  * Interactive question-answer interface with Gemini
+ * Restyled to match the dark editorial theme
  */
 
 import { useState, useRef, useEffect } from 'react';
 import { apiClient } from '@/lib/api';
 import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { ScrollArea } from './ui/scroll-area';
+import { Badge } from './ui/badge';
+import { MessageCircle, Send, Trash2 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -34,7 +37,7 @@ export function GeminiQA() {
 
   const handleAsk = async () => {
     if (!input.trim()) {
-      setError('Please enter a question');
+      setError('Асуулт оруулна уу');
       return;
     }
 
@@ -64,10 +67,10 @@ export function GeminiQA() {
         };
         setMessages((prev) => [...prev, answerMessage]);
       } else {
-        setError('Failed to get answer: ' + response.error);
+        setError('Хариу авахад алдаа: ' + response.error);
       }
     } catch (err) {
-      setError(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setError(`Алдаа: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -80,105 +83,133 @@ export function GeminiQA() {
   };
 
   return (
-    <div className="flex flex-col h-full space-y-4">
-      <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Ask Gemini</h2>
-
-        {/* Context Section */}
-        <div className="mb-4 space-y-2">
-          <button
-            onClick={() => setShowContext(!showContext)}
-            className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-2"
-          >
-            {showContext ? '▼' : '▶'} Optional Context
-          </button>
-
-          {showContext && (
-            <textarea
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              placeholder="Provide context for more relevant answers..."
-              className="w-full h-20 p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          )}
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-            {error}
+    <div className="space-y-5">
+      <Card className="border-white/10 bg-white/[0.03]">
+        <CardHeader className="flex flex-row items-center justify-between gap-4">
+          <div>
+            <CardTitle className="text-lg text-white">Gemini AI-аас асуух</CardTitle>
+            <CardDescription>Ямар ч асуулт асууж болно. Контекст нэмж илүү оновчтой хариу авна.</CardDescription>
           </div>
-        )}
+          <Badge variant="outline">
+            <MessageCircle className="mr-1 h-3 w-3" />
+            {messages.length} мессеж
+          </Badge>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Context Section */}
+          <div className="space-y-2">
+            <button
+              onClick={() => setShowContext(!showContext)}
+              className="flex items-center gap-2 text-sm text-cyan-200/70 hover:text-cyan-100 transition-colors"
+            >
+              <span className="text-xs">{showContext ? '▼' : '▶'}</span>
+              Контекст нэмэх (заавал биш)
+            </button>
+
+            {showContext && (
+              <textarea
+                value={context}
+                onChange={(e) => setContext(e.target.value)}
+                placeholder="Илүү оновчтой хариу авахын тулд контекст нэмнэ..."
+                className="w-full h-20 rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-cyan-400/30 resize-none"
+              />
+            )}
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="rounded-2xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-200">
+              {error}
+            </div>
+          )}
+        </CardContent>
       </Card>
 
       {/* Messages Area */}
-      <Card className="flex-1 p-4 overflow-hidden">
-        <ScrollArea className="h-full pr-4">
-          <div ref={scrollRef} className="space-y-4">
-            {messages.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
-                <p>Ask me anything!</p>
-              </div>
-            ) : (
-              messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex ${msg.type === 'question' ? 'justify-end' : 'justify-start'}`}
-                >
+      <Card className="min-h-[400px] border-white/10 bg-white/[0.03]">
+        <CardContent className="p-4">
+          <ScrollArea className="h-[360px]">
+            <div ref={scrollRef} className="space-y-4 pr-4">
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-cyan-400/12 text-cyan-200">
+                    <MessageCircle className="h-7 w-7" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white">Юу ч асууж болно!</h3>
+                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-400">
+                    Gemini AI-д сошиал медиа, өгөгдлийн анализ, эсвэл ямар ч сэдвээр асуулт асууна уу.
+                  </p>
+                </div>
+              ) : (
+                messages.map((msg) => (
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      msg.type === 'question'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-900'
-                    }`}
+                    key={msg.id}
+                    className={`flex ${msg.type === 'question' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                    <span className="text-xs opacity-70 mt-1 block">
-                      {msg.timestamp.toLocaleTimeString()}
-                    </span>
+                    <div
+                      className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+                        msg.type === 'question'
+                          ? 'bg-cyan-400 text-slate-950'
+                          : 'border border-white/10 bg-slate-900/70 text-slate-200'
+                      }`}
+                    >
+                      <p className="text-sm whitespace-pre-wrap leading-6">{msg.content}</p>
+                      <span className={`text-xs mt-2 block ${
+                        msg.type === 'question' ? 'text-slate-700' : 'text-slate-500'
+                      }`}>
+                        {msg.timestamp.toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm text-cyan-200">
+                      <span className="inline-block h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+                      Бодож байна...
+                    </div>
                   </div>
                 </div>
-              ))
-            )}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg">
-                  <p className="text-sm">Thinking...</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+              )}
+            </div>
+          </ScrollArea>
+        </CardContent>
       </Card>
 
       {/* Input Area */}
-      <Card className="p-4 space-y-3">
-        <div className="flex gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAsk()}
-            placeholder="Ask a question..."
-            disabled={loading}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-          />
-          <Button
-            onClick={handleAsk}
-            disabled={loading || !input.trim()}
-            className="px-6"
-          >
-            {loading ? '...' : 'Send'}
-          </Button>
-        </div>
+      <Card className="border-white/10 bg-white/[0.03]">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex gap-2">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleAsk()}
+              placeholder="Асуулт бичнэ үү..."
+              disabled={loading}
+              className="flex-1 rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-cyan-400/30 disabled:opacity-50"
+            />
+            <Button
+              onClick={handleAsk}
+              disabled={loading || !input.trim()}
+              className="gap-2 px-6"
+            >
+              <Send className="h-4 w-4" />
+              Илгээх
+            </Button>
+          </div>
 
-        {messages.length > 0 && (
-          <button
-            onClick={handleClear}
-            className="text-sm text-gray-600 hover:text-gray-800"
-          >
-            Clear conversation
-          </button>
-        )}
+          {messages.length > 0 && (
+            <button
+              onClick={handleClear}
+              className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              <Trash2 className="h-3 w-3" />
+              Ярилцлага цэвэрлэх
+            </button>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
