@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import { motion } from 'motion/react';
 import {
   ResponsiveContainer,
   LineChart,
@@ -140,17 +141,38 @@ export function Dashboard() {
     commentCount: 0,
   }))).slice(0, 4);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
+  };
+
   return (
-    <div className="space-y-5">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-5"
+    >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard icon={Database} label="Нийт пост" value={totalPosts.toLocaleString()} hint={topSourceLabel} accent="cyan" />
-        <MetricCard icon={Activity} label="Нийт идэвх" value={totalEngagement.toLocaleString()} hint="Backend synced metrics" accent="emerald" />
-        <MetricCard icon={TrendingUp} label="Нийт хүртээмж" value={totalReach.toLocaleString()} hint="+15% өмнөх 7 хоногоос" accent="amber" />
-        <MetricCard icon={Sparkles} label="Дундаж sentiment" value={`${(avgSentiment * 100).toFixed(1)}%`} hint="Trend confidence rising" accent="rose" />
+        <motion.div variants={itemVariants}><MetricCard icon={Database} label="Нийт пост" value={totalPosts.toLocaleString()} hint={topSourceLabel} accent="cyan" /></motion.div>
+        <motion.div variants={itemVariants}><MetricCard icon={Activity} label="Нийт идэвх" value={totalEngagement.toLocaleString()} hint="Backend synced metrics" accent="emerald" /></motion.div>
+        <motion.div variants={itemVariants}><MetricCard icon={TrendingUp} label="Нийт хүртээмж" value={totalReach.toLocaleString()} hint="+15% өмнөх 7 хоногоос" accent="amber" /></motion.div>
+        <motion.div variants={itemVariants}><MetricCard icon={Sparkles} label="Дундаж sentiment" value={`${(avgSentiment * 100).toFixed(1)}%`} hint="Trend confidence rising" accent="rose" /></motion.div>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.4fr_0.9fr]">
-        <Card className="overflow-hidden border-cyan-400/15 bg-gradient-to-br from-slate-950/90 to-slate-900/60">
+        <motion.div variants={itemVariants} className="h-full">
+          <Card className="h-full overflow-hidden border-cyan-400/15 bg-gradient-to-br from-slate-950/90 to-slate-900/60 shadow-xl shadow-cyan-900/5 backdrop-blur-xl transition-colors hover:border-cyan-400/30">
           <CardHeader className="flex flex-row items-center justify-between gap-4">
             <div>
               <CardTitle className="text-lg text-white">Trend line</CardTitle>
@@ -165,7 +187,15 @@ export function Dashboard() {
                   <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(148,163,184,0.14)" />
                   <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ background: '#020617', border: '1px solid rgba(148,163,184,0.18)', borderRadius: 16 }} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'rgba(2, 6, 23, 0.85)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(34, 211, 238, 0.2)',
+                      borderRadius: 16,
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
                   <Legend />
                   <Line type="monotone" dataKey="Facebook" stroke={platformColors.Facebook} strokeWidth={2.5} dot={false} />
                   <Line type="monotone" dataKey="Twitter" stroke={platformColors.Twitter} strokeWidth={2.5} dot={false} />
@@ -176,8 +206,10 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        <div className="space-y-5">
-          <Card className="border-white/10 bg-white/[0.03]">
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="space-y-5">
+          <Card className="border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors hover:border-white/20">
             <CardHeader>
               <CardTitle className="text-lg text-white">Operational snapshot</CardTitle>
               <CardDescription>Backend health and engagement pulse.</CardDescription>
@@ -213,7 +245,7 @@ export function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-white/10 bg-white/[0.03]">
+          <Card className="border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors hover:border-white/20">
             <CardHeader>
               <CardTitle className="text-lg text-white">Momentum pulse</CardTitle>
               <CardDescription>Weekly total engagement trend.</CardDescription>
@@ -231,18 +263,27 @@ export function Dashboard() {
                     <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(148,163,184,0.14)" />
                     <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                     <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip contentStyle={{ background: '#020617', border: '1px solid rgba(148,163,184,0.18)', borderRadius: 16 }} />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'rgba(2, 6, 23, 0.85)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(34, 211, 238, 0.2)',
+                        borderRadius: 16,
+                        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
                     <Area type="monotone" dataKey="totalEngagement" stroke="#22d3ee" fill="url(#engagementFill)" strokeWidth={2.5} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <Card className="border-white/10 bg-white/[0.03]">
+        <motion.div variants={itemVariants} className="h-full">
+          <Card className="h-full border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors hover:border-white/20">
           <CardHeader>
             <CardTitle className="text-lg text-white">Platform mix</CardTitle>
             <CardDescription>Aggregated engagement per source.</CardDescription>
@@ -254,45 +295,56 @@ export function Dashboard() {
                   <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(148,163,184,0.14)" />
                   <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip contentStyle={{ background: '#020617', border: '1px solid rgba(148,163,184,0.18)', borderRadius: 16 }} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'rgba(2, 6, 23, 0.85)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(139, 92, 246, 0.2)',
+                      borderRadius: 16,
+                      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
                   <Bar dataKey="totalEngagement" fill="#8b5cf6" radius={[14, 14, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
+      </motion.div>
 
-        <Card className="border-white/10 bg-white/[0.03]">
-          <CardHeader>
-            <CardTitle className="text-lg text-white">Recent signals</CardTitle>
-            <CardDescription>High-value posts currently in the workspace.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recentPosts.map((post) => (
-              <div key={post.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 transition-colors hover:border-cyan-400/30 hover:bg-slate-900/90">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-white">{post.author}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.28em] text-slate-500">{post.platform}</p>
+      <motion.div variants={itemVariants}>
+        <Card className="h-full border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors hover:border-white/20">
+            <CardHeader>
+              <CardTitle className="text-lg text-white">Recent signals</CardTitle>
+              <CardDescription>High-value posts currently in the workspace.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {recentPosts.map((post) => (
+                <div key={post.id} className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 transition-colors hover:border-cyan-400/30 hover:bg-slate-900/90">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-white">{post.author}</p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.28em] text-slate-500">{post.platform}</p>
+                    </div>
+                    <Badge variant="outline" className="border-cyan-400/20 text-cyan-100">
+                      {post.engagement} engagement
+                    </Badge>
                   </div>
-                  <Badge variant="outline" className="border-cyan-400/20 text-cyan-100">
-                    {post.engagement} engagement
-                  </Badge>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">{post.content || 'No content available'}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {post.keywords.slice(0, 4).map((keyword) => (
+                      <span key={keyword} className="rounded-full bg-white/[0.05] px-3 py-1 text-xs text-slate-300">
+                        #{keyword}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <p className="mt-3 text-sm leading-6 text-slate-300">{post.content || 'No content available'}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {post.keywords.slice(0, 4).map((keyword) => (
-                    <span key={keyword} className="rounded-full bg-white/[0.05] px-3 py-1 text-xs text-slate-300">
-                      #{keyword}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

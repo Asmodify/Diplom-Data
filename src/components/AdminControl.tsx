@@ -52,7 +52,6 @@ export function AdminControl() {
   const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
   const [backendStatus, setBackendStatus] = useState('Connecting to Render backend...');
   const [backendBusy, setBackendBusy] = useState(true);
-  const [backendBusy, setBackendBusy] = useState(true);
 
   useEffect(() => {
     let mounted = true;

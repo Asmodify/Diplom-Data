@@ -4,6 +4,7 @@
  */
 
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Activity,
   ArrowRight,
@@ -106,20 +107,28 @@ export default function App() {
                   )}
                 >
                   <div className="flex items-center gap-3">
-                    <div
+                    <motion.div
+                      layout
                       className={cn(
                         'flex h-10 w-10 items-center justify-center rounded-xl transition-colors',
-                        active ? 'bg-cyan-400 text-slate-950' : 'bg-slate-800 text-slate-300',
+                        active ? 'bg-cyan-400 text-slate-950 shadow-md shadow-cyan-400/20' : 'bg-slate-800/50 text-slate-300 group-hover:bg-slate-800',
                       )}
                     >
                       <Icon className="h-4 w-4" />
-                    </div>
+                    </motion.div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
-                        <span className="font-medium text-slate-50">{tab.label}</span>
-                        {active && <ArrowRight className="h-4 w-4 text-cyan-300" />}
+                        <span className="font-medium text-slate-50 group-hover:text-white transition-colors">{tab.label}</span>
+                        {active && (
+                          <motion.div
+                            initial={{ opacity: 0, x: -5 }}
+                            animate={{ opacity: 1, x: 0 }}
+                          >
+                            <ArrowRight className="h-4 w-4 text-cyan-300" />
+                          </motion.div>
+                        )}
                       </div>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">{tab.description}</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400 group-hover:text-slate-300 transition-colors">{tab.description}</p>
                     </div>
                   </div>
                 </button>
@@ -237,50 +246,61 @@ export default function App() {
               </div>
             </div>
 
-            <div className="min-w-0">
-              {activeTab === 'dashboard' && <Dashboard />}
-              {activeTab === 'sources' && <DataSources />}
-              {activeTab === 'analysis' && <PredictiveAnalysis />}
-              {activeTab === 'admin' && <AdminControl />}
-              {activeTab === 'settings' && (
-                <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                  <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6">
-                    <h4 className="text-lg font-semibold text-white">Системийн тохиргоо</h4>
-                    <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-300">
-                      Системийн ерөнхий тохиргоо, API холболт, мэдэгдлийн тохируулга зэрэг нэмэлт функцүүд энд нэмэгдэнэ. Одоогоор бүх тохиргоо backend environment variables-ээр удирдагдаж байна.
-                    </p>
-                    <div className="mt-4 space-y-3">
-                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-slate-300">Backend API</span>
-                          <Badge variant="default" className="bg-emerald-400/15 text-emerald-100 ring-emerald-400/20">Холбогдсон</Badge>
+            <div className="min-w-0 relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                  {activeTab === 'dashboard' && <Dashboard />}
+                  {activeTab === 'sources' && <DataSources />}
+                  {activeTab === 'analysis' && <PredictiveAnalysis />}
+                  {activeTab === 'admin' && <AdminControl />}
+                  {activeTab === 'settings' && (
+                    <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                      <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6 shadow-inner backdrop-blur-md transition-all hover:bg-white/[0.04]">
+                        <h4 className="text-lg font-semibold text-white">Системийн тохиргоо</h4>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-300">
+                          Системийн ерөнхий тохиргоо, API холболт, мэдэгдлийн тохируулга зэрэг нэмэлт функцүүд энд нэмэгдэнэ. Одоогоор бүх тохиргоо backend environment variables-ээр удирдагдаж байна.
+                        </p>
+                        <div className="mt-4 space-y-3">
+                          <div className="group rounded-2xl border border-white/10 bg-slate-900/70 p-4 transition-colors hover:border-white/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Backend API</span>
+                              <Badge variant="default" className="bg-emerald-400/15 text-emerald-100 ring-emerald-400/20">Холбогдсон</Badge>
+                            </div>
+                          </div>
+                          <div className="group rounded-2xl border border-white/10 bg-slate-900/70 p-4 transition-colors hover:border-white/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Firebase</span>
+                              <Badge variant="outline">Environment-аас</Badge>
+                            </div>
+                          </div>
+                          <div className="group rounded-2xl border border-white/10 bg-slate-900/70 p-4 transition-colors hover:border-white/20">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Gemini AI</span>
+                              <Badge variant="outline">VITE_GEMINI_API_KEY</Badge>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-slate-300">Firebase</span>
-                          <Badge variant="outline">Environment-аас</Badge>
-                        </div>
-                      </div>
-                      <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-slate-300">Gemini AI</span>
-                          <Badge variant="outline">VITE_GEMINI_API_KEY</Badge>
-                        </div>
+                      <div className="relative overflow-hidden rounded-[1.75rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 to-emerald-400/10 p-6 shadow-lg">
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(34,211,238,0.2),transparent_50%)]" />
+                        <h4 className="relative text-lg font-semibold text-white">Дизайн систем</h4>
+                        <ul className="relative mt-4 space-y-3 text-sm text-slate-200">
+                          <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Slate-950 үндсэн өнгө, cyan accent</li>
+                          <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Дугуйрсан гадаргуу, тогтвортой зай</li>
+                          <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Render + Firebase-аас шууд өгөгдөл</li>
+                          <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Уян хатан (Responsive) төхөөрөмжид</li>
+                        </ul>
                       </div>
                     </div>
-                  </div>
-                  <div className="rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-cyan-400/10 to-emerald-400/10 p-6">
-                    <h4 className="text-lg font-semibold text-white">Дизайн систем</h4>
-                    <ul className="mt-4 space-y-3 text-sm text-slate-200">
-                      <li>• Slate-950 үндсэн өнгө, cyan accent</li>
-                      <li>• Дугуйрсан гадаргуу, тогтвортой зай</li>
-                      <li>• Render + Firebase-аас шууд өгөгдөл</li>
-                      <li>• Responsive бүх төхөөрөмжид</li>
-                    </ul>
-                  </div>
-                </div>
-              )}
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </section>
         </main>

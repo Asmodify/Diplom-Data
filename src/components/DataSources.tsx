@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { mn } from 'date-fns/locale';
 import type { ComponentType } from 'react';
+import { motion } from 'motion/react';
 import { CheckCircle2, Layers3, PlugZap, RefreshCw, Share2, ShieldAlert } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -11,9 +12,19 @@ import { cn } from '../lib/utils';
 export function DataSources() {
   const connectedCount = dataSources.filter((source) => source.connected).length;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
+  };
+
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-5">
+      <motion.div variants={itemVariants} className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-cyan-200/70">Sources</p>
           <h2 className="mt-2 text-2xl font-semibold text-white">Өгөгдлийн эх сурвалжууд</h2>
@@ -25,18 +36,19 @@ export function DataSources() {
           <PlugZap className="h-4 w-4" />
           Шинэ эх сурвалж
         </Button>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-3">
         <SummaryCard title="Connected" value={`${connectedCount}/${dataSources.length}`} hint="Active platform links" icon={CheckCircle2} />
         <SummaryCard title="Sync coverage" value="Realtime" hint="Incremental updates enabled" icon={RefreshCw} />
         <SummaryCard title="Source breadth" value="Multi-platform" hint="Facebook, X, Instagram, more" icon={Layers3} />
-      </div>
+      </motion.div>
 
       <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {dataSources.map((source) => (
-            <Card key={source.id} className="border-white/10 bg-white/[0.03]">
+            <motion.div variants={itemVariants} key={source.id}>
+              <Card className="h-full border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.05]">
               <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
                 <div>
                   <CardTitle className="text-lg text-white">{source.name}</CardTitle>
@@ -79,11 +91,12 @@ export function DataSources() {
                   )}
                 </Button>
               </CardContent>
-            </Card>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
-        <div className="space-y-5">
+        <motion.div variants={itemVariants} className="space-y-5">
           <Card className="border-cyan-400/15 bg-gradient-to-br from-cyan-400/8 to-slate-900/70">
             <CardHeader>
               <CardTitle className="text-lg text-white">Sync pipeline</CardTitle>
@@ -127,9 +140,9 @@ export function DataSources() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
