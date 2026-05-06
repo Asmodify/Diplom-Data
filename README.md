@@ -15,13 +15,12 @@ This is a comprehensive system for automated collection, analysis, and predictiv
 
 ## 🎯 Project Objectives
 
-### Primary Goals
-1. **Automated Data Collection**: Build a reliable system to collect public social media posts and comments
-2. **Sentiment Analysis**: Implement natural language processing to analyze content sentiment and emotion
-3. **Engagement Prediction**: Predict user engagement patterns and engagement volume based on historical data
-4. **Recommendation Engine**: Generate actionable recommendations based on predicted outcomes
-5. **User Interface**: Provide an intuitive dashboard for monitoring and analysis
-6. **Data Management**: Securely store and manage collected data
+1. **Automated Data Collection**: Build a reliable system to collect public social media posts and comments.
+2. **Sentiment Analysis**: Implement natural language processing (using Gemini AI) to analyze content sentiment and emotion.
+3. **Engagement Prediction**: Predict user engagement patterns and volume based on historical data.
+4. **Recommendation Engine**: Generate actionable recommendations based on predicted outcomes.
+5. **User Interface**: Provide an intuitive dashboard for monitoring and analysis.
+6. **Data Management**: Securely store and manage collected data via Firebase.
 
 ### Technical Achievements
 - Sentiment analysis accuracy: **91%**
@@ -32,256 +31,115 @@ This is a comprehensive system for automated collection, analysis, and predictiv
 ## 🏗️ System Architecture
 
 ### Stack Overview
+- **Frontend**: React 19 + Vite (Deployed on Vercel)  
+- **Backend API**: FastAPI / Uvicorn (Deployed on Render.com)  
+- **Database**: Firebase Firestore (Cloud) + SQLite (Local Fallback)  
+- **AI Integration**: Google Gemini API  
+- **Data Collection**: Python Selenium Scraper (Runs on Render)  
+- **Authentication**: Firebase anonymous sign-in  
 
-**Frontend**: React 19 + Vite (Deployed on Vercel)  
-**Backend API**: FastAPI/uvicorn (Deployed on Render.com)  
-**Database**: Firebase Firestore (Cloud) + SQLite (Local Fallback)  
-**Data Collection**: Python Selenium Scraper (Runs on Render)  
-**Authentication**: Firebase anonymous sign-in  
+### Three Main Modules
 
-### Four Main Modules
-
-1. **Data Collection Module** (Python Scraper)
+1. **Data Collection & Backend API Module** (`beta/` directory)
+   - Built on FastAPI, hosted on Render.com
    - Automated collection of public social media content
-   - Runs on Render.com via Procfile scheduler
-   - Robust error handling and rate limiting
-   - Data validation and cleaning
-   - Stores results in Firebase Firestore
-
-2. **Backend API Module** (FastAPI on Render)
-   - REST endpoints: `/health`, `/api/v1/stats`, `/api/v1/posts`
-   - Connects frontend to live scraped data
-   - Serves aggregated statistics and post collections
+   - Exposes REST endpoints: `/health`, `/api/v1/stats`, `/api/v1/posts`, `/gemini/*`
+   - Connects frontend to live scraped data and Gemini AI tools
    - Manages Firebase Firestore queries
-   - **Graceful fallback**: Uses SQLite if Firebase unavailable
 
-3. **Frontend Dashboard Module** (React on Vercel)
-   - Consumes live backend API via `src/lib/backend.ts` client
-   - Admin panel for scraper control and monitoring
-   - Top-level metrics dashboard with live engagement trends
-   - Data sources viewer with search and filtering
-   - Fallback to mock data if backend unavailable
+2. **Frontend Dashboard Module** (`src/` directory)
+   - React 19 single-page application built with Vite
+   - Consumes live backend API via `src/lib/backend.ts` and `src/lib/api.ts`
+   - Admin panel for monitoring scraper status and API health
+   - Interactive Q&A feature (`GeminiQA`) for context-aware analysis
 
-4. **Sentiment Analysis & Prediction Module**
-   - Multi-method sentiment evaluation
-   - Engagement prediction and trend analysis
-   - Runs as part of backend data processing pipeline
+3. **Sentiment Analysis & Prediction Module**
+   - Integrates Google Gemini API for context-aware evaluation
+   - Multi-method sentiment scoring and engagement prediction
+   - Runs as part of the backend data processing pipeline
 
 ## 📁 Project Structure
 
-```
-Diploma/
-├── thesis/                    # LaTeX thesis files
-│   ├── main.tex             # Main thesis document
-│   ├── main.pdf             # Compiled PDF
-│   └── images/              # Thesis figures
-├── src/                      # Web dashboard frontend
-│   ├── components/          # React components
-│   ├── lib/                 # Utilities and helpers
-│   └── App.tsx              # Main application
-├── components/              # Reusable UI components
-├── scraper_v2/              # Data collection backend
-│   ├── api/                 # API server
-│   ├── core/                # Core scraping logic
-│   ├── db/                  # Database models
-│   └── ml/                  # Machine learning models
-├── data_crw/                # Additional data processing
-└── package.json             # Frontend dependencies
+```text
+Diploma_full_repo/
+├── thesis/                    # LaTeX thesis files, PDFs, and presentations
+├── src/                       # Web dashboard frontend
+│   ├── components/            # React UI components (Dashboard, AdminControl, GeminiQA, etc.)
+│   ├── lib/                   # API clients and utilities
+│   └── App.tsx                # Main React application
+├── beta/                      # Backend API and Data Collection module
+│   ├── api_server.py          # FastAPI application entry point
+│   ├── run_scraper.py         # Scraping orchestrator
+│   ├── requirements.txt       # Python dependencies
+│   └── ...                    # Various ML, DB, and utils modules
+├── package.json               # Frontend Node.js dependencies
+└── render.yaml                # Render.com IaC configuration
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js** 16+
-- **Python** 3.9+
-- Web browser
+- **Node.js** 18+
+- **Python** 3.11+
+- Git
 
 ### Installation
 
-#### Frontend Setup (Vercel)
+#### 1. Frontend Setup
 ```bash
-# Navigate to project root
-cd Diploma
-
-# Install dependencies
+# Install Node dependencies
 npm install
 
-# Set environment variables
-# Create a .env.local file and add:
-VITE_BACKEND_API_URL=https://diplom-data-api.onrender.com
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
-VITE_FIREBASE_MEASUREMENT_ID=your-measurement-id
-APP_URL=http://localhost:3000
+# Create a .env.local file based on .env.example
+cp .env.example .env.local
 ```
+Update `.env.local` with your Firebase, Gemini, and Backend API details.
 
-**Note**: See `.env.example` for all required variables
-
-#### Backend Setup (Render)
+#### 2. Backend Setup
 ```bash
-# Navigate to scraper_v2 directory
-cd scraper_v2
+# Navigate to the backend directory
+cd beta
 
-# Create and activate virtual environment
+# Create and activate a virtual environment
 python -m venv venv
-source venv/Scripts/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Configure credentials
-# Create fb_credentials.py with Facebook API credentials
-# Set GEMINI_API_KEY for sentiment analysis
-# Configure Firebase with service account JSON
 ```
 
 ### Running the Application
 
 #### Local Development
 
-**Start Frontend Dashboard**
+**Start Backend API (Terminal 1)**
 ```bash
-# From project root
-npm run dev
-```
-Dashboard available at: `http://localhost:5173` (configured for Vite)  
-Frontend will connect to backend at `VITE_BACKEND_API_URL` or fall back to mock data
-
-**Start Backend API (Local)**
-```bash
-# From scraper_v2 directory
+cd beta
 python api_server.py
 # API runs at http://localhost:8000
-# Endpoints: GET /health, GET /api/v1/stats, GET /api/v1/posts
+```
+
+**Start Frontend Dashboard (Terminal 2)**
+```bash
+npm run dev
+# Dashboard available at http://localhost:3000
 ```
 
 #### Production Deployment
-
-**Frontend**: Deployed to Vercel  
-- Connects to live Render backend via `VITE_BACKEND_API_URL`
-- Environment variables set in Vercel project settings
-
-**Backend**: Deployed to Render.com  
-- Runs FastAPI/uvicorn via `Procfile`: `uvicorn scraper_v2.api_server:app --host 0.0.0.0 --port $PORT`
-- Firebase credentials passed as environment variables
-- Auto-scales with traffic
-
-**Scraper**: Runs on Render scheduler  
-- Executed via Render cron jobs or background workers
-
-## � Backend API Client
-
-The frontend uses a centralized API client (`src/lib/backend.ts`) to communicate with the Render backend:
-
-```typescript
-// GET /health - Backend health check
-getBackendHealth(): Promise<BackendHealth>
-
-// GET /api/v1/stats - Aggregated engagement statistics
-getBackendStats(): Promise<BackendStats>
-
-// GET /api/v1/posts - Collected social media posts
-getBackendPosts(limit?: number): Promise<BackendPost[]>
-```
-
-**Features**:
-- Automatic retry on transient failures
-- 12-second request timeout
-- Type-safe request/response handling
-- Graceful fallback to mock data if backend unavailable
-- Automatic timestamp normalization and keyword parsing
-
-**Components Using Backend**:
-- `AdminControl.tsx` - Displays live backend status and post counts
-- `Dashboard.tsx` - Shows real-time engagement metrics and trends
-
-## �📊 Data Analysis Features
-
-### Sentiment Analysis Capabilities
-- **Contextual understanding** of social media posts
-- **Multi-language support** for text analysis
-- **Emotion classification** (positive, negative, neutral)
-- **Trend identification** across time periods
-
-### Engagement Prediction
-- **Likelihood scoring** for user engagement
-- **Volume forecasting** for expected interactions
-- **Pattern recognition** based on historical data
-- **Topic-based clustering** for better insights
-
-### Recommendations
-- **Content optimization** suggestions
-- **Timing recommendations** for maximum engagement
-- **Audience insights** and demographics
-- **Trend-based predictions** for future success
-
-## 📈 Results and Validations
-
-### Performance Metrics
-| Metric | Result |
-|--------|--------|
-| Sentiment Analysis Accuracy | 91% |
-| Engagement Prediction Relevance | 87% |
-| Data Collection Reliability | 99.2% |
-| System Uptime | 99.8% |
-
-## 📚 Key Concepts
-
-### Sentiment Analysis
-Analysis of emotional tone and opinion in text content to understand public perception and sentiment trends.
-
-### Engagement Prediction
-Machine learning-based forecasting of how users are likely to interact with content and the expected volume of interactions.
-
-### Natural Language Processing
-Computational techniques for understanding, processing, and analyzing human language in text form.
-
-### Predictive Modeling
-Statistical and algorithmic approaches to forecast future outcomes based on historical patterns and features.
+- **Frontend**: Automatically deployed via Vercel on pushes to the `main` branch.
+- **Backend**: Managed via `render.yaml` and deployed on Render.com (`diplom-backend` web service).
+- **Environment Variables**: Configure all required tokens (Firebase, Gemini API, etc.) in your respective Vercel/Render project settings.
 
 ## 🔒 Data Privacy & Security
 
-- All collected data complies with platform terms of service
-- Personal information is handled according to privacy regulations
-- Secure data storage with encryption
-- Regular security audits and updates
-
-## 📄 Documentation
-
-- **Thesis**: See `thesis/main.pdf` for complete academic documentation
-- **API Documentation**: Available in backend code comments
-- **Component Documentation**: Inline comments in React components
-
-## 🎓 Academic Contributions
-
-This project demonstrates practical application of:
-- Data science and machine learning concepts
-- Web data collection techniques
-- Natural language processing methods
-- Predictive analytics
-- Software architecture and design patterns
-- User interface design for data analysis
-
-## 📝 Notes
-
-- The system focuses on **publicly available data** only
-- All data collection respects platform terms of service
-- The research is conducted for **academic purposes**
-- The system is **extensible** for future data sources
+- All collected data complies with platform terms of service.
+- The system focuses exclusively on **publicly available data**.
+- Personal information is handled according to privacy regulations.
+- Secure data storage with encryption via Firebase.
 
 ## 📞 Contact
 
 For inquiries about this diploma project:
-- Student: Ө.Хүслэн
-- Advisor: Мөнхбуян
-- Institution: МҮИХСУ
-
----
-
-**Project Completion**: March 2026
-**Status**: Complete and Published
+- **Student**: Ө.Хүслэн
+- **Advisor**: Мөнхбуян
+- **Institution**: МУ-ИХСУ - Мэдээлэл холбооны технологийн сургууль
