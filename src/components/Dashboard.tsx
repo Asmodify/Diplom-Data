@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 import { Activity, Database, Sparkles, TrendingUp, RefreshCw, Layers, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { mockCollectedPosts, mockSocialData } from '../lib/mockData';
 import { getBackendPosts, getBackendStats, normalizeBackendPosts, type LiveAdminPost } from '../lib/backend';
