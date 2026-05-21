@@ -77,7 +77,7 @@ export default function App() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-slate-50 text-slate-800 font-sans">
+    <div className="relative min-h-screen overflow-x-hidden text-slate-800 font-sans">
       {/* Aurora Ambient Lighting Glows */}
       <div className="pointer-events-none absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-cyan-200/20 blur-[120px]" />
       <div className="pointer-events-none absolute top-[20%] right-[-10%] h-[40%] w-[40%] rounded-full bg-purple-200/25 blur-[100px]" />
