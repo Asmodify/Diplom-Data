@@ -9,13 +9,17 @@ from pathlib import Path
 DATABASE_BACKEND = os.getenv('DATABASE_BACKEND', 'postgresql')
 
 # PostgreSQL configuration
-USE_SQLITE = False  # Set to False to use PostgreSQL
+USE_SQLITE = os.getenv('USE_SQLITE', 'false').lower() == 'true'
+
+# Support direct database URL (like Supabase connection string)
+POSTGRES_URL = os.getenv('POSTGRES_URL', os.getenv('DATABASE_URL', None))
+
 DB_CONFIG = {
     "username": os.getenv('DB_USERNAME', 'postgres'),
-    "password": os.getenv('DB_PASSWORD', 'Keqing17'),
+    "password": os.getenv('DB_PASSWORD', 'postgres'),
     "host": os.getenv('DB_HOST', 'localhost'),
     "port": os.getenv('DB_PORT', '5432'),
-    "database": os.getenv('DB_NAME', 'facebook_scraper_beta')
+    "database": os.getenv('DB_NAME', 'postgres')
 }
 
 # ==================== FIREBASE CONFIGURATION ====================
@@ -66,6 +70,11 @@ def get_database_url() -> str:
     """Generate SQLAlchemy database URL from config"""
     if USE_SQLITE:
         return f"sqlite:///{SQLITE_DB_PATH}"
+    elif POSTGRES_URL:
+        # Fix for SQLAlchemy requiring postgresql:// instead of postgres://
+        if POSTGRES_URL.startswith("postgres://"):
+            return POSTGRES_URL.replace("postgres://", "postgresql://", 1)
+        return POSTGRES_URL
     else:
         return (
             f"postgresql://{DB_CONFIG['username']}:{DB_CONFIG['password']}"

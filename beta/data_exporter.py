@@ -20,12 +20,12 @@ except ImportError:
 try:
     from db.config import get_database_url
     from db.models import FacebookPost, PostImage, PostComment
-    from db.firebase_db import FirebaseDB, get_firebase_db
+    from db.database import DatabaseManager as FirebaseDB, get_database_manager as get_firebase_db
     from integrations.google_sheets import GoogleSheetsExporter
 except ImportError:
     from .db.config import get_database_url
     from .db.models import FacebookPost, PostImage, PostComment
-    from .db.firebase_db import FirebaseDB, get_firebase_db
+    from .db.database import DatabaseManager as FirebaseDB, get_database_manager as get_firebase_db
     from .integrations.google_sheets import GoogleSheetsExporter
 
 

@@ -186,7 +186,7 @@ export function AdminControl() {
   const visibleSummary = [
     { title: 'Backend status', value: backendHealth?.status ?? 'unknown', hint: backendHealth?.version ? `v${backendHealth.version}` : 'Render API', icon: ServerCog },
     { title: 'Live posts', value: String(backendStats?.total_posts ?? visiblePosts.length), hint: 'Pulled from scraper database', icon: Database },
-    { title: 'Firebase', value: backendHealth?.firebase ? 'Connected' : 'Offline', hint: 'Admin logs via Firestore', icon: ShieldCheck },
+    { title: 'Database', value: backendHealth?.firebase ? 'Connected' : 'Offline', hint: 'Admin logs via Supabase', icon: ShieldCheck },
     { title: 'Frontend API', value: 'Vercel-ready', hint: backendStatus, icon: Activity },
   ] as const;
 

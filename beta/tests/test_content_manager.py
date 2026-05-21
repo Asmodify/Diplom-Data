@@ -46,6 +46,14 @@ class TestContentManager(unittest.TestCase):
             }]
         }
         
+        # Clean up database tables for a clean test
+        db = DatabaseManager()
+        db.init_db()
+        with db.session_scope() as session:
+            session.query(PostComment).delete()
+            session.query(PostImage).delete()
+            session.query(FacebookPost).delete()
+        
     def tearDown(self):
         """Clean up after tests"""
         # Remove temporary directory
@@ -73,9 +81,10 @@ class TestContentManager(unittest.TestCase):
         self.assertEqual(post.likes, 10)
         self.assertEqual(post.shares, 5)
         
-        # Check comments
-        self.assertEqual(len(post.comments), 1)
-        comment = post.comments[0]
+        # Check comments (excluding replies at top-level)
+        top_level_comments = [c for c in post.comments if c.reply_to_id is None]
+        self.assertEqual(len(top_level_comments), 1)
+        comment = top_level_comments[0]
         self.assertEqual(comment.comment_id, 'comment123')
         self.assertEqual(comment.content, 'Test comment')
         

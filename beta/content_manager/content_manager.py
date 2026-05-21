@@ -72,8 +72,6 @@ class ContentSaver:
                     timestamp=comment_data.get('timestamp'),
                     likes=comment_data.get('likes', 0)
                 )
-                self.db.session.add(comment)
-                self.db.session.flush()  # Assigns an ID to comment
                 # Handle replies
                 if 'replies' in comment_data:
                     for reply_data in comment_data['replies']:
@@ -84,9 +82,9 @@ class ContentSaver:
                             author_url=reply_data.get('author_url', ''),
                             content=reply_data.get('content', ''),
                             timestamp=reply_data.get('timestamp'),
-                            likes=reply_data.get('likes', 0),
-                            reply_to_id=comment.id
+                            likes=reply_data.get('likes', 0)
                         )
+                        comment.replies.append(reply)
                         post.comments.append(reply)
                 post.comments.append(comment)
                 
@@ -176,6 +174,8 @@ class ContentSaver:
                 
                 # Add comments
                 for comment in post.comments:
+                    if comment.reply_to_id is not None:
+                        continue
                     comment_dict = {
                         'comment_id': comment.comment_id,
                         'author': comment.author_name,

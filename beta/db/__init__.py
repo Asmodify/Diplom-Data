@@ -1,5 +1,5 @@
 from .database import DatabaseManager
-from .models import FacebookPost, PostImage, PostComment, Base
+from .models import FacebookPost, PostImage, PostComment, AnalysisResult, Base
 from .config import get_database_url, get_image_path
 
 __all__ = [
@@ -7,6 +7,7 @@ __all__ = [
     'FacebookPost',
     'PostImage',
     'PostComment',
+    'AnalysisResult',
     'Base',
     'get_database_url',
     'get_image_path'

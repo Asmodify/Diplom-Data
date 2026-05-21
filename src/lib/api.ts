@@ -175,6 +175,33 @@ export class ApiClient {
     return this.request('/stats');
   }
 
+  // ==================== Scraper & Pages.txt Management ====================
+
+  async getPages(): Promise<ApiResponse<{ pages: string[] }>> {
+    return this.request('/api/v1/pages');
+  }
+
+  async savePages(pages: string[]): Promise<ApiResponse<{ message: string }>> {
+    return this.request('/api/v1/pages', {
+      method: 'POST',
+      body: JSON.stringify({ pages }),
+    });
+  }
+
+  async runScraper(): Promise<ApiResponse<{ message: string }>> {
+    return this.request('/api/v1/scraper/run', {
+      method: 'POST',
+    });
+  }
+
+  async getScraperStatus(): Promise<ApiResponse<{ active: boolean; pid: number | null }>> {
+    return this.request('/api/v1/scraper/status');
+  }
+
+  async getScraperLogs(lines: number = 150): Promise<ApiResponse<{ logs: string; line_count: number }>> {
+    return this.request(`/api/v1/scraper/logs?lines=${lines}`);
+  }
+
   // ==================== Utility ====================
 
   setToken(token: string): void {

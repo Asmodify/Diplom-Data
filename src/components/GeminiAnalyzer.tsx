@@ -1,10 +1,11 @@
 /**
  * Gemini AI Analysis Component
  * Provides UI for analyzing text with Google Gemini
- * Restyled to match the dark editorial theme
+ * Styled with White Glassmorphic Aurora light theme
  */
 
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { apiClient } from '@/lib/api';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -60,86 +61,105 @@ export function GeminiAnalyzer() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 350, damping: 26 } },
+  };
+
   return (
-    <div className="space-y-5">
-      <Card className="border-white/10 bg-white/[0.03]">
-        <CardHeader>
-          <CardTitle className="text-lg text-white">Gemini AI шинжилгээ</CardTitle>
-          <CardDescription>Текст оруулж, Gemini AI-аар шинжилгээ хийнэ.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Text Input */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-200">Шинжлэх текст</p>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Шинжлэх текстээ оруулна уу..."
-              className="w-full h-32 rounded-2xl border border-white/10 bg-slate-900/70 p-4 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none focus:ring-1 focus:ring-cyan-400/30 resize-none"
-            />
-          </div>
-
-          {/* Analysis Type Selection */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-200">Шинжилгээний төрөл</p>
-            <div className="flex flex-wrap gap-2">
-              {analysisOptions.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setAnalysisType(option.value)}
-                  className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
-                    analysisType === option.value
-                      ? 'border-cyan-400/40 bg-cyan-400/12 text-cyan-100'
-                      : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-white/20 hover:bg-white/[0.05]'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
+    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6">
+      <motion.div variants={itemVariants}>
+        <Card className="glass-card shadow-sm">
+          <CardHeader className="border-b border-slate-200/50 pb-4">
+            <CardTitle className="text-lg font-bold text-slate-900">Gemini AI шинжилгээ</CardTitle>
+            <CardDescription className="text-xs text-slate-400">Текст оруулж, Gemini AI-аар шинжилгээ хийнэ.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 pt-4">
+            {/* Text Input */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-700">Шинжлэх текст</p>
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Шинжлэх текстээ оруулна уу..."
+                className="w-full h-32 rounded-2xl border border-slate-200 bg-white/50 p-4 text-sm text-slate-800 placeholder:text-slate-400 focus:border-purple-300 focus:outline-none focus:ring-1 focus:ring-purple-500/20 resize-none transition-colors"
+              />
             </div>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="rounded-2xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-200">
-              {error}
+            {/* Analysis Type Selection */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-700">Шинжилгээний төрөл</p>
+              <div className="flex flex-wrap gap-2">
+                {analysisOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setAnalysisType(option.value)}
+                    className={`rounded-2xl border px-4 py-2 text-sm font-semibold transition-all duration-300 ${
+                      analysisType === option.value
+                        ? 'border-purple-200 bg-purple-50 text-purple-700 shadow-sm'
+                        : 'border-slate-200 bg-white/40 text-slate-600 hover:border-slate-300 hover:bg-white/80'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
 
-          {/* Analyze Button */}
-          <Button
-            onClick={handleAnalyze}
-            disabled={loading || !text.trim()}
-            className="w-full gap-2"
-          >
-            <Sparkles className="h-4 w-4" />
-            {loading ? 'Шинжилж байна...' : 'Gemini-аар шинжлэх'}
-          </Button>
-        </CardContent>
-      </Card>
+            {/* Error Message */}
+            {error && (
+              <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-600">
+                {error}
+              </div>
+            )}
+
+            {/* Analyze Button */}
+            <Button
+              onClick={handleAnalyze}
+              disabled={loading || !text.trim()}
+              className="w-full gap-2 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl shadow-md shadow-purple-500/20 h-10"
+            >
+              <Sparkles className="h-4 w-4" />
+              {loading ? 'Шинжилж байна...' : 'Gemini-аар шинжлэх'}
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* Result Display */}
       {result && (
-        <Card className="border-cyan-400/15 bg-gradient-to-br from-cyan-400/10 to-slate-900/70">
-          <CardHeader className="flex flex-row items-center justify-between gap-4">
-            <div>
-              <CardTitle className="text-lg text-white capitalize">
-                {analysisOptions.find((o) => o.value === analysisType)?.label} үр дүн
-              </CardTitle>
-              <CardDescription>Gemini AI-н хариу</CardDescription>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleCopy} className="gap-2">
-              {copied ? <CheckCircle2 className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-              {copied ? 'Хуулсан' : 'Хуулах'}
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5">
-              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-200">{result}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div variants={itemVariants}>
+          <Card className="glass-card border-purple-200/50 bg-gradient-to-br from-purple-500/5 via-indigo-500/5 to-cyan-500/5 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between gap-4 border-b border-slate-200/50 pb-4">
+              <div>
+                <CardTitle className="text-lg font-bold text-slate-900 capitalize">
+                  {analysisOptions.find((o) => o.value === analysisType)?.label} үр дүн
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-400">Gemini AI-н хариу</CardDescription>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleCopy} 
+                className="gap-2 bg-white/60 border-slate-200 text-slate-600 rounded-xl"
+              >
+                {copied ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
+                {copied ? 'Хуулсан' : 'Хуулах'}
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="rounded-2xl border border-slate-200 bg-white/40 p-5">
+                <p className="whitespace-pre-wrap text-sm leading-7 text-slate-700">{result}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

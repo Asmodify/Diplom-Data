@@ -294,23 +294,48 @@ class PostScraper:
         """Get comments from a post"""
         comments = []
         try:
-            # Click "View more comments" if present
+            # Click "View more comments" or "Comment" button if present
             try:
-                view_more = post_element.find_element(
-                    By.CSS_SELECTOR,
-                    'div[role="button"]'
-                )
-                if "View" in view_more.text and "comment" in view_more.text.lower():
-                    view_more.click()
-                    time.sleep(random.uniform(1, 2))
-            except NoSuchElementException:
-                pass
+                buttons = post_element.find_elements(By.CSS_SELECTOR, 'div[role="button"]')
+                clicked = False
+                for btn in buttons:
+                    text = (btn.text or '').lower()
+                    # Look for comment text, including Mongolian localization
+                    if ("comment" in text or "сэтгэгдэл" in text) and "share" not in text and "хуваалцах" not in text:
+                        try:
+                            # Scroll into view
+                            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
+                            time.sleep(0.5)
+                            # Try JS click first to avoid ElementClickInterceptedException
+                            self.driver.execute_script("arguments[0].click();", btn)
+                            clicked = True
+                            time.sleep(random.uniform(2, 4))  # Wait for comments/modal to load
+                            break
+                        except Exception as click_err:
+                            logger.debug(f"Failed to click comment button: {click_err}")
+            except Exception as e:
+                logger.debug(f"Error finding comment buttons: {e}")
                 
-            # Find comment elements
+            # Find comment elements - first check inline
             comment_elements = post_element.find_elements(
                 By.CSS_SELECTOR,
-                'div[aria-label^="Comment"]'
+                'div[aria-label^="Comment"], div[aria-label^="Сэтгэгдэл"]'
             )
+            
+            # If no inline comments found but we clicked, check if a modal opened
+            if not comment_elements and clicked:
+                try:
+                    dialogs = self.driver.find_elements(By.CSS_SELECTOR, 'div[role="dialog"]')
+                    for dialog in dialogs:
+                        if dialog.is_displayed():
+                            comment_elements = dialog.find_elements(
+                                By.CSS_SELECTOR, 
+                                'div[aria-label^="Comment"], div[aria-label^="Сэтгэгдэл"]'
+                            )
+                            if comment_elements:
+                                break
+                except Exception:
+                    pass
             
             for comment in comment_elements[:self.max_comments]:
                 try:

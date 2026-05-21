@@ -61,9 +61,9 @@ class PostComment(Base):
     reply_to_id = Column(Integer, ForeignKey('post_comments.id', ondelete='SET NULL'))
     scraped_at = Column(DateTime, default=datetime.utcnow)
     
-    # Relationships
     post = relationship("FacebookPost", back_populates="comments")
-    replies = relationship("PostComment", backref='parent', remote_side=[id], cascade="all, delete-orphan", single_parent=True)
+    replies = relationship("PostComment", back_populates="parent", cascade="all, delete-orphan")
+    parent = relationship("PostComment", back_populates="replies", remote_side=[id])
     
     # Indexes
     __table_args__ = (
@@ -71,3 +71,18 @@ class PostComment(Base):
         Index('idx_post_comments_timestamp', 'timestamp'),
         Index('idx_post_comments_reply_to_id', 'reply_to_id'),
     )
+
+class AnalysisResult(Base):
+    __tablename__ = 'analysis_results'
+    
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Text, nullable=False)
+    analysis_type = Column(Text, nullable=False)
+    result = Column(Text, nullable=False)  # JSON serialized result
+    analyzed_at = Column(DateTime, default=datetime.utcnow)
+    
+    __table_args__ = (
+        Index('idx_analysis_results_post_id', 'post_id'),
+        Index('idx_analysis_results_type_post', 'analysis_type', 'post_id'),
+    )
+
