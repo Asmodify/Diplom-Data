@@ -10,10 +10,10 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  default: 'bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20',
-  secondary: 'bg-slate-800 text-slate-100 hover:bg-slate-700',
-  outline: 'border border-slate-700 bg-transparent text-slate-100 hover:bg-slate-800/60',
-  ghost: 'bg-transparent text-slate-200 hover:bg-slate-800/60',
+  default: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm',
+  secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200',
+  outline: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
+  ghost: 'bg-transparent text-slate-700 hover:bg-slate-100',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -28,7 +28,7 @@ export function Button({ className, variant = 'default', size = 'default', type 
       type={type}
       className={cn(
         'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
         variantClasses[variant],
         sizeClasses[size],
         className,
