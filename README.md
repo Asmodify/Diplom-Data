@@ -22,6 +22,14 @@ This is a comprehensive system for automated collection, analysis, and predictiv
 5. **User Interface**: Provide an intuitive dashboard for monitoring and analysis.
 6. **Data Management**: Securely store and manage collected data via Firebase.
 
+## 🤖 Ruflo Improvement Assessment
+
+If you want to apply ideas from [`ruvnet/ruflo`](https://github.com/ruvnet/ruflo), see:
+
+- [`RUFLO_IMPROVEMENTS.md`](./RUFLO_IMPROVEMENTS.md)
+
+It includes concrete, repo-specific actions for CI quality gates, security automation, persistent operational memory, and workflow orchestration.
+
 ### Technical Achievements
 - Sentiment analysis accuracy: **91%**
 - Engagement prediction relevance: **87%**
