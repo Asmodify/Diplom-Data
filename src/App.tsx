@@ -18,6 +18,7 @@ import { DataSources } from './components/DataSources';
 import { PredictiveAnalysis } from './components/PredictiveAnalysis';
 import { AdminControl } from './components/AdminControl';
 import { Badge } from './components/ui/badge';
+import { ApiKeyChecker } from './components/ApiKeyChecker';
 
 type TabId = 'dashboard' | 'sources' | 'analysis' | 'admin' | 'settings';
 
@@ -284,6 +285,7 @@ function SettingsPanel() {
           ))}
         </div>
       </section>
+      <ApiKeyChecker />
     </div>
   );
 }
