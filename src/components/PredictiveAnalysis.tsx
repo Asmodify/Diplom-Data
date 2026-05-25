@@ -7,6 +7,8 @@ import { Badge } from './ui/badge';
 import { generatePredictiveAnalysis } from '../lib/gemini';
 import { mockSocialData } from '../lib/mockData';
 import { getBackendPosts, normalizeBackendPosts } from '../lib/backend';
+import { ClaudeAnalyzer } from './ClaudeAnalyzer';
+import { GeminiDataAnalyzer } from './GeminiDataAnalyzer';
 
 export function PredictiveAnalysis() {
   const [analysis, setAnalysis] = useState<string | null>(null);
@@ -49,8 +51,9 @@ export function PredictiveAnalysis() {
   };
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
-      <div className="space-y-5">
+    <div className="space-y-8">
+      <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
+        <div className="space-y-5">
         <Card>
           <CardHeader className="border-b border-slate-200 pb-4">
             <CardTitle>Prediction controls</CardTitle>
@@ -129,6 +132,9 @@ export function PredictiveAnalysis() {
           )}
         </CardContent>
       </Card>
+      </div>
+      <ClaudeAnalyzer />
+      <GeminiDataAnalyzer />
     </div>
   );
 }
