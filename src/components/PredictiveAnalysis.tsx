@@ -7,7 +7,6 @@ import { Badge } from './ui/badge';
 import { generatePredictiveAnalysis } from '../lib/gemini';
 import { mockSocialData } from '../lib/mockData';
 import { getBackendPosts, normalizeBackendPosts } from '../lib/backend';
-import { ClaudeAnalyzer } from './ClaudeAnalyzer';
 import { GeminiDataAnalyzer } from './GeminiDataAnalyzer';
 
 export function PredictiveAnalysis() {
@@ -133,7 +132,6 @@ export function PredictiveAnalysis() {
         </CardContent>
       </Card>
       </div>
-      <ClaudeAnalyzer />
       <GeminiDataAnalyzer />
     </div>
   );
