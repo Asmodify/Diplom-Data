@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(latexmk -synctex=1 -interaction=nonstopmode -file-line-error -pdf --shell-escape -f main.tex)"
+    ]
+  }
+}

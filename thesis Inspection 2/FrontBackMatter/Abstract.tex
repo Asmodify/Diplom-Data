@@ -1,0 +1,17 @@
+\chapter*{Хураангуй}
+\addcontentsline{toc}{chapter}{Хураангуй}
+
+Энэхүү дипломын ажил нь Facebook хуудасны олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, TextBlob болон scikit-learn-д суурилсан үндсэн шинжилгээ, Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
+
+\textbf{Судалгааны үндсэн зорилгууд:}
+\begin{itemize}
+    \item Facebook хуудасны зорилтот жагсаалтыг удирдаж, scraper процессыг backend-ээс эхлүүлэх боломжтой болгох
+    \item Нийтлэл, сэтгэгдэл, зураг болон likes, shares, comment count зэрэг оролцооны өгөгдлийг хадгалах
+    \item Цуглуулсан өгөгдөл дээр TextBlob fallback бүхий sentiment analysis, LDA topic modeling, engagement score тооцоолол хийх
+    \item React dashboard-аар live backend өгөгдлийг харуулах, backend холбогдохгүй үед demo fallback ашиглах
+    \item Gemini API ашиглан сүүлийн өгөгдлөөс уншигдахуйц тайлан, зөвлөмж үүсгэх
+\end{itemize}
+
+Систем нь Facebook төвтэй өгөгдөл цуглуулах pipeline, REST API, өгөгдлийн сан, frontend dashboard, scraper target management, automation log viewer, AI report generation гэсэн бодит хэрэгжсэн бүрэлдэхүүнтэй. Энэхүү хувилбар нь repository-д бодитоор байгаа Facebook төвтэй workflow-г л үндсэн боломж гэж авч үзсэн.
+
+\textbf{Түлхүүр үгс:} Facebook scraper, React dashboard, FastAPI, PostgreSQL, SQLAlchemy, TextBlob, LDA, Gemini, social media analytics

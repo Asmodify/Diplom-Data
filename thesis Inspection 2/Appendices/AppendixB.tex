@@ -1,0 +1,145 @@
+\chapter{Эх кодын жагсаалт}
+
+Энэхүү хавсралтад системийн хөгжүүлэлтэд ашигласан голлох эх кодуудыг хавсаргав. 
+
+\section{Үндсэн API сервер (api\_server.py)}
+Системийн backend хэсэг буюу FastAPI дээр бичигдсэн үндсэн сервер.
+\begin{verbatim}
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Depends
+from pydantic import BaseModel
+import uvicorn
+import os
+import json
+import subprocess
+from datetime import datetime
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+
+from db.database import DatabaseManager, FacebookPost
+from ml.analyzer import DataAnalyzer
+from ml.gemini_integration import GeminiAnalyzer
+from ml.sheets_integration import SheetsExporter
+
+app = FastAPI(title="Social Media Analysis API", version="1.0.0")
+db_manager = DatabaseManager()
+analyzer = DataAnalyzer()
+gemini = GeminiAnalyzer()
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "ok",
+        "database": db_manager.engine is not None,
+        "analyzer": analyzer.is_ready,
+        "gemini": gemini.is_ready
+    }
+
+@app.get("/api/v1/stats")
+def get_stats():
+    session = db_manager.get_session()
+    try:
+        total_posts = session.query(FacebookPost).count()
+        total_comments = session.query(func.sum(FacebookPost.comments)).scalar() or 0
+        avg_engagement = session.query(func.avg(
+            FacebookPost.likes + FacebookPost.comments + FacebookPost.shares
+        )).scalar() or 0
+        
+        return {
+            "status": "success",
+            "data": {
+                "total_posts": total_posts,
+                "total_comments": int(total_comments),
+                "avg_engagement": round(float(avg_engagement), 2)
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        session.close()
+
+@app.post("/api/v1/scraper/run")
+def run_scraper(background_tasks: BackgroundTasks):
+    try:
+        subprocess.Popen(["python", "run_scraper.py", "--headless", "--max-posts=10"])
+        return {"status": "success", "message": "Scraper started in background"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+\end{verbatim}
+
+\section{React Dashboard (App.tsx)}
+Системийн frontend интерфэйсийг удирддаг үндсэн React компонент.
+\begin{verbatim}
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard';
+import DataSources from './components/DataSources';
+import AIAnalysis from './components/AIAnalysis';
+import Settings from './components/Settings';
+
+function App() {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/v1/stats')
+      .then(res => res.json())
+      .then(data => setStats(data.data))
+      .catch(err => console.error("Failed to load stats", err));
+  }, []);
+
+  return (
+    <BrowserRouter>
+      <div className="flex h-screen bg-gray-50">
+        <Sidebar />
+        <main className="flex-1 overflow-y-auto p-8">
+          <Routes>
+            <Route path="/" element={<Dashboard stats={stats} />} />
+            <Route path="/sources" element={<DataSources />} />
+            <Route path="/analysis" element={<AIAnalysis />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
+}
+export default App;
+\end{verbatim}
+
+\section{ML Analyzer (analyzer.py)}
+Өгөгдөлд NLP шинжилгээ хийдэг гол класс.
+\begin{verbatim}
+import pandas as pd
+from textblob import TextBlob
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
+import re
+
+class DataAnalyzer:
+    def __init__(self):
+        self.is_ready = True
+        
+    def analyze_sentiment(self, text):
+        if not text:
+            return 0.0
+        blob = TextBlob(str(text))
+        return blob.sentiment.polarity
+
+    def extract_topics(self, documents, n_topics=3):
+        if len(documents) < 5:
+            return ["Insufficient data for topic modeling"]
+            
+        vectorizer = CountVectorizer(stop_words='english', max_features=1000)
+        doc_term_matrix = vectorizer.fit_transform(documents)
+        
+        lda = LatentDirichletAllocation(n_components=n_topics, random_state=42)
+        lda.fit(doc_term_matrix)
+        
+        feature_names = vectorizer.get_feature_names_out()
+        topics = []
+        for topic_idx, topic in enumerate(lda.components_):
+            top_words = [feature_names[i] for i in topic.argsort()[:-6:-1]]
+            topics.append(f"Topic {topic_idx+1}: {', '.join(top_words)}")
+            
+        return topics
+\end{verbatim}

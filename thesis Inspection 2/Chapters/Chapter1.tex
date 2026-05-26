@@ -1,0 +1,77 @@
+\chapter{Оршил}
+\label{Chapter1}
+
+\section{Судалгааны үндэслэл}
+
+Олон нийтийн Facebook хуудас дээр үүсэж буй нийтлэл, сэтгэгдэл, реакцын хэмжээ нь хэрэглэгчдийн сонирхол, санал хандлага, контентийн үр нөлөөг ойлгоход хэрэгтэй өгөгдөл болдог. Гэвч уг өгөгдлийг гараар цуглуулах нь цаг их зарцуулдаг, давтагдах боломж муутай, олон хуудас дээр тогтмол хянахад хүндрэлтэй. Иймээс scraper, backend API, өгөгдлийн сан, dashboard, AI тайланг нэгтгэсэн систем шаардлагатай.
+
+Энэ төслийн бодит хэрэгжилт нь Facebook өгөгдөл дээр төвлөрсөн. Frontend нь live backend өгөгдлийг харуулж, scraper target list буюу \texttt{pages.txt}-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, sentiment, topic, trend, export болон scraper control функцийг өгдөг.
+
+\section{Судалгааны зорилго}
+
+Энэхүү дипломын ажлын зорилго нь Facebook хуудасны нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулах, хадгалах, шинжлэх, хэрэглэгчид dashboard болон AI тайлан хэлбэрээр хүргэх систем боловсруулах явдал юм.
+
+\textbf{Системийн бодит зорилтууд:}
+\begin{enumerate}
+    \item Facebook page URL/ID жагсаалтыг frontend болон backend-ээр удирдах
+    \item Selenium WebDriver ашиглан Facebook хуудаснаас пост, сэтгэгдэл, зураг, engagement metadata цуглуулах
+    \item PostgreSQL/SQLAlchemy ашиглан \texttt{facebook\_posts}, \texttt{post\_comments}, \texttt{post\_images}, \texttt{analysis\_results} хүснэгтүүдэд хадгалах
+    \item FastAPI ашиглан posts, comments, images, stats, sentiment, topics, trends, scraper control endpoint-ууд гаргах
+    \item React/Vite dashboard ашиглан live data, demo fallback, chart, query, backend health, scraper logs харуулах
+    \item Google Gemini API ашиглан сүүлийн өгөгдлөөс тайлан, зөвлөмж үүсгэх
+\end{enumerate}
+
+\section{Судалгааны асуулт}
+
+\begin{enumerate}
+    \item Facebook хуудаснаас нийтлэл, сэтгэгдлийг browser automation ашиглан давтагдах боломжтой байдлаар цуглуулж болох уу?
+    \item Цуглуулсан өгөгдлийг REST API болон dashboard-аар хэрэглэгчид ойлгомжтой байдлаар хүргэж болох уу?
+    \item TextBlob, LDA topic modeling, engagement score болон Gemini report generation-ийг нэг pipeline-д нэгтгэснээр судалгааны болон контент хяналтын шийдвэрт хэрэгтэй мэдээлэл гаргаж болох уу?
+\end{enumerate}
+
+\section{Судалгааны таамаглал}
+
+\begin{itemize}
+    \item \textbf{H1:} Facebook scraper, relational storage, FastAPI endpoint, React dashboard-ыг нэгтгэснээр өгөгдөл цуглуулах ба хянах ажлын гараар хийх ачааллыг бууруулна.
+    \item \textbf{H2:} Likes, shares, comments, text length, hashtag count зэрэг feature-д суурилсан engagement score нь постуудыг харьцуулахад хэрэглэхүйц индикатор болно.
+    \item \textbf{H3:} Gemini-д өгөгдлийн товч summary дамжуулах нь dashboard-ийн тоон үзүүлэлтийг уншигдахуйц зөвлөмж болгон хувиргахад тусална.
+\end{itemize}
+
+\section{Судалгааны ач холбогдол}
+
+\begin{itemize}
+    \item Facebook хуудасны өгөгдөл цуглуулах, хадгалах, шалгах үйлдлийг нэг workflow болгоно.
+    \item Маркетинг, судалгаа, контент хяналтын ажилд dashboard болон export боломж өгнө.
+    \item Browser automation, REST API, ORM, frontend visualization, AI report generation-ийг нэг системд нэгтгэсэн жишээ болно.
+\end{itemize}
+
+\section{Судалгааны хүрээ ба хязгаарлалт}
+
+\textbf{Хүрээ:}
+\begin{itemize}
+    \item Facebook хуудасны нийтлэл, сэтгэгдэл, зураг, engagement metadata цуглуулах
+    \item PostgreSQL үндсэн хадгалалт, SQLite тохиргооны fallback боломж
+    \item FastAPI REST endpoint, Bearer token хамгаалалттай v1 endpoint-ууд
+    \item React/Vite frontend dashboard, data source manager, admin query, Gemini report UI
+    \item TextBlob/basic sentiment, LDA topic modeling, keyword trend extraction, engagement score
+\end{itemize}
+
+\textbf{Хязгаарлалт:}
+\begin{itemize}
+    \item Бусад платформын scraper бодитоор хэрэгжээгүй.
+    \item Deep-learning sentiment model болон graph-based interaction analysis үндсэн хэрэгжилтэд ашиглагдаагүй.
+    \item Sentiment analysis нь голчлон англи текстэд илүү тохиромжтой; Монгол хэлний тусгай загвар бэлтгээгүй.
+    \item Facebook UI болон access policy өөрчлөгдвөл scraper selector, login, modal handling дахин тохируулах шаардлагатай.
+\end{itemize}
+
+\section{Дипломын ажлын бүтэц}
+
+Энэхүү дипломын ажил нь нийт 6 бүлгээс бүрдэнэ:
+\begin{description}
+    \item[1-р бүлэг:] Оршил - судалгааны үндэслэл, зорилго, асуулт, таамаглал, ач холбогдол, хүрээ болон хязгаарлалтыг тодорхойлно.
+    \item[2-р бүлэг:] Онолын судалгаа - өгөгдөл цуглуулах архитектур, API, ML шинжилгээ, ижил төстэй системийн харьцуулалт болон онолын үндэслэлүүд.
+    \item[3-р бүлэг:] Системийн шинжилгээ ба загварчлал - системийн архитектур, UML диаграмууд (use case, дараалал, класс), өгөгдлийн сангийн загвар.
+    \item[4-р бүлэг:] Системийн хөгжүүлэлт - frontend, backend, scraper болон AI хэсгүүдийн бодит кодчилол, хэрэгжилтийн шийдлүүд.
+    \item[5-р бүлэг:] Хэрэгжилт ба үр дүн - системийн ажиллагааны үр дүн, хэрэглэгчийн интерфэйс (UI), тайлан гаргалт.
+    \item[6-р бүлэг:] Дүгнэлт - судалгааны ерөнхий үр дүн, шинэлэг тал, цаашдын хөгжүүлэлтийн боломжууд.
+\end{description}

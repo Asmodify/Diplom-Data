@@ -1,0 +1,308 @@
+\chapter{Системийн шинжилгээ ба загварчлал}
+\label{Chapter3}
+
+Энэ бүлэгт системийг хөгжүүлэхээс өмнө хийгдэх програм хангамжийн инженерийн шинжилгээ, хэрэглэгчийн шаардлага (Use Case), системийн ерөнхий архитектур, болон өгөгдлийн сангийн загварчлалыг дэлгэрэнгүй харуулна.
+
+\section{Хэрэглэгчийн шаардлага ба Use Case диаграм}
+
+Системийг ашиглах үндсэн хэрэглэгч нь Системийн админ (System Admin) болон Энгийн хэрэглэгч/Аналист (Analyst) байна. Тэдгээрийн системтэй харилцах үйлдлүүдийг Use Case диаграмаар харуулав.
+
+\subsection{Функциональ шаардлагууд}
+Системийн гүйцэтгэх үндсэн үүргүүдийг функциональ шаардлага (Functional Requirements) гэдэг. Энэхүү систем нь дараах шаардлагуудыг хангасан байх ёстой:
+\begin{itemize}
+    \item \textbf{FR-01:} Систем нь хэрэглэгчийн өгсөн Facebook URL-аас пост болон сэтгэгдлүүдийг автоматаар цуглуулна.
+    \item \textbf{FR-02:} Систем цуглуулсан өгөгдлийг өгөгдлийн санд давхардалгүй хадгална.
+    \item \textbf{FR-03:} Систем цуглуулсан текстийн утгыг (sentiment) эерэг, сөрөг, саармаг гэж ангилна.
+    \item \textbf{FR-04:} Систем нь өгөгдлөөс хамаарсан статистик дүгнэлтийг AI ашиглан гаргана.
+    \item \textbf{FR-05:} Систем нь тайланг график болон хүснэгтээр Dashboard дээр харуулна.
+\end{itemize}
+
+\subsection{Функциональ бус шаардлагууд}
+Функциональ бус шаардлагууд (Non-Functional Requirements) нь системийн гүйцэтгэл, найдвартай байдал, аюулгүй байдлыг тодорхойлдог:
+\begin{itemize}
+    \item \textbf{NFR-01 (Гүйцэтгэл):} Dashboard-ийн хуудсууд болон API хүсэлтүүд нь 2 секундээс бага хугацаанд хариу өгдөг байх ёстой.
+    \item \textbf{NFR-02 (Найдвартай байдал):} Scraper нь Facebook-ийн CAPTCHA болон rate limit-тэй тулгарсан үед процессыг автоматаар түр зогсоох эсвэл дахин оролдох (retry) логиктой байна.
+    \item \textbf{NFR-03 (Аюулгүй байдал):} API endpoint-ууд болон AI тайлан үүсгэх хэсгүүд нь тохирох токен (Token) болон API Key-гээр баталгаажсан байна.
+    \item \textbf{NFR-04 (Өргөтгөх боломж):} Системийн өгөгдлийн сангийн архитектур нь цаашид хэдэн сая бичлэг (records) хадгалахад гацахгүй байхаар индекслэгдсэн (indexed) байх шаардлагатай.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    actor/.style={draw, circle, minimum size=0.5cm, inner sep=0pt, font=\small},
+    usecase/.style={draw, ellipse, minimum width=3cm, minimum height=1cm, align=center, fill=blue!5, font=\small},
+    rel/.style={-latex, thick}
+]
+
+% Actors
+\node[actor, label=below:Аналист] (analyst) at (-4, 2) {};
+\node[actor, label=below:Админ] (admin) at (-4, -3) {};
+
+% System boundary
+\draw[thick, dashed, fill=gray!2] (-1.5, -5.5) rectangle (4.5, 4.5);
+\node[above, font=\bfseries] at (1.5, 4.5) {Social Media Analysis System};
+
+% Use cases
+\node[usecase] (dashboard) at (1.5, 3.5) {Dashboard харах};
+\node[usecase] (ai_report) at (1.5, 2) {AI тайлан үүсгэх};
+\node[usecase] (manage_targets) at (1.5, 0.5) {Scraper target удирдах};
+\node[usecase] (start_scraper) at (1.5, -1) {Scraper ажиллуулах};
+\node[usecase] (view_logs) at (1.5, -2.5) {Scraper log харах};
+\node[usecase] (manage_system) at (1.5, -4) {Системийн тохиргоо};
+
+% Connections
+\draw[rel] (analyst) -- (dashboard);
+\draw[rel] (analyst) -- (ai_report);
+\draw[rel] (analyst) -- (manage_targets);
+
+\draw[rel] (admin) -- (manage_targets);
+\draw[rel] (admin) -- (start_scraper);
+\draw[rel] (admin) -- (view_logs);
+\draw[rel] (admin) -- (manage_system);
+
+\end{tikzpicture}
+\caption{Хэрэглэгчийн үүрэг ба Use Case диаграм}
+\label{fig:usecase_diagram}
+\end{figure}
+
+\subsection{Use Case тодорхойлолтууд}
+
+Доорх хүснэгтүүдэд системийн гол үйлдлүүдийн (Use Cases) дэлгэрэнгүй тодорхойлолтыг харуулав.
+
+\begin{table}[H]
+\centering
+\caption{UC-01: Dashboard харах}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{3cm}|p{10cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Үзүүлэлт} & \textbf{Тайлбар} \\ \hline
+\textbf{Use case-ийн нэр} & Dashboard харах \\ \hline
+\textbf{Оролцогч} & Аналист, Админ \\ \hline
+\textbf{Зорилго} & Цуглуулсан өгөгдлийн статистик, оролцооны хандлага (engagement trend)-г график хэлбэрээр харах \\ \hline
+\textbf{Урьдчилсан нөхцөл} & Систем ажиллаж, backend API-тай холбогдсон байна. \\ \hline
+\textbf{Үндсэн урсгал} & 1. Хэрэглэгч систем рүү нэвтэрч Dashboard цэсийг сонгоно. \newline 2. Систем backend-ээс статистик мэдээллийг татаж авна. \newline 3. Нийт пост, engagement, sentiment score зэрэг үзүүлэлтийг харуулна. \newline 4. Хэрэглэгч refresh товч дарж мэдээллээ шинэчлэх боломжтой. \\ \hline
+\textbf{Альтернатив урсгал} & 3a. Хэрэв backend ажиллахгүй байвал систем "Demo fallback data" харуулж, backend унтарсан төлөвтэй байгааг мэдэгдэнэ. \\ \hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{UC-02: Scraper ажиллуулах}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{3cm}|p{10cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Үзүүлэлт} & \textbf{Тайлбар} \\ \hline
+\textbf{Use case-ийн нэр} & Scraper ажиллуулах \\ \hline
+\textbf{Оролцогч} & Админ \\ \hline
+\textbf{Зорилго} & Сонгосон Facebook хуудсуудаас дата цуглуулах процессыг эхлүүлэх \\ \hline
+\textbf{Урьдчилсан нөхцөл} & \texttt{pages.txt}-д хамгийн багадаа нэг зорилтот хуудас (target) бүртгэгдсэн байна. \\ \hline
+\textbf{Үндсэн урсгал} & 1. Админ Data Sources цэс рүү орно. \newline 2. "Start scraping" товчийг дарна. \newline 3. Систем backend рүү хүсэлт илгээж Selenium scraper-ийг background-д ажиллуулна. \newline 4. Scraper-ийн төлөв "Active" болж өөрчлөгдөнө. \\ \hline
+\textbf{Альтернатив урсгал} & 3a. Хэрэв өмнөх scraper process аль хэдийн ажиллаж байвал систем давхар эхлүүлэхээс татгалзаж анхааруулга өгнө. \\ \hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{UC-03: AI тайлан үүсгэх}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{3cm}|p{10cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Үзүүлэлт} & \textbf{Тайлбар} \\ \hline
+\textbf{Use case-ийн нэр} & AI тайлан үүсгэх \\ \hline
+\textbf{Оролцогч} & Аналист, Админ \\ \hline
+\textbf{Зорилго} & Сүүлийн үеийн постууд дээр үндэслэн хиймэл оюуны тусламжтай уншигдахуйц тайлан, дүгнэлт гаргуулах \\ \hline
+\textbf{Урьдчилсан нөхцөл} & Gemini API түлхүүр тохируулагдсан байна. \\ \hline
+\textbf{Үндсэн урсгал} & 1. Хэрэглэгч AI Analysis цэс рүү орж "Generate report" дарна. \newline 2. Систем сүүлийн 50 постын хураангуйг бэлтгэж Gemini API рүү илгээнэ. \newline 3. Gemini загвар нь өгөгдлийг анализ хийж Монгол хэлээр тайлан үүсгэнэ. \newline 4. Систем тайланг дэлгэцэнд харуулна. \\ \hline
+\textbf{Альтернатив урсгал} & 2a. API түлхүүр буруу эсвэл хязгаар хэтэрсэн (quota exceeded) бол систем алдааны мессеж харуулна. \\ \hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Системийн архитектурын загварчлал}
+
+Бодит систем нь frontend, backend, scraper, database, ML analysis, AI report гэсэн үндсэн давхаргатай. Төслийн гол урсгал нь Facebook target list удирдах, scraper ажиллуулах, PostgreSQL-д хадгалах, FastAPI-аар өгөгдөл буцаах, React dashboard дээр харуулах, шаардлагатай үед Gemini тайлан үүсгэх хэлбэртэй.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1.0cm, align=center, fill=blue!5, font=\small},
+    ext/.style={draw, rounded corners, minimum width=3.0cm, minimum height=1.0cm, align=center, fill=gray!10, font=\small},
+    arr/.style={-Latex, thick}
+]
+    \node[ext] (user) at (0,0) {Хэрэглэгч};
+    \node[box] (frontend) at (4.1,0) {React/Vite\\Dashboard};
+    \node[box] (api) at (8.2,0) {FastAPI\\Backend};
+    \node[box] (scraper) at (4.1,-2.3) {Facebook Scraper\\Selenium + BS4};
+    \node[box] (db) at (8.2,-2.3) {SQLAlchemy\\PostgreSQL};
+    \node[box] (analysis) at (4.1,-4.6) {Analysis Module\\TextBlob + sklearn};
+    \node[box] (ai) at (8.2,-4.6) {Gemini API\\Report Generator};
+    \node[ext] (fb) at (0,-2.3) {Facebook Pages};
+
+    \draw[arr] (user.east) -- (frontend.west);
+    \draw[arr] (frontend.east) -- (api.west);
+    \draw[arr] (api.south) -- (db.north);
+    \draw[arr] (api.south west) -- (scraper.north east);
+    \draw[arr] (fb.east) -- (scraper.west);
+    \draw[arr] (scraper.east) -- (db.west);
+    \draw[arr] (db.south west) -- (analysis.north east);
+    \draw[arr] (analysis.east) -- (ai.west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Системийн логик архитектурын диаграм}
+\label{fig:architecture-diagram}
+\end{figure}
+
+Архитектур нь үүрэг зориулалтаараа дараах хэсгүүдэд хуваагдсан:
+\begin{itemize}
+    \item \textbf{Presentation Layer (Frontend):} React 19, Vite, TypeScript, TailwindCSS ашиглан хэрэглэгчтэй харилцах интерфэйсийг бүрдүүлнэ.
+    \item \textbf{Application Layer (Backend):} FastAPI ашиглан RESTful API үүсгэж, өгөгдөл дамжуулах, background process (scraper) удирдах логик ажиллана.
+    \item \textbf{Data/Storage Layer:} PostgreSQL (үндсэн) болон SQLite (fallback) өгөгдлийн сангуудыг SQLAlchemy ORM ашиглан удирдана.
+    \item \textbf{AI/Analytics Layer:} TextBlob, Scikit-learn (LDA) болон Google Gemini API-ууд хамтарч өгөгдөл дээр анализ хийнэ.
+\end{itemize}
+
+\section{Өгөгдлийн сангийн загварчлал (ERD)}
+
+Системийн өгөгдлийн сан нь relational (харилцаат) бүтэцтэй. Үндсэн entity-үүд болох FacebookPost, PostComment, PostImage болон AnalysisResult хоорондын харилцааг доорх ERD диаграммаар үзүүлэв.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.96\textwidth,center}
+\begin{tikzpicture}[
+    entity/.style={draw, rounded corners, align=left, fill=blue!5, font=\small, text width=4.15cm, inner sep=6pt},
+    key/.style={font=\bfseries},
+    rel/.style={-Latex, thick}
+]
+    \node[entity] (post) at (0,0) {
+        \textbf{FacebookPost}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} unique\\
+        \texttt{page\_name, content}\\
+        \texttt{likes, shares, comments}\\
+        \texttt{timestamp, scraped\_at}
+    };
+
+    \node[entity] (comment) at (-5.2,-3.5) {
+        \textbf{PostComment}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{comment\_id} unique\\
+        \texttt{author\_name, content}\\
+        \texttt{likes, timestamp}
+    };
+
+    \node[entity] (image) at (0,-3.5) {
+        \textbf{PostImage}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{image\_url}\\
+        \texttt{local\_path}\\
+        \texttt{downloaded\_at}
+    };
+
+    \node[entity] (analysis) at (5.2,-3.5) {
+        \textbf{AnalysisResult}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{analysis\_type}\\
+        \texttt{result JSON}\\
+        \texttt{analyzed\_at}
+    };
+
+    \draw[rel] (post.south west) -- node[above, sloped]{1:N} (comment.north east);
+    \draw[rel] (post.south) -- node[right]{1:N} (image.north);
+    \draw[rel] (post.south east) -- node[above, sloped]{1:N} (analysis.north west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Өгөгдлийн сангийн ERD диаграм}
+\label{fig:database-erd}
+\end{figure}
+
+Харьцааны тайлбар:
+\begin{itemize}
+    \item \textbf{1:N (Нэгээс-Олон):} Нэг пост олон сэтгэгдэлтэй (PostComment) байж болно.
+    \item \textbf{1:N (Нэгээс-Олон):} Нэг пост олон зурагтай (PostImage) хавсрагдсан байж болно.
+    \item \textbf{1:N (Нэгээс-Олон):} Нэг пост дээр Sentiment, Topic гэх мэт олон төрлийн шинжилгээний үр дүн (AnalysisResult) хийгдэж хадгалагдах боломжтой.
+\end{itemize}
+
+\section{Процессын дарааллын загварчлал}
+
+\subsection{Өгөгдөл цуглуулах процесс (Activity)}
+
+Scraper хэрхэн ажиллаж, өгөгдөл хэрхэн цуглуулагдаж хадгалагдах урсгалыг доорх алхмаар тодорхойлно:
+\begin{enumerate}
+    \item \texttt{pages.txt}-ээс Facebook page URL/ID жагсаалт унших.
+    \item Selenium browser session эхлүүлэх, шаардлагатай directory/log үүсгэх.
+    \item Target бүр рүү navigate хийж, scroll болон selector-based extraction хийх.
+    \item BeautifulSoup болон Selenium selector ашиглан post, image, comment data ялгах.
+    \item SQLAlchemy \texttt{DatabaseManager.save\_post()} ашиглан duplicate (давхардал) шалгаж хадгалах.
+    \item Log файлыг \texttt{/api/v1/scraper/logs} endpoint-оор frontend-д харуулах.
+\end{enumerate}
+
+Энэхүү процесс нь тасралтгүй ажиллах боломжтой бөгөөд алдаа гарсан үед логт тэмдэглээд дараагийн target руу шилжих алдаа зохицуулах (error handling) механизмтай.
+
+\subsection{Дарааллын диаграм (Sequence Diagram)}
+
+Хэрэглэгч frontend-ээс "Scraper ажиллуулах" команд өгөх үеийн дарааллыг (Sequence Diagram) дараах байдлаар тодорхойлов. Энэ нь объектууд хоорондоо хэрхэн, ямар дарааллаар мэдээлэл солилцож байгааг харуулдаг динамик загвар юм.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    auto,
+    block/.style={rectangle, draw=black, thick, fill=blue!10, text width=2.5em, align=center, rounded corners, minimum height=2em},
+    line/.style={draw, thick, -latex, shorten >=2pt},
+    dash/.style={draw, thick, dashed, -latex, shorten >=2pt}
+]
+    % Lifelines
+    \node[block, text width=2cm] (user) at (0,0) {Хэрэглэгч};
+    \node[block, text width=2cm] (front) at (3,0) {Frontend};
+    \node[block, text width=2cm] (api) at (6,0) {FastAPI};
+    \node[block, text width=2cm] (scraper) at (9,0) {Scraper};
+    \node[block, text width=2cm] (db) at (12,0) {Database};
+
+    \draw[dashed, thick] (user.south) -- +(0,-6);
+    \draw[dashed, thick] (front.south) -- +(0,-6);
+    \draw[dashed, thick] (api.south) -- +(0,-6);
+    \draw[dashed, thick] (scraper.south) -- +(0,-6);
+    \draw[dashed, thick] (db.south) -- +(0,-6);
+
+    % Messages
+    \draw[line] (0,-1) -- node[above, font=\footnotesize]{Start click} (3,-1);
+    \draw[line] (3,-1.5) -- node[above, font=\footnotesize]{POST /scraper/run} (6,-1.5);
+    \draw[dash] (6,-2) -- node[above, font=\footnotesize]{Status: 200 OK} (3,-2);
+    
+    \draw[line] (6,-2.5) -- node[above, font=\footnotesize]{Spawn process} (9,-2.5);
+    \draw[line] (9,-3) -- node[above, font=\footnotesize]{Fetch URL} (9,-3.5);
+    \draw[line] (9,-4) -- node[above, font=\footnotesize]{Insert Data} (12,-4);
+    \draw[dash] (12,-4.5) -- node[above, font=\footnotesize]{Success} (9,-4.5);
+    \draw[line] (9,-5) -- node[above, font=\footnotesize]{Log write} (6,-5);
+
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Scraper ажиллуулах процессын дарааллын диаграм}
+\label{fig:sequence_diagram}
+\end{figure}
+
+
+\subsection{Тайлан үүсгэх процесс (AI Generation)}
+
+Gemini API ашиглан тайлан гаргах процесс:
+\begin{enumerate}
+    \item Frontend-ээс /gemini/analyze endpoint руу хүсэлт илгээнэ.
+    \item Backend нь хамгийн сүүлийн үеийн (latest) 50 постыг өгөгдлийн сангаас query хийж татна.
+    \item Татсан өгөгдлүүдээс чухал хэсгүүдийг (content, engagement score, sentiment) нэгтгэн JSON/Text prompt үүсгэнэ.
+    \item Prompt-ийг Gemini API руу илгээнэ.
+    \item Gemini-аас ирсэн Markdown хэлбэртэй тайланг Frontend руу буцааж, дэлгэцэнд render хийж харуулна.
+\end{enumerate}
+
+\section{Бүлгийн дүгнэлт}
+Энэхүү бүлэгт системийг хөгжүүлэхээс өмнө шаардагдах Use Case диаграм, үйл явцын урсгал, системийн ерөнхий болон өгөгдлийн сангийн архитектурыг тодорхойллоо. Загварчлал нь системийг модульчлагдсан (өгөгдөл цуглуулах, хадгалах, тайлагнах) байдлаар бие даан хөгжүүлэх боломжтойг харуулж байна.

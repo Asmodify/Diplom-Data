@@ -1,0 +1,36 @@
+\chapter{Дүгнэлт}
+\label{Chapter6}
+
+\section{Үндсэн дүгнэлт}
+
+Энэхүү дипломын ажлын хүрээнд Facebook өгөгдлийг цуглуулах, хадгалах, API-аар дамжуулах, dashboard дээр хянах, Gemini ашиглан тайлан үүсгэх системийг амжилттай боловсруулсан. Судалгаа болон хөгжүүлэлтийн үр дүнд дараах зорилтууд хангагдлаа:
+
+\begin{enumerate}
+    \item \textbf{Facebook scraper workflow:} \texttt{pages.txt}-д хадгалсан target list-ээр scraper ажиллуулах, log үүсгэх, backend-ээс scraper start/status/log хянах боломж бүрдсэн.
+    \item \textbf{REST API:} FastAPI backend нь health, posts, comments, images, stats, sentiment, topics, trends, export, Gemini, scraper control endpoint-уудтай болсон.
+    \item \textbf{Database layer:} PostgreSQL/SQLAlchemy model болон duplicate-aware save logic хэрэгжиж өгөгдлийг алдаагүй, давхардалгүй хадгалах боломжтой болсон.
+    \item \textbf{Frontend dashboard:} React/Vite dashboard нь live backend data, fallback demo data, chart, recent posts, admin query, scraper controls, Gemini report UI-г нэгтгэсэн цогц хяналтын самбар болсон.
+    \item \textbf{Analysis pipeline:} TextBlob/basic sentiment, LDA topic modeling, engagement scoring, Gemini report generation ажиллах бүтэцтэй болсон.
+\end{enumerate}
+
+\section{Шинэлэг тал}
+
+\begin{itemize}
+    \item Scraper target management, process control, log viewer-ийг command line-аас гаргаж, frontend UI-тай шууд холбосон.
+    \item Backend live data болон demo fallback-ийг нэг dashboard-д нэгтгэсэн бөгөөд API унасан үед ч систем ажиллах чадвартай (Resilience).
+    \item Relational storage, API, dashboard, AI report generation-ийг дипломын нэг системийн workflow болгон хэрэгжүүлсэн.
+    \item Analysis result-г database-д JSON хэлбэрээр хадгалах боломжтой болгож, post-level analysis-г дараа нь дахин ашиглах нөхцөл бүрдүүлсэн.
+\end{itemize}
+
+\section{Цаашдын хөгжүүлэлтийн чиглэл}
+
+Хэдийгээр систем үндсэн зорилгоо биелүүлсэн ч илүү сайжруулах, өргөжүүлэх боломжууд дараах байдалтай байна:
+\begin{enumerate}
+    \item Монгол хэлний labeled dataset бүрдүүлж sentiment model тусгайлан сургаж нэвтрүүлэх.
+    \item Admin limit/toggle controls-ийг backend configuration болон database-д persist хийх (Одоогоор UI төлөв байдалтай байгаа).
+    \item Scraper selector test болон regression test нэмэх, Instagram/TikTok зэрэг өөр эх сурвалжуудыг дэмждэг болгох.
+    \item Labeled benchmark dataset ашиглан sentiment/topic/engagement model-ийн бодит accuracy болон F1 score хэмжиж загварыг сайжруулах.
+    \item Scraper ажиллах үед queue/job status table нэмж олон хэрэглэгчийн үед process control-ийг (жишээ нь Celery эсвэл Redis ашиглан) сайжруулах.
+\end{enumerate}
+
+Энэхүү ажил нь өгөгдөл цуглуулах, хадгалах, харах, шинжлэх, AI тайлан болгох алхмуудыг нэг usable системд холбосонд үндсэн үнэ цэн оршино. Цаашид дээрх сайжруулалтуудыг хийснээр системийг судалгааны болон байгууллагын хэрэглээнд илүү тогтвортой ашиглах бүрэн боломжтой.

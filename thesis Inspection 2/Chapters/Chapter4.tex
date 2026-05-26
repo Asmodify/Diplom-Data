@@ -1,0 +1,181 @@
+\chapter{Системийн хөгжүүлэлт}
+\label{Chapter4}
+
+Энэхүү бүлэгт системийн шинжилгээ ба архитектурын загварчлалд үндэслэн хийгдсэн бодит програмчлалын хөгжүүлэлт, ашигласан технологийн шийдлүүдийг тайлбарлана.
+
+\section{Төслийн бүтэц}
+
+Төслийн root хэсэгт frontend, backend, Supabase migration, thesis material зэрэг хэсгүүд байрлана. Бодит application code нь дараах байдлаар зохион байгуулагдсан:
+
+\begin{itemize}
+    \item \texttt{src/}: React/Vite frontend үндсэн код.
+    \item \texttt{src/components/}: Dashboard, DataSources, PredictiveAnalysis, AdminControl болон UI компонентууд.
+    \item \texttt{src/lib/}: Backend API client, Gemini client, Supabase client, mock data.
+    \item \texttt{beta/}: FastAPI backend, scraper, database, ML, integrations агуулсан Python код.
+    \item \texttt{beta/api\_server.py}: REST API, health, stats, posts, analysis, scraper control endpoint-ууд.
+    \item \texttt{beta/scraper/}: BrowserManager, PostScraper, EdgeFacebookScraper зэрэг scraper код.
+    \item \texttt{beta/db/}: SQLAlchemy database manager, model, config.
+    \item \texttt{beta/ml/}: DataAnalyzer, GeminiAnalyzer болон sentiment/topic analysis модулиуд.
+\end{itemize}
+
+\section{Өгөгдлийн сангийн хөгжүүлэлт}
+
+Database хэрэгжилт нь SQLAlchemy ORM (Object-Relational Mapping) дээр суурилсан. \texttt{DatabaseManager} класс нь engine/session үүсгэх, table initialize хийх, post/comment/image/result хадгалах, query хийх, duplicate update хийх, health check хийх үүрэгтэй.
+
+SQLAlchemy ашиглан хүснэгт үүсгэх логикийг дараах кодын хэсэгт харуулав:
+
+\begin{verbatim}
+from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+
+class FacebookPost(Base):
+    __tablename__ = 'facebook_posts'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    post_id = Column(String, unique=True, index=True)
+    page_name = Column(String)
+    content = Column(String)
+    likes = Column(Integer, default=0)
+    comments = Column(Integer, default=0)
+    shares = Column(Integer, default=0)
+    timestamp = Column(DateTime)
+\end{verbatim}
+
+Дээрх кодод \texttt{FacebookPost} классыг тодорхойлж, өгөгдлийн сангийн хүснэгтийн багануудыг (columns) ORM ашиглан маппинг (mapping) хийсэн. Ингэснээр Python кодноос шууд SQL бичих шаардлагагүйгээр объектын түвшинд харилцах боломжтой болсон.
+
+\textbf{Гол шинжүүд:}
+\begin{itemize}
+    \item Existing \texttt{post\_id} байгаа үед шинэчилж update хийх (Upsert logic).
+    \item Comment duplicate-г \texttt{comment\_id} эсвэл author/content-оор давхар шалгах.
+    \item Image duplicate-г URL-аар шалгах.
+    \item Analysis result-г \texttt{post\_id + analysis\_type} хосолсон түлхүүрээр update/save хийх.
+\end{itemize}
+
+\section{Backend хөгжүүлэлт (FastAPI)}
+
+\texttt{beta/api\_server.py} нь системийн гол REST API сервер юм. Backend startup үед database manager, analysis module, Google Sheets exporter, Gemini integration-ийг initialize хийхийг оролддог.
+
+\begin{table}[H]
+\centering
+\caption{Backend endpoint-уудын үндсэн бүлэг}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{4.4cm}|p{9.2cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Endpoint бүлэг} & \textbf{Үүрэг} \\
+\hline
+\texttt{/health} & Backend, database, analyzer, sheets, gemini initialization status шалгах \\
+\hline
+\texttt{/api/v1/posts}, \texttt{/posts} & Post list болон single post унших \\
+\hline
+\texttt{/posts/\{id\}/comments} & Post-ийн comments унших/үүсгэх \\
+\hline
+\texttt{/posts/\{id\}/images} & Post-ийн image records унших/үүсгэх \\
+\hline
+\texttt{/api/v1/stats} & Total posts, pages, comments, average engagement metrics буцаах \\
+\hline
+\texttt{/api/v1/sentiment} & Single/batch sentiment analysis ажиллуулах \\
+\hline
+\texttt{/api/v1/topics/trends} & Topic modeling болон keyword/hashtag trend extraction \\
+\hline
+\texttt{/api/v1/pages} & \texttt{pages.txt} файл унших/бичих (Scraping targets) \\
+\hline
+\texttt{/api/v1/scraper/*} & Scraper process start/status/logs удирдах \\
+\hline
+\texttt{/gemini/*} & Gemini summary, Q\&A, topic detection \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Scraper хөгжүүлэлт}
+
+Scraper хэсэг нь Selenium WebDriver болон BeautifulSoup ашиглан Facebook page content-ийг авахад чиглэсэн. \texttt{run\_scraper.py} нь command-line entry point бөгөөд \texttt{--headless}, \texttt{--max-posts}, \texttt{--no-screenshots}, \texttt{--no-images}, \texttt{--debug} сонголтуудтай. Backend scraper endpoint нь энэ script-ийг background process болгон эхлүүлдэг.
+
+Selenium WebDriver ашиглан хөтөч эхлүүлэх тохиргооны жишээ:
+
+\begin{verbatim}
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+def setup_driver(headless=True):
+    options = Options()
+    if headless:
+        options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
+    
+    driver = webdriver.Firefox(options=options)
+    driver.implicitly_wait(10)
+    return driver
+\end{verbatim}
+
+Дээрх тохиргоо нь browser-ыг дэлгэцэнд харуулахгүйгээр цаана (headless mode) ажиллуулж, санах ойн ачааллыг бууруулах, сервер дээр шууд ажиллах нөхцөлийг бүрдүүлдэг.
+
+\textbf{Scraper workflow:}
+\begin{enumerate}
+    \item Log directory болон output directory үүсгэнэ.
+    \item \texttt{pages.txt}-ээс target list уншина.
+    \item Target бүр дээр AutoScraper ашиглан scrape хийнэ.
+    \item Амжилт/алдааг \texttt{logs/facebook\_scraper.log} файлд бичнэ.
+    \item Frontend log endpoint-оор сүүлийн мөрүүдийг уншиж харуулна.
+\end{enumerate}
+
+\section{Frontend хөгжүүлэлт (React Dashboard)}
+
+Frontend нь React 19 болон Vite дээр бүтээгдсэн. \texttt{App.tsx} нь Dashboard, Data Sources, AI Analysis, Admin, Settings гэсэн үндсэн tab-уудыг удирдана.
+
+Dashboard нь backend-ээс \texttt{/api/v1/posts} болон \texttt{/api/v1/stats} endpoint-уудаар өгөгдөл уншиж, дараах үзүүлэлтийг харуулдаг:
+\begin{itemize}
+    \item Posts collected, engagement, estimated reach, average sentiment summary.
+    \item Recharts ашигласан line/bar/area chart (Оролцооны хандлага).
+    \item Latest signals буюу recent posts list.
+    \item Backend live эсвэл demo fallback status badge.
+\end{itemize}
+
+\section{AI тайлан болон ML шинжилгээний хөгжүүлэлт}
+
+\subsection{Data Analyzer модуль}
+\texttt{DataAnalyzer} нь гурван үндсэн функцтэй:
+\begin{itemize}
+    \item \textbf{Sentiment analysis:} TextBlob боломжтой үед polarity/subjectivity тооцоолно. Боломжгүй үед basic keyword matching fallback ажиллана.
+    \item \textbf{Topic classification:} CountVectorizer болон LDA ашиглан top keywords бүхий topic label үүсгэнэ.
+    \item \textbf{Engagement prediction:} Likes, shares, comments-оос оноо тооцоолж, data хангалттай үед GradientBoostingRegressor ашиглан score таамаглах оролдлого хийнэ.
+\end{itemize}
+
+\subsection{Gemini AI тайлан}
+AI тайлан нь хоёр замаар хэрэгжсэн:
+\begin{itemize}
+    \item \textbf{Frontend талд:} \texttt{@google/genai} ашиглаж \texttt{gemini-2.5-flash} model-д latest data summary prompt илгээдэг. Энэ нь хэрэглэгчийн browser-оос шууд AI-д хандах хөнгөн арга юм.
+    \item \textbf{Backend талд:} \texttt{google-generativeai} ашигласан \texttt{GeminiAnalyzer} нь summary, insights, questions, improvement, critique төрлийн prompt-уудыг илгээдэг.
+\end{itemize}
+Хоёр тохиолдолд хоёуланд нь \texttt{GEMINI\_API\_KEY} орчны хувьсагчаар дамжин баталгаажилт (authentication) хийгдэнэ.
+
+Frontend хэсэгт AI тайлан үүсгэх React component-ийн логикийг дараах байдлаар хэрэгжүүлсэн:
+
+\begin{verbatim}
+import { GoogleGenAI } from '@google/genai';
+
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
+async function generateReport(promptText: string) {
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: promptText,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Gemini API Error:", error);
+        return null;
+    }
+}
+\end{verbatim}
+
+Энэхүү код нь орчны хувьсагчаас (environment variables) API түлхүүрийг авч, \texttt{gemini-2.5-flash} загвар руу prompt илгээж, ирсэн текстийн хариуг буцаана. Frontend нь уг буцаасан хариуг React Markdown компонент ашиглан дэлгэцэнд форматтайгаар харуулна.
+
+\section{Бүлгийн дүгнэлт}
+Энэхүү бүлэгт системийн backend (FastAPI), frontend (React), scraper болон өгөгдлийн сангийн бодит хөгжүүлэлтийн явц, техникийн шийдлүүдийг тайлбарлав. Дараагийн бүлэгт эдгээр хөгжүүлэлтийн үр дүнд бий болсон интерфэйс, туршилтын үр дүнгүүдийг дэлгэрэнгүй харуулна.

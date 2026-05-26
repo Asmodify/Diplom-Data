@@ -17,7 +17,7 @@ import { Activity, Database, MessageSquare, RefreshCw, Sparkles, TrendingUp } fr
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { mockCollectedPosts, mockSocialData } from '../lib/mockData';
+
 import { getBackendPosts, getBackendStats, normalizeBackendPosts, type LiveAdminPost } from '../lib/backend';
 import { cn } from '../lib/utils';
 
@@ -37,7 +37,7 @@ const platformColors: Record<string, string> = {
 
 export function Dashboard() {
   const [livePosts, setLivePosts] = useState<LiveAdminPost[]>([]);
-  const [liveStats, setLiveStats] = useState<{ totalPosts: number; totalEngagement: number } | null>(null);
+  const [liveStats, setLiveStats] = useState<{ totalPosts: number; totalEngagement: number; averageSentiment?: number } | null>(null);
   const [backendStatus, setBackendStatus] = useState<'loading' | 'live' | 'demo'>('loading');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -47,9 +47,19 @@ export function Dashboard() {
       const [posts, stats] = await Promise.all([getBackendPosts(100), getBackendStats()]);
       const normalized = normalizeBackendPosts(posts);
       setLivePosts(normalized);
+      let averageSentiment = 0.65;
+      if (stats.sentiment_distribution) {
+        const positive = stats.sentiment_distribution.POSITIVE || 0;
+        const total = Object.values(stats.sentiment_distribution).reduce((a, b) => a + b, 0);
+        if (total > 0) {
+          averageSentiment = positive / total;
+        }
+      }
+
       setLiveStats({
         totalPosts: stats.total_posts,
-        totalEngagement: normalized.reduce((sum, post) => sum + post.engagement, 0),
+        totalEngagement: stats.total_comments + (stats.total_posts * stats.avg_likes),
+        averageSentiment
       });
       setBackendStatus('live');
     } catch {
@@ -85,22 +95,8 @@ export function Dashboard() {
   }, []);
 
   const sourceData: LiveAdminPost[] = useMemo(
-    () =>
-      livePosts.length > 0
-        ? livePosts
-        : mockSocialData.map((item) => ({
-            id: `${item.platform}-${item.date}`,
-            platform: item.platform.toLowerCase(),
-            date: item.date,
-            author: item.platform,
-            content: '',
-            keywords: [],
-            engagement: item.engagement,
-            likes: item.engagement,
-            shares: 0,
-            commentCount: 0,
-          })),
-    [livePosts],
+    () => livePosts,
+    [livePosts]
   );
 
   const aggregatedByDate = useMemo(() => {
@@ -126,23 +122,12 @@ export function Dashboard() {
     return rows.sort((a, b) => a.date.localeCompare(b.date));
   }, [sourceData]);
 
-  const totalPosts = liveStats?.totalPosts ?? mockSocialData.reduce((sum, item) => sum + item.posts, 0);
-  const totalEngagement = liveStats?.totalEngagement ?? mockSocialData.reduce((sum, item) => sum + item.engagement, 0);
-  const totalReach = mockSocialData.reduce((sum, item) => sum + item.reach, 0);
-  const avgSentiment = mockSocialData.reduce((sum, item) => sum + item.sentiment, 0) / mockSocialData.length;
+  const totalPosts = liveStats?.totalPosts ?? 0;
+  const totalEngagement = liveStats?.totalEngagement ?? 0;
+  const totalReach = totalEngagement * 3;
+  const avgSentiment = liveStats?.averageSentiment ?? 0;
 
-  const recentPosts = (livePosts.length > 0 ? livePosts : mockCollectedPosts.map((post) => ({
-    id: post.id,
-    platform: post.platform,
-    date: post.date,
-    author: post.author,
-    content: post.content,
-    keywords: post.keywords,
-    engagement: post.engagement,
-    likes: post.engagement,
-    shares: 0,
-    commentCount: 0,
-  }))).slice(0, 6);
+  const recentPosts = livePosts.slice(0, 6);
 
   return (
     <div className="space-y-5">

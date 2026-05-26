@@ -1,0 +1,106 @@
+\chapter{Онолын судалгаа}
+\label{Chapter2}
+
+\section{Нийгмийн сүлжээний өгөгдөл цуглуулах архитектур}
+
+Нийгмийн сүлжээний өгөгдөл нь ихэвчлэн динамик ачаалагддаг тул энгийн HTTP хүсэлтээр бүх контент, comment modal, lazy-loaded post list бүрэн авах боломжгүй. Ийм нөхцөлд Selenium WebDriver зэрэг browser automation хэрэгсэл ашиглан бодит browser session үүсгэж, scroll, navigation, modal interaction хийх нь практик шийдэл болдог. 
+
+BeautifulSoup нь Selenium-оор ачаалсан HTML/DOM бүтцээс текст, link, image URL, metadata зэрэг мэдээллийг ялгах parser-ийн үүрэгтэй. Энэ хоёр технологийг хослуулснаар JavaScript-heavy page дээр browser control болон content parsing-ийг салгаж зохион байгуулах боломжтой.
+
+\section{Ижил төстэй системийн судалгаа}
+
+Зах зээлд нийгмийн сүлжээний дата аналитикийн олон төрлийн шийдлүүд байдаг ч тэдгээр нь ихэвчлэн enterprise түвшний өндөр үнэтэй, эсвэл API хязгаарлалттай байдаг.
+
+\subsection{Commercial social listening tools}
+Brandwatch, Sprout Social, Hootsuite зэрэг платформууд нь олон нийтийн сүлжээний мэдээллийг цуглуулж шинжилдэг enterprise шийдлүүд юм.
+\begin{itemize}
+    \item \textbf{Давуу тал:} Олон платформ, enterprise dashboard-тай, sentiment болон topic analysis-г гүнзгийрүүлэн хийдэг.
+    \item \textbf{Сул тал:} Үнэтэй, data access/API хязгаарлалттай. Хувь хүн эсвэл жижиг төсөлд ашиглахад өртөг өндөр.
+\end{itemize}
+
+\subsection{API-only collection}
+Facebook Graph API зэрэг албан ёсны API ашиглан өгөгдөл цуглуулах арга.
+\begin{itemize}
+    \item \textbf{Давуу тал:} Тогтвортой, дүрмийн дагуу access хийгддэг тул IP block орох эрсдэл бага.
+    \item \textbf{Сул тал:} Facebook public page data-д API access маш хязгаарлагдмал. Заавал баталгаажсан аппликэйшн, хуудасны админ эрх шаардана.
+\end{itemize}
+
+\subsection{Browser automation scraper}
+Selenium, Puppeteer зэрэг хэрэгслийг ашиглан вэб хөтчийг автоматжуулах арга.
+\begin{itemize}
+    \item \textbf{Давуу тал:} Динамик UI-тай ажиллах боломжтой, API эрх шаардахгүйгээр public өгөгдлийг цуглуулах бүрэн боломжтой.
+    \item \textbf{Сул тал:} Facebook-ийн UI өөрчлөгдөхөд selector засвар шаардана, хурд харьцангуй удаан.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Төслийн шийдлийн харьцуулалт}
+\label{tab:system_comparison}
+\small
+\renewcommand{\arraystretch}{1.28}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{4cm}|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Шийдэл} & \textbf{Давуу тал} & \textbf{Хязгаарлалт} \\
+\hline
+Commercial tools & Олон платформ, найдвартай & Үнэтэй, API хязгаарлалттай \\
+\hline
+API-only collection & Тогтвортой & Зөвшөөрөл авах хэцүү, өгөгдөл бага \\
+\hline
+Browser automation & Public өгөгдлийг шууд авна & UI өөрчлөлтөд эмзэг \\
+\hline
+\textbf{Энэхүү төсөл} & Scraper, API, DB, dashboard, AI report нэг workflow-д орсон, үнэгүй хөгжүүлэх боломжтой & Facebook төвтэй, production benchmark dataset байхгүй \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Sentiment, Topic, Engagement Analysis онол}
+
+\subsection{Sentiment Analysis (Сэтгэл хөдлөлийн шинжилгээ)}
+Текстээс эерэг, сөрөг, саармаг хандлагыг тодорхойлох үйл явц юм. TextBlob нь polarity (эерэг/сөрөг) болон subjectivity (объектив/субъектив) тооцох хөнгөн sentiment analysis хэрэгсэл юм. Хэрэв TextBlob байхгүй бол basic keyword matching fallback ашиглаж болно. Энэ нь өндөр нарийвчлалтай deep learning model биш боловч эхний шатны dashboard insight-д хангалттай baseline өгдөг.
+
+Сэтгэл хөдлөлийн шинжилгээг хийхэд байгалийн хэл боловсруулах (Natural Language Processing - NLP) технологиуд чухал үүрэг гүйцэтгэдэг. Энэхүү технологи нь текстийг үгсийн сангийн түвшинд задалж (tokenization), үг бүрийн язгуур болон утгын жинг (weight) тооцдог. Текст дэх эерэг болон сөрөг утгатай үгсийн харьцаа, өгүүлбэрийн бүтэц зэргээс хамааран эцсийн оноог (polarity score) гаргаж авдаг. Polarity нь ихэвчлэн -1.0 (маш сөрөг) -ээс +1.0 (маш эерэг) хооронд хэлбэлздэг.
+
+Монгол хэл зэрэг морфологийн баялаг бүтэцтэй хэлний хувьд sentiment analysis хийх нь илүү нарийн бөгөөд төвөгтэй байдаг. Үүнд залгавар, дагавар, мөн ярианы хэлний онцлог (жишээлбэл, сленг, эможи) ихээр нөлөөлдөг тул энгийн keyword matching нь хангалтгүй байж болно. Иймд TextBlob нь англи хэл дээр өндөр нарийвчлалтай байх боловч, цаашид BERT зэрэг Transformer загварт суурилсан дэвшилтэт аргачлалыг нэвтрүүлэх хэрэгцээ бий.
+
+\subsection{Topic Modeling (Сэдвийн загварчлал)}
+Topic modeling-д CountVectorizer болон Latent Dirichlet Allocation (LDA) ашигласнаар постын текстүүдээс давтагдах keyword cluster гаргаж болно. Энэ нь нийт өгөгдлөөс хамгийн их яригдаж буй сэдвүүдийг автоматаар илрүүлэх машин сургалтын unsupervised арга юм.
+
+\textbf{Latent Dirichlet Allocation (LDA) аргачлалын математик үндэслэл:}
+LDA нь баримт бичгүүд (documents) дэх үгсийн тархалтыг магадлалын онолд тулгуурлан тооцоолдог загвар юм. Энэ нь документ бүрийг тодорхой сэдвүүдийн магадлалт холимог (mixture of topics) гэж үздэг бөгөөд сэдэв бүр нь тодорхой үгсийн магадлалт холимог (mixture of words) байдаг гэж таамагладаг.
+
+Үүнийг математик талаас нь дараах байдлаар томьёолдог:
+$$ p(\theta, z, w | \alpha, \beta) = p(\theta | \alpha) \prod_{n=1}^{N} p(z_n | \theta) p(w_n | z_n, \beta) $$
+
+Энд:
+\begin{itemize}
+    \item $w_n$ нь ажиглагдсан үг.
+    \item $z_n$ нь тухайн үг аль сэдэвт харьяалагдаж буйг илтгэх хувьсагч.
+    \item $\theta$ нь документ бүрийн сэдвийн тархалт.
+    \item $\alpha$ болон $\beta$ нь Dirichlet тархалтын параметрүүд.
+\end{itemize}
+
+LDA алгоритм нь эдгээр далд хувьсагчдын (latent variables) тархалтыг Gibbs Sampling эсвэл Variational Inference аргаар тооцож, хамгийн их магадлалтай сэдвүүдийг (topics) илрүүлдэг. Энэхүү төсөлд Scikit-learn сангийн хэрэгжилтийг ашигласан.
+
+\subsection{Engagement Score (Оролцооны үнэлгээ)}
+Engagement analysis-д likes, shares, comments зэрэг observable metric-ээс нийлмэл оноо гаргах нь постуудыг хооронд нь харьцуулах энгийн боловч ойлгомжтой арга юм. Оролцооны оноог дараах байдлаар томьёолж болно:
+$$ Engagement Score = w_1 \times Likes + w_2 \times Comments + w_3 \times Shares $$
+Энд $w_i$ нь тухайн үйлдлийн ач холбогдлын жин (weight) юм.
+
+\section{Хиймэл оюун (AI) ба Том хэлний загвар (LLM)}
+
+Google Gemini API зэрэг LLM (Large Language Model) үйлчилгээ нь structured summary data-г уншигдахуйц тайлан, зөвлөмж болгон хувиргах боломж өгдөг. Энэ төсөлд Gemini нь scraper эсвэл database-ийн оронд ажиллахгүй; харин dashboard дээрх recent posts-ийн товч нэгтгэлийг тайлбарлах AI давхарга (AI Layer) болж ашиглагдана.
+
+Том хэлний загварууд (Large Language Models - LLM) нь тэрбум гаруй параметртэй, асар их хэмжээний текст өгөгдөл дээр сургагдсан мэдрэлийн сүлжээний загварууд юм. Тэдгээр нь хүнтэй төстэй байдлаар текст үүсгэх, орчуулах, нэгтгэн дүгнэх, асуултанд хариулах зэрэг олон төрлийн даалгаврыг гүйцэтгэх чадвартай. LLM-ийн гол цөм нь Transformer архитектур бөгөөд энэ нь self-attention механизмыг ашиглан текст дэх үгсийн хоорондын хамаарлыг алсын зайнаас үл хамааран тооцоолох боломжийг олгодог.
+
+Google Gemini загвар нь мультимодал (multimodal) чадвартай буюу текст, зураг, аудио, видео зэрэг олон төрлийн өгөгдлийг нэгэн зэрэг боловсруулах чадвартай гэдгээрээ онцлог. Энэ төсөлд Gemini-1.5-Flash загварыг голчлон текст боловсруулах болон дүн шинжилгээ хийх (analytics report generation) зорилгоор ашигласан болно.
+
+\subsection{RAG (Retrieval-Augmented Generation) төстэй аргачлал}
+Систем нь цуглуулсан Facebook өгөгдлийн хураангуйг (summary) бүрдүүлж, түүнийгээ prompt болгон LLM-д өгдөг. Ингэснээр LLM нь ерөнхий мэдлэгээр биш, яг тухайн хуудасны сүүлийн үеийн бодит өгөгдөлд тулгуурлан дүгнэлт (insight) гаргадаг. Энэ нь "hallucination" буюу хиймэл оюуны хийсвэр төөрөгдлийг бууруулах ач холбогдолтой.
+
+RAG архитектур нь ихэвчлэн вектор өгөгдлийн сан (Vector Database) болон embedding загваруудыг хослуулан ашигладаг. Гэвч энэхүү төслийн хувьд сүүлийн үеийн богино хэмжээний постуудыг анализд оруулж байгаа тул бүрэн хэмжээний RAG pipeline (FAISS, Pinecone зэрэг) ашиглахын оронд In-Context Learning буюу контекстэд шууд өгөгдлийг оруулах аргыг хэрэглэсэн. Энэ нь системийн архитектурыг энгийн байлгахын зэрэгцээ үр дүнг хурдан бөгөөд бодитой гаргах давуу талтай юм.
+
+\section{Бүлгийн дүгнэлт}
+Энэхүү бүлэгт нийгмийн сүлжээний өгөгдөл цуглуулах онолын үндэс, ижил төстэй шийдлүүдийн харьцуулалт болон NLP (Sentiment, Topic analysis), LLM (Gemini) ашиглан AI тайлан үүсгэх аргуудыг судалж тайлбарлав. Эдгээр онолын ойлголтууд нь дараагийн бүлгүүдэд системийн архитектур, шинжилгээ ба загварчлал хийх үндсэн суурь болох юм.

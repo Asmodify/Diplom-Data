@@ -1,0 +1,55 @@
+\chapter{Хавсралт}
+
+\section{Системийн тохиргооны жишээ}
+
+Туршилтын орчинд дараах үндсэн тохиргоог хэрэглэсэн: Python орчин, Firefox WebDriver, өгөгдлийн сангийн холболт, API токен, скрапингийн delay параметрүүд. Эдгээр тохиргоо нь туршилтыг дахин гүйцэтгэхэд шаардлагатай суурь нөхцөлийг бүрдүүлнэ.
+
+\section{API Endpoint жишээ}
+
+Системд ашигласан гол endpoint-уудыг дараах байдлаар бүлэглэж болно.
+
+\begin{table}[H]
+\centering
+\caption{Хавсралтын endpoint жагсаалт}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|p{4.2cm}|p{9.2cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Endpoint} & \textbf{Зориулалт} \\ \hline
+\texttt{/health} & Backend болон dependency status шалгах \\ \hline
+\texttt{/api/v1/posts}, \texttt{/api/v1/stats} & Dashboard-ийн үндсэн өгөгдөл унших \\ \hline
+\texttt{/api/v1/pages} & Scraper target list унших, хадгалах \\ \hline
+\texttt{/api/v1/scraper/run},\newline\texttt{/api/v1/scraper/}\newline\texttt{status},\newline\texttt{/api/v1/scraper/logs} & Scraper ажиллуулах, төлөв болон log харах \\ \hline
+\texttt{/api/v1/sentiment}, \texttt{/api/v1/topics}, \texttt{/api/v1/trends} & Analysis workflow ажиллуулах \\ \hline
+\texttt{/gemini/analyze}, \texttt{/gemini/ask} & AI тайлан болон асуулт-хариулт үүсгэх \\ \hline
+\texttt{/export/sheets} & Google Sheets export хийх \\ \hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\textbf{API Response JSON жишээ (FastAPI)}:
+\begin{verbatim}
+{
+  "status": "success",
+  "data": {
+    "total_posts": 150,
+    "total_comments": 432,
+    "average_sentiment": 0.45,
+    "recent_posts": [
+      {
+        "post_id": "123456789",
+        "page_name": "TechNews Mongolia",
+        "content": "Шинэ AI технологийн талаарх дэлгэрэнгүй мэдээлэл...",
+        "likes": 120,
+        "comments": 45
+      }
+    ]
+  }
+}
+\end{verbatim}
+
+\section{Өгөгдлийн сангийн схем}
+
+Өгөгдлийн сангийн үндсэн схем нь \texttt{FacebookPost}, \texttt{PostComment}, \texttt{PostImage}, \texttt{AnalysisResult} хүснэгтүүд дээр төвлөрсөн. \texttt{FacebookPost} нь үндсэн контент болон engagement metric, \texttt{PostComment} нь сэтгэгдлийн өгөгдөл, \texttt{PostImage} нь дагалдах медиа мэдээлэл, \texttt{AnalysisResult} нь sentiment/topic/engagement шинжилгээний JSON үр дүнг хадгална.
