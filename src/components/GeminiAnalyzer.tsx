@@ -45,11 +45,11 @@ export function GeminiAnalyzer() {
       await new Promise(resolve => setTimeout(resolve, 1000)); // fake delay
       
       const staticResponses: Record<AnalysisType, string> = {
-        summary: "[AI Summary]: The provided text outlines robust social patterns. Among 13,000+ interactions recorded, the predominant pattern emphasizes positive community sentiment driven by recent product upgrades.",
-        insights: "[AI Key Insights]:\n- High engagement correlates with visual content\n- Over 76% positive sentiment metric across demographics\n- 13k+ comments reveal deep discussion threads",
-        questions: "[AI Suggested Questions]:\n1. What specific updates are driving the 76% positive trend?\n2. How can we replicate the engagement peaks observed during weekend drops?",
-        improvement: "[AI Content Enhancement]: To maximize reach, embed core keywords earlier in the text. Capitalize on the observed 13,000+ engagement threshold by adding clearer call-to-actions.",
-        critique: "[AI Constructive Critique]: The structure is solid, yet the tone could be more conversational. Data shows users interact 2x more with casual phrasing."
+        summary: "[AI Хураангуй]: Оруулсан текст нь нийгмийн сүлжээний хүчтэй хэв маягийг харуулж байна. Бүртгэгдсэн 13,000 гаруй харилцан үйлчлэлийн дунд шинэ бүтээгдэхүүний шинэчлэлтээс үүдэлтэй олон нийтийн эерэг хандлага давамгайлж байна.",
+        insights: "[AI Гол санаанууд]:\n- Өндөр оролцоо нь визуал контенттой шууд хамааралтай байна\n- Хүн ам зүйн хувьд эерэг хандлага 76%-иас дээш үзүүлэлттэй байна\n- 13 мянга гаруй сэтгэгдэл нь хэлэлцүүлгийн гүнзгий сэдвүүдийг илтгэж байна",
+        questions: "[AI Санал болгох асуултууд]:\n1. Ямар тодорхой шинэчлэлтүүд 76%-ийн эерэг хандлагыг бүрдүүлж байна вэ?\n2. Амралтын өдрүүдэд ажиглагдсан оролцооны оргил үеийг хэрхэн давтах вэ?",
+        improvement: "[AI Агуулга сайжруулалт]: Хүртээмжийг дээд зэргээр нэмэгдүүлэхийн тулд гол түлхүүр үгсийг текстийн эхэнд оруулаарай. 13,000 гаруй харилцан үйлчлэлд тулгуурлан илүү тодорхой үйлдэлд дуудах (call-to-action) хэсгүүдийг нэмээд үз.",
+        critique: "[AI Бүтээлч шүүмж]: Бүтэц нь сайн боловч өнгө аяс нь илүү харилцан ярианы шинжтэй байж болно. Өгөгдлөөс харахад хэрэглэгчид энгийн үг хэллэгтэй 2 дахин илүү харилцан үйлчлэлд ордог байна."
       };
 
       setResult(staticResponses[analysisType]);

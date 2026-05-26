@@ -59,9 +59,9 @@ export function GeminiQA() {
       await new Promise(resolve => setTimeout(resolve, 1000)); // fake delay
       
       const answerId = (Date.now() + 1).toString();
-      const demoResponse = `[AI Analysis Response]: Based on this 13,000+ comment dataset, your query regarding "${input}" is highly relevant. 
-Our predictive modeling suggests a 78% likelihood of this topic increasing engagement over the next 48 hours. 
-Consider aligning your next post explicitly around these key themes for maximum reach.`;
+      const demoResponse = `[AI Шинжилгээний Хариу]: Энэхүү 13,000 гаруй сэтгэгдлийн өгөгдөл дээр үндэслэн таны "${input}"-н талаарх асуулт маш их хамааралтай байна. 
+Бидний урьдчилан таамаглах загварчлалаар энэ сэдэв дараагийн 48 цагийн дотор оролцоог нэмэгдүүлэх 78%-ийн магадлалтай байна. 
+Хүртээмжээ дээд зэргээр нэмэгдүүлэхийн тулд дараагийн нийтлэлээ эдгээр гол сэдвүүдтэй шууд уялдуулан гаргахыг зөвлөж байна.`;
 
       const answerMessage: Message = {
         id: answerId,

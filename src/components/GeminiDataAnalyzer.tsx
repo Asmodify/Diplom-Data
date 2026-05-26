@@ -35,19 +35,19 @@ export function GeminiDataAnalyzer() {
       await new Promise(resolve => setTimeout(resolve, 1200)); // Simulate AI processing time
       
       const prefixedResult: AnalysisResult = {
-        sentiment_summary: "[AI 2.0 Flash Analysis]: The overall sentiment across the 13,000+ comment dataset is overwhelmingly positive, with significant spikes correlating directly to specific product capability announcements.",
+        sentiment_summary: "[AI 2.0 Flash Шинжилгээ]: 13,000 гаруй сэтгэгдлийн өгөгдлийн сангийн нийт хандлага нь дийлэнхдээ эерэг байгаа бөгөөд бүтээгдэхүүний онцлог чадамжуудыг зарласан үетэй шууд холбоотойгоор мэдэгдэхүйц өссөн байна.",
         key_themes: [
-          "[Trend Insight]: Advanced integration capabilities and API robustnes",
-          "[Trend Insight]: Security infrastructure improvements",
-          "[Trend Insight]: Community feedback regarding real-time analytics"
+          "[Тренд хэв маяг]: Нарийвчилсан интеграцчлалын боломжууд болон API-ийн найдвартай байдал",
+          "[Тренд хэв маяг]: Аюулгүй байдлын дэд бүтцийн сайжруулалт",
+          "[Тренд хэв маяг]: Бодит хугацааны аналитикийн талаарх хэрэглэгчдийн санал хүсэлт"
         ],
         engagement_risks: [
-          "[Risk Vector]: Slight engagement drops during weekend night hours",
-          "[Risk Vector]: Some critical comments require faster moderation response"
+          "[Эрсдэлийн хүчин зүйл]: Амралтын өдрүүдийн шөнийн цагаар оролцоо бага зэрэг буурах хандлагатай",
+          "[Эрсдэлийн хүчин зүйл]: Зарим шүүмжлэлт сэтгэгдэлд илүү хурдан зохицуулалтын хариу үйлдэл үзүүлэх шаардлагатай"
         ],
         content_opportunities: [
-          "[Strategic Opp]: Increase deep-dive technical tutorials in morning slots",
-          "[Strategic Opp]: Leverage high sentiment for user-generated content campaigns"
+          "[Стратегийн боломж]: Өглөөний цагаар нарийвчилсан техникийн зааварчилгааг нэмэгдүүлэх",
+          "[Стратегийн боломж]: Өндөр сэтгэл ханамжийг ашиглан хэрэглэгчдийн бүтээсэн контентын аяныг зохион байгуулах"
         ]
       };
       

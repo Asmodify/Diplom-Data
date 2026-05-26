@@ -19,21 +19,21 @@ export function PredictiveAnalysis() {
       // Presentation Demo Branch: hardcoded beautiful AI responses
       await new Promise(resolve => setTimeout(resolve, 1500)); // fake delay
       
-      const demoAnalysis = `[Predictive AI Summary]
+      const demoAnalysis = `[Урьдчилан таамаглах AI дүгнэлт]
 
-**Scope:** Analysis based on 1042 posts containing over 13,105 verified comments generated across the preceding 30 days.
+**Хамрах хүрээ:** Өнгөрсөн 30 хоногт үүсгэгдсэн 13,105 гаруй баталгаажсан сэтгэгдэл бүхий 1042 нийтлэлд хийсэн дүн шинжилгээ.
 
-**Sentiment & Volatility (78% Positive):**
-The vast majority of comment threads trend positive, highlighting strong audience alignment. Volatility spiked during the mid-month campaign, but stabilization occurred quickly due to active moderation and brand responsiveness.
+**Хандлага ба хэлбэлзэл (78% Эерэг):**
+Сэтгэгдлүүдийн дийлэнх нь эерэг хандлагатай байгаа нь хүмүүстэй сайн нийцэж байгааг харуулж байна. Сарын дундуур явагдсан аяны үеэр хэлбэлзэл огцом өссөн боловч идэвхтэй зохицуулалт болон брэндийн шуурхай хариу үйлдлийн ачаар хурдан тогтворжсон.
 
-**Engagement Clustering:**
-- **Weekend Evenings:** Show the highest comment-to-share ratios.
-- **Weekday Mornings:** Lower total volume but significantly higher constructive textual sentiment.
+**Оролцооны бөөгнөрөл:**
+- **Амралтын өдрүүдийн орой:** Сэтгэгдэл болон хуваалцах харьцаа хамгийн өндөр байна.
+- **Ажлын өдрүүдийн өглөө:** Нийт хэмжээ бага хэдий ч бүтээлч текстэн хандлага хамаагүй өндөр байна.
 
-**Actionable Synthesis:**
-1. Capitalize on the 78% positive sentiment block by releasing roadmap teasers during Thursday 6PM-8PM slots.
-2. The massive 13,000+ comment volume indicates a heavy preference for discussion-style content over static visuals.
-3. Proactive engagement in the first 30 minutes of a post's lifecycle reliably doubles total comment throughput for the following 24 hours.`;
+**Үйлдэл хийх дүгнэлт:**
+1. Пүрэв гарагийн 18:00-20:00 цагийн хооронд хөгжүүлэлтийн төлөвлөгөөний талаарх мэдээллийг цацаж, 78%-ийн эерэг хандлагыг бүрэн ашиглах.
+2. 13,000 гаруй сэтгэгдлийн асар их хэмжээ нь хүмүүс статик зургаас илүү хэлэлцүүлэг хэлбэрийн контентыг ихээхэн илүүд үзэж байгааг харуулж байна.
+3. Нийтлэл нийтлэгдсэн эхний 30 минутад идэвхтэй харилцаа үүсгэх нь дараагийн 24 цагийн турших нийт сэтгэгдлийн тоог найдвартай 2 дахин нэмэгдүүлдэг.`;
 
       setAnalysis(demoAnalysis);
     } catch (error) {
