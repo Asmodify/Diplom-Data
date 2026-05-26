@@ -1,145 +1,94 @@
 # Social Media Data Collection and Predictive Analysis System
-## Diploma Thesis Project - 2026
 
-## 📊 Project Overview
+Diploma thesis project (2026) focused on collecting public social media data, analyzing sentiment, and predicting engagement trends.
 
-This is a comprehensive system for automated collection, analysis, and predictive modeling of social media data. The project focuses on sentiment analysis and engagement prediction based on public social media content.
+## Thesis Information
+- **Title (Mongolian):** Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем
+- **Title (English):** Social Media Data Collection and Predictive Analysis System
+- **Author:** Ө.Хүслэн (B221930045)
+- **Advisor:** Мөнхбуян
+- **Institution:** МУ-ИХСУ — Мэдээлэл холбооны технологийн сургууль
 
-### Thesis Information
-- **Title (Mongolian)**: Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем
-- **Title (English)**: Social Media Data Collection and Predictive Analysis System
-- **Author**: Ө.Хүслэн (Student ID: B221930045)
-- **Advisor**: Мөнхбуян
-- **Institution**: МУ-ИХСУ - Мэдээлэл холбооны технологийн сургууль
-- **Completion Year**: 2026
+## Project Scope
+- Automated collection of public social media posts/comments
+- AI-powered sentiment and emotion analysis (Google Gemini)
+- Engagement prediction and recommendation support
+- Monitoring dashboard for data and backend health
+- Firebase-backed storage and authentication
 
-## 🎯 Project Objectives
+## Architecture at a Glance
+| Layer | Technology |
+|---|---|
+| Frontend | React 19 + Vite (Vercel) |
+| Backend API | FastAPI (Render) |
+| Data collection | Python scraper/Selenium |
+| AI | Google Gemini API |
+| Storage | Firebase Firestore (+ SQLite fallback) |
 
-1. **Automated Data Collection**: Build a reliable system to collect public social media posts and comments.
-2. **Sentiment Analysis**: Implement natural language processing (using Gemini AI) to analyze content sentiment and emotion.
-3. **Engagement Prediction**: Predict user engagement patterns and volume based on historical data.
-4. **Recommendation Engine**: Generate actionable recommendations based on predicted outcomes.
-5. **User Interface**: Provide an intuitive dashboard for monitoring and analysis.
-6. **Data Management**: Securely store and manage collected data via Firebase.
-
-### Technical Achievements
-- Sentiment analysis accuracy: **91%**
-- Engagement prediction relevance: **87%**
-- Modular architecture supporting multiple data sources
-- Scalable data collection and processing pipeline
-
-## 🏗️ System Architecture
-
-### Stack Overview
-- **Frontend**: React 19 + Vite (Deployed on Vercel)  
-- **Backend API**: FastAPI / Uvicorn (Deployed on Render.com)  
-- **Database**: Firebase Firestore (Cloud) + SQLite (Local Fallback)  
-- **AI Integration**: Google Gemini API  
-- **Data Collection**: Python Selenium Scraper (Runs on Render)  
-- **Authentication**: Firebase anonymous sign-in  
-
-### Three Main Modules
-
-1. **Data Collection & Backend API Module** (`beta/` directory)
-   - Built on FastAPI, hosted on Render.com
-   - Automated collection of public social media content
-   - Exposes REST endpoints: `/health`, `/api/v1/stats`, `/api/v1/posts`, `/gemini/*`
-   - Connects frontend to live scraped data and Gemini AI tools
-   - Manages Firebase Firestore queries
-
-2. **Frontend Dashboard Module** (`src/` directory)
-   - React 19 single-page application built with Vite
-   - Consumes live backend API via `src/lib/backend.ts` and `src/lib/api.ts`
-   - Admin panel for monitoring scraper status and API health
-   - Interactive Q&A feature (`GeminiQA`) for context-aware analysis
-
-3. **Sentiment Analysis & Prediction Module**
-   - Integrates Google Gemini API for context-aware evaluation
-   - Multi-method sentiment scoring and engagement prediction
-   - Runs as part of the backend data processing pipeline
-
-## 📁 Project Structure
-
+## Repository Structure
 ```text
-Diploma_full_repo/
-├── thesis/                    # LaTeX thesis files, PDFs, and presentations
-├── src/                       # Web dashboard frontend
-│   ├── components/            # React UI components (Dashboard, AdminControl, GeminiQA, etc.)
-│   ├── lib/                   # API clients and utilities
-│   └── App.tsx                # Main React application
-├── beta/                      # Backend API and Data Collection module
-│   ├── api_server.py          # FastAPI application entry point
-│   ├── run_scraper.py         # Scraping orchestrator
-│   ├── requirements.txt       # Python dependencies
-│   └── ...                    # Various ML, DB, and utils modules
-├── package.json               # Frontend Node.js dependencies
-└── render.yaml                # Render.com IaC configuration
+Diplom-Data/
+├── src/               # Frontend dashboard (React + Vite)
+├── beta/              # Backend API, scraper, and ML/data logic
+├── thesis/            # Thesis files and presentation assets
+├── package.json       # Frontend scripts and dependencies
+├── requirements.txt   # Root Python dependencies
+└── render.yaml        # Render deployment config
 ```
 
-## 🚀 Getting Started
+## Quick Start
 
 ### Prerequisites
-- **Node.js** 18+
-- **Python** 3.11+
+- Node.js 18+
+- Python 3.11+
 - Git
 
-### Installation
-
-#### 1. Frontend Setup
+### 1) Install dependencies
 ```bash
-# Install Node dependencies
+# from repository root
 npm install
 
-# Create a .env.local file based on .env.example
-cp .env.example .env.local
-```
-Update `.env.local` with your Firebase, Gemini, and Backend API details.
-
-#### 2. Backend Setup
-```bash
-# Navigate to the backend directory
+# backend dependencies
 cd beta
-
-# Create and activate a virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Running the Application
-
-#### Local Development
-
-**Start Backend API (Terminal 1)**
+### 2) Configure environment
 ```bash
+cp .env.example .env.local
+```
+Fill `.env.local` with Firebase, Gemini, and backend API values.
+
+### 3) Run locally
+```bash
+# terminal 1: backend
 cd beta
 python api_server.py
-# API runs at http://localhost:8000
 ```
 
-**Start Frontend Dashboard (Terminal 2)**
+```bash
+# terminal 2: frontend (repo root)
+npm run dev
+```
+
+Default local URLs:
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8000`
+
+## Useful Commands (root)
 ```bash
 npm run dev
-# Dashboard available at http://localhost:3000
+npm run lint
+npm run build
 ```
 
-#### Production Deployment
-- **Frontend**: Automatically deployed via Vercel on pushes to the `main` branch.
-- **Backend**: Managed via `render.yaml` and deployed on Render.com (`diplom-backend` web service).
-- **Environment Variables**: Configure all required tokens (Firebase, Gemini API, etc.) in your respective Vercel/Render project settings.
+## Deployment
+- **Frontend:** Vercel
+- **Backend:** Render (configured via `render.yaml`)
+- Configure environment variables in both platforms before deployment.
 
-## 🔒 Data Privacy & Security
-
-- All collected data complies with platform terms of service.
-- The system focuses exclusively on **publicly available data**.
-- Personal information is handled according to privacy regulations.
-- Secure data storage with encryption via Firebase.
-
-## 📞 Contact
-
-For inquiries about this diploma project:
-- **Student**: Ө.Хүслэн
-- **Advisor**: Мөнхбуян
-- **Institution**: МУ-ИХСУ - Мэдээлэл холбооны технологийн сургууль
+## Privacy Note
+- The system is designed for **publicly available** social media data.
+- Data handling should follow platform terms and privacy regulations.
