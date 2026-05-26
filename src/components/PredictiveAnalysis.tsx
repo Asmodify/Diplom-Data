@@ -16,31 +16,26 @@ export function PredictiveAnalysis() {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      let dataToAnalyze;
+      // Presentation Demo Branch: hardcoded beautiful AI responses
+      await new Promise(resolve => setTimeout(resolve, 1500)); // fake delay
+      
+      const demoAnalysis = `[Predictive AI Summary]
 
-      try {
-        const posts = await getBackendPosts(50);
-        if (posts.length > 0) {
-          const livePosts = normalizeBackendPosts(posts);
-          const summary = livePosts.reduce<Record<string, { date: string; platform: string; posts: number; engagement: number; reach: number; sentiment: number }>>((acc, post) => {
-            const key = `${post.date}-${post.platform}`;
-            acc[key] ??= { date: post.date, platform: post.platform, posts: 0, engagement: 0, reach: 0, sentiment: 0.5 };
-            acc[key].posts += 1;
-            acc[key].engagement += post.engagement;
-            acc[key].reach += post.engagement * 10;
-            return acc;
-          }, {});
-          dataToAnalyze = Object.values(summary);
-        } else {
-          dataToAnalyze = mockSocialData;
-        }
-      } catch (err) {
-        console.warn('Backend fetch failed, falling back to mock data', err);
-        dataToAnalyze = mockSocialData;
-      }
+**Scope:** Analysis based on 1042 posts containing over 13,105 verified comments generated across the preceding 30 days.
 
-      const result = await generatePredictiveAnalysis(dataToAnalyze);
-      setAnalysis(result);
+**Sentiment & Volatility (78% Positive):**
+The vast majority of comment threads trend positive, highlighting strong audience alignment. Volatility spiked during the mid-month campaign, but stabilization occurred quickly due to active moderation and brand responsiveness.
+
+**Engagement Clustering:**
+- **Weekend Evenings:** Show the highest comment-to-share ratios.
+- **Weekday Mornings:** Lower total volume but significantly higher constructive textual sentiment.
+
+**Actionable Synthesis:**
+1. Capitalize on the 78% positive sentiment block by releasing roadmap teasers during Thursday 6PM-8PM slots.
+2. The massive 13,000+ comment volume indicates a heavy preference for discussion-style content over static visuals.
+3. Proactive engagement in the first 30 minutes of a post's lifecycle reliably doubles total comment throughput for the following 24 hours.`;
+
+      setAnalysis(demoAnalysis);
     } catch (error) {
       console.error(error);
       setAnalysis('Analysis failed. Check the Gemini API configuration and try again.');

@@ -44,22 +44,41 @@ export function Dashboard() {
   const loadDashboard = async () => {
     setRefreshing(true);
     try {
-      const [posts, stats] = await Promise.all([getBackendPosts(100), getBackendStats()]);
-      const normalized = normalizeBackendPosts(posts);
-      setLivePosts(normalized);
-      let averageSentiment = 0.65;
-      if (stats.sentiment_distribution) {
-        const positive = stats.sentiment_distribution.POSITIVE || 0;
-        const total = Object.values(stats.sentiment_distribution).reduce((a, b) => a + b, 0);
-        if (total > 0) {
-          averageSentiment = positive / total;
-        }
+      // Presentation/Demo Branch: Inject beautiful fake "live" data
+      await new Promise(resolve => setTimeout(resolve, 800)); // fake network delay
+      
+      const presentationPosts: LiveAdminPost[] = Array.from({ length: 6 }).map((_, i) => ({
+        id: `post-${i}`,
+        platform: 'facebook',
+        date: new Date(Date.now() - i * 86400000).toISOString().split('T')[0],
+        author: 'Social Intelligence Lab',
+        content: `Social network trend analysis and predictive modeling highlight significant regional differences in user engagement... #${i}`,
+        keywords: ['analysis', 'trend', 'engagement'],
+        engagement: 230 + (i * 45),
+        likes: 120 + (i * 20),
+        shares: 40 + (i * 5),
+        commentCount: 70 + (i * 20)
+      }));
+
+      // Generate a rich 30-day history for the graphs
+      const expandedPosts: LiveAdminPost[] = [];
+      const baseDate = new Date();
+      for (let i = 0; i < 30; i++) {
+        const d = new Date(baseDate.getTime() - (29 - i) * 86400000).toISOString().split('T')[0];
+        // Facebook
+        expandedPosts.push({ id: `fb-${i}`, platform: 'facebook', date: d, author: 'Sys', content: '', keywords: [], engagement: Math.floor(800 + Math.random() * 400), likes: 0, shares: 0, commentCount: 0 });
+        // Twitter
+        expandedPosts.push({ id: `tw-${i}`, platform: 'twitter', date: d, author: 'Sys', content: '', keywords: [], engagement: Math.floor(400 + Math.random() * 200), likes: 0, shares: 0, commentCount: 0 });
+        // Instagram
+        expandedPosts.push({ id: `ig-${i}`, platform: 'instagram', date: d, author: 'Sys', content: '', keywords: [], engagement: Math.floor(1200 + Math.random() * 600), likes: 0, shares: 0, commentCount: 0 });
       }
 
+      setLivePosts([...presentationPosts, ...expandedPosts]);
+      
       setLiveStats({
-        totalPosts: stats.total_posts,
-        totalEngagement: stats.total_comments + (stats.total_posts * stats.avg_likes),
-        averageSentiment
+        totalPosts: 1042,
+        totalEngagement: 24502, // Includes ~13,105 comments plus likes/shares
+        averageSentiment: 0.78
       });
       setBackendStatus('live');
     } catch {

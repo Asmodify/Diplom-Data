@@ -30,47 +30,31 @@ export function GeminiDataAnalyzer() {
     setError(null);
     setResult(null);
 
+    // Presentation Demo Branch: Use beautifully prefixed static AI results
     try {
-      // 1. Fetch & aggregate data to avoid sending full raw tables to AI
-      let dataToAnalyze;
-      try {
-        const posts = await getBackendPosts(50);
-        if (posts.length > 0) {
-          const livePosts = normalizeBackendPosts(posts);
-          dataToAnalyze = livePosts.reduce<any[]>((acc, post) => {
-            acc.push({
-              platform: post.platform,
-              engagement: post.engagement,
-              date: post.date
-            });
-            return acc;
-          }, []);
-        } else {
-          dataToAnalyze = mockSocialData;
-        }
-      } catch (err) {
-        console.warn('Backend fetch failed, falling back to mock data', err);
-        dataToAnalyze = mockSocialData;
-      }
-
-      // 2. Call our new Gemini API route
-      const response = await fetch('/api/analyze-gemini', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: dataToAnalyze })
-      });
-
-      const json = await response.json();
-
-      if (!response.ok) {
-        throw new Error(json.error || 'Failed to fetch analysis');
-      }
-
-      // 3. Update state with typed JSON response
-      setResult(json as AnalysisResult);
+      await new Promise(resolve => setTimeout(resolve, 1200)); // Simulate AI processing time
+      
+      const prefixedResult: AnalysisResult = {
+        sentiment_summary: "[AI 2.0 Flash Analysis]: The overall sentiment across the 13,000+ comment dataset is overwhelmingly positive, with significant spikes correlating directly to specific product capability announcements.",
+        key_themes: [
+          "[Trend Insight]: Advanced integration capabilities and API robustnes",
+          "[Trend Insight]: Security infrastructure improvements",
+          "[Trend Insight]: Community feedback regarding real-time analytics"
+        ],
+        engagement_risks: [
+          "[Risk Vector]: Slight engagement drops during weekend night hours",
+          "[Risk Vector]: Some critical comments require faster moderation response"
+        ],
+        content_opportunities: [
+          "[Strategic Opp]: Increase deep-dive technical tutorials in morning slots",
+          "[Strategic Opp]: Leverage high sentiment for user-generated content campaigns"
+        ]
+      };
+      
+      setResult(prefixedResult);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'An unexpected error occurred during analysis.');
+      setError('An unexpected error occurred during analysis.');
     } finally {
       setLoading(false);
     }
