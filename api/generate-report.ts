@@ -1,10 +1,12 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { google } from '@ai-sdk/google';
+import { generateText } from 'ai';
 
 /**
- * Generate Report API Endpoint
+ * Generate Report API Endpoint (Vercel AI SDK)
  * 
- * Secure Vercel serverless function to generate the main Mongolian predictive 
- * analysis report without exposing the Gemini API key to the frontend.
+ * Secure Vercel serverless function that uses the standardized Vercel AI SDK
+ * to generate the main Mongolian predictive analysis report.
+ * The AI SDK allows easy switching between providers (Google, OpenAI, Anthropic).
  */
 
 export default async function handler(req: any, res: any) {
@@ -19,15 +21,9 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: 'No data provided' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: 'GEMINI_API_KEY is not configured on the server.' });
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      return res.status(500).json({ error: 'GOOGLE_GENERATIVE_AI_API_KEY is not configured on the server.' });
     }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    
-    // Use gemini-2.0-flash as requested
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     const prompt = `
 Та бол сошиал медиа өгөгдлийн шинжээч бөгөөд таамаглалт шинжилгээ хийдэг хиймэл оюун ухаан юм.
@@ -41,10 +37,12 @@ ${JSON.stringify(data, null, 2)}
 3. Стратегийн зөвлөмж (Юун дээр анхаарах, ямар төрлийн контент оруулах)
 `;
 
-    const result = await model.generateContent(prompt);
-    const report = result.response.text();
+    const { text } = await generateText({
+      model: google('gemini-2.0-flash'),
+      prompt,
+    });
 
-    return res.status(200).json({ report });
+    return res.status(200).json({ report: text });
   } catch (error: any) {
     console.error('Error in generate-report endpoint:', error);
     return res.status(500).json({ error: error.message || 'Internal server error' });

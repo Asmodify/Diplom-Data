@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Activity,
   BarChart3,
+  BookOpen,
   Bot,
   Database,
   LayoutDashboard,
@@ -18,8 +19,9 @@ import { DataSources } from './components/DataSources';
 import { PredictiveAnalysis } from './components/PredictiveAnalysis';
 import { AdminControl } from './components/AdminControl';
 import { Badge } from './components/ui/badge';
+import { Overview } from './components/Overview';
 
-type TabId = 'dashboard' | 'sources' | 'analysis' | 'admin' | 'settings';
+type TabId = 'dashboard' | 'sources' | 'analysis' | 'admin' | 'overview' | 'settings';
 
 const tabs: Array<{
   id: TabId;
@@ -50,6 +52,12 @@ const tabs: Array<{
     label: 'Admin',
     description: 'Inspect backend health, query collected data, and tune limits.',
     icon: ShieldCheck,
+  },
+  {
+    id: 'overview',
+    label: 'AI Overview',
+    description: 'Learn about AI concepts: generative models, LLMs, and embeddings.',
+    icon: BookOpen,
   },
   {
     id: 'settings',
@@ -153,6 +161,7 @@ export default function App() {
               {activeTab === 'sources' && <DataSources />}
               {activeTab === 'analysis' && <PredictiveAnalysis />}
               {activeTab === 'admin' && <AdminControl />}
+              {activeTab === 'overview' && <Overview />}
               {activeTab === 'settings' && <SettingsPanel />}
             </motion.section>
           </AnimatePresence>
