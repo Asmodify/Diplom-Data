@@ -3,16 +3,15 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Хэрэглэгчийн үүрэг ба Use Case диаграм}}{12}{figure.caption.48}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Системийн логик архитектурын диаграм}}{16}{figure.caption.54}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Өгөгдлийн сангийн ERD диаграм}}{17}{figure.caption.56}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Scraper ажиллуулах процессын дарааллын диаграм}}{18}{figure.caption.66}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Өгөгдлийн сангийн үндсэн entity холбоо}}{7}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Системийн бодит архитектурын диаграм}}{8}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Өгөгдлийн урсгалын бодит дараалал}}{8}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Өгөгдөл цуглуулах системийн BPMN процесс}}{11}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Системийн Use Case диаграм}}{12}{figure.caption.14}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces AI тайлан үүсгэх Sequence диаграм}}{12}{figure.caption.15}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Scraping хуудасны Activity диаграм}}{13}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Scraper үйлчилгээний State диаграм}}{13}{figure.caption.17}%
 \addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Data Sources цонх болон Automation Console}}{28}{figure.caption.95}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Үндсэн Dashboard болон Engagement trend}}{29}{figure.caption.97}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Admin Control болон Backend Status}}{29}{figure.caption.99}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Collection limits (Хязгаарлалтын тохиргоо)}}{30}{figure.caption.100}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

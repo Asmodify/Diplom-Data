@@ -1,11 +1,11 @@
-% ============================================================================
+﻿% ============================================================================
 % Дипломын ажил - Нийгмийн сүлжээний мэдээлэл цуглуулагч ба анализ хийх систем
 % ============================================================================
 \documentclass[
 12pt,
 oneside,
 english,
-doublespacing,
+onehalfspacing,
 nolistspacing,
 headsepline,
 ]{MUST-Thesis}
@@ -43,9 +43,6 @@ headsepline,
 \usetikzlibrary{positioning,arrows.meta,shapes.geometric,shapes,arrows,automata}
 \newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 
-\usepackage[backend=bibtex,natbib=true,sorting=none,sortcites]{biblatex} % Ном зүйд bibtex -г ашиглах
-\addbibresource{references.bib} % Ном зүйн файл
-
 \definecolor{Cover}{RGB}{102,255,255}
 \definecolor{Chapter}{RGB}{255,220,180}
 
@@ -67,7 +64,7 @@ headsepline,
 % ============================================================================
 \thesistitle{Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем}
 \thesistype{Бакалаврын төгсөлтийн ажил}
-\supervisor{Мөнхбуян}
+\supervisor{Магистр Мөнхбуян}
 \reader{................................}
 \advisor{................................}
 \degreeind{D061303}
@@ -89,7 +86,7 @@ headsepline,
 \newcommand{\abbrevname}{Товчилсон үгс}
 
 \newcommand{\coverlogo}{%
-    \includegraphics[height=4.8cm]{Figures/MUST_logo.png}%
+    \includegraphics[height=4.8cm]{MUST_logo.png}%
 }
 
 % ============================================================================
@@ -103,16 +100,269 @@ headsepline,
 \pagestyle{plain}
 
 % ============================================================================
-% Front and Back Matter
+% Title Page
 % ============================================================================
+\begin{titlepage}
+    \thispagestyle{empty}
+    \pagecolor{Cover}
+    \centering
 
-\include{FrontBackMatter/Titlepage}
+    \vspace*{0.8cm}
+
+    {\Large\scshape \univname \par}
+    \vspace{0.45cm}
+    {\Large\scshape \facname \par}
+    \vspace{0.2cm}
+    {\Large\scshape \deptname \par}
+
+    \vspace{1.4cm}
+
+    \coverlogo
+
+    \vspace{1.05cm}
+
+    \hfill {\Large \shortname \par}
+
+    \vspace{1cm}
+
+    {\fontsize{24}{28}\selectfont\bfseries \ttitle \par}
+    \vspace{0.35cm}
+    {\large \thesissubtitle \par}
+
+    \vspace{1.15cm}
+
+    {\Large\scshape \thesisname \par}
+
+    \vfill
+
+    {\Large Улаанбаатар хот \par}
+    {\Large \thesisyear~он \par}
+\end{titlepage}
+\nopagecolor
+
+\begin{titlepage}
+    \thispagestyle{empty}
+    \centering
+
+    {\Large\scshape \univname \par}
+    \vspace{0.35cm}
+    {\Large\scshape \facname \par}
+    \vspace{0.35cm}
+    {\large\scshape \deptname \par}
+
+    \vspace{1.8cm}
+    {\Large\bfseries \ttitle \par}
+    \vspace{0.35cm}
+    {\large \thesissubtitle \par}
+
+    \vspace{1.4cm}
+    \begin{tabular}{p{5cm}p{8cm}}
+        Ажлын төрөл: & \thesisname \\
+        Оюутан: & \longname \\
+        Мэргэжлийн индекс: & \degreeid \\
+        Мэргэжил: & \degreename \\
+        Удирдагч: & \supname \\
+        Зөвлөгч: & \advicename \\
+        Гүйцэтгэгч: & \shortname, \addressname \\
+    \end{tabular}
+
+    \vfill
+    {\Large Улаанбаатар хот \par}
+    {\Large \thesisyear~он \par}
+\end{titlepage}
+
 \hypersetup{pageanchor=true}
-\include{FrontBackMatter/Plan-Review}
-\include{FrontBackMatter/Declaration}
-\include{FrontBackMatter/Abstract}
-\include{FrontBackMatter/Acknowledgments}
-\include{FrontBackMatter/Abbreviations}
+
+% ============================================================================
+% Work Plan, Assessment Progress, Permission, and Review Pages
+% ============================================================================
+\begin{titlepage}
+    \vspace*{0.5cm}
+    Батлав. \deptname-ийн эрхлэгч:
+    \begin{flushright}
+        \makebox[4cm]{\dotfill} /\chairname/
+    \end{flushright}
+
+    Удирдагч:
+    \begin{flushright}
+        \makebox[4cm]{\dotfill} /\supname/
+    \end{flushright}
+
+    \begin{center}
+        \vspace*{1.5cm}
+        \textbf{\large ТӨГСӨЛТИЙН АЖЛЫН \\ ТӨЛӨВЛӨГӨӨ}\\[0.5cm]
+        \textsc{\large Сэдэв: ``\ttitle''}\\[0.5cm]
+
+        \small
+        \renewcommand{\arraystretch}{1.25}
+        \begin{adjustbox}{max width=\textwidth}
+        \begin{tabular}{|c|L{6.1cm}|c|c|}
+            \hline
+            № & \multicolumn{1}{c|}{Ажлын бүлэг, хэсгийн нэр} & Эзлэх хувь & Дуусах хугацаа \\ \hline
+            1 & Удиртгал, асуудлын тодорхойлолт & 5\% & 2026-02 \\ \hline
+            2 & Онолын хэсэг, хэрэглэгдэх технологи & 20\% & 2026-03 \\ \hline
+            3 & Судалгааны арга зүй, системийн архитектур & 25\% & 2026-03 \\ \hline
+            4 & Системийн хэрэгжилт ба туршилт & 35\% & 2026-04 \\ \hline
+            5 & Үр дүн, дүгнэлт, тайлангийн боловсруулалт & 15\% & 2026-05 \\ \hline
+        \end{tabular}
+        \end{adjustbox}
+        \normalsize
+
+        \vspace{2cm}
+        Төлөвлөгөө боловсруулсан оюутан: \makebox[3cm]{\dotfill} /\shortname/
+    \end{center}
+\end{titlepage}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1.5cm}
+        \textbf{\large ТӨГСӨЛТИЙН АЖЛЫН ЯВЦ}\\[0.5cm]
+
+        \small
+        \renewcommand{\arraystretch}{1.25}
+        \begin{adjustbox}{max width=\textwidth}
+        \begin{tabular}{|c|L{6.1cm}|c|c|}
+            \hline
+            № & \multicolumn{1}{c|}{Хийж гүйцэтгэсэн ажил} & Биелсэн хугацаа & Гарын үсэг \\ \hline
+            1 & Удиртгал, төслийн зорилго ба хүрээ & 2026-02 &  \\ \hline
+            2 & Онолын судалгаа, ижил төстэй системийн харьцуулалт & 2026-03 &  \\ \hline
+            3 & Backend, scraper, database архитектурын боловсруулалт & 2026-03 &  \\ \hline
+            4 & React dashboard, AI report, export workflow хэрэгжилт & 2026-04 &  \\ \hline
+            5 & Туршилт, үр дүн, тайлангийн эцсийн боловсруулалт & 2026-05 &  \\ \hline
+        \end{tabular}
+        \end{adjustbox}
+        \normalsize
+
+        \vspace{1cm}
+        Ажлын товч дүгнэлт \\[0.5cm]
+        \dotfill \\[0.2cm]
+        \dotfill \\[0.2cm]
+        \dotfill \\[0.2cm]
+        \dotfill \\[0.2cm]
+        \dotfill \\[0.2cm]
+        \dotfill \\[0.5cm]
+        Удирдагч: \makebox[3cm]{\dotfill} /\supname/ \\
+
+        \vspace{1.4cm}
+        \textbf{ЗӨВШӨӨРӨЛ}\\[0.5cm]
+        Оюутан \shortname-ын бичсэн ``\ttitle'' сэдэвт төгсөлтийн ажлыг улсын шалгалтын комисст хамгаалуулахаар тодорхойлов.\\[0.5cm]
+        Салбарын эрхлэгч: \makebox[3cm]{\dotfill} /\chairname/
+    \end{center}
+\end{titlepage}
+
+\begin{titlepage}
+    \begin{center}
+        {\scshape\Large \univname\par}
+        {\scshape\large \facname\par}\vspace{1cm}
+        \textbf{\Large ШҮҮМЖИЙН ХУУДАС}\\[1cm]
+    \end{center}
+
+    \normalsize
+    \deptname-ийн төгсөх курсын оюутан \shortname-ын ``\ttitle'' сэдэвт төгсөлтийн ажлын шүүмж.
+
+    \begin{enumerate}
+        \item Төслөөр дэвшүүлсэн асуудал, түүнтэй холбоотой онолын материал уншиж судалсан байдал.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Төслийн ерөнхий агуулга, шийдсэн зүйлүүд, хүрсэн үр дүн, харьцуулалт ба дүгнэлт.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Эмх цэгцтэй, стандарт хангасан байдлаар диплом бичих шаардлагыг биелүүлсэн эсэх.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Төслөөр орхигдуулсан болон дутуу болсон зүйлүүд, цаашид анхаарах зүйлүүд.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Ерөнхий оноо. (5 оноо)
+        \begin{center}
+            \dotfill \\[0.8cm]
+        \end{center}
+    \end{enumerate}
+    Шүүмж бичсэн: \makebox[3cm]{\dotfill} /\readname/ \\[0.5cm]
+    Ажлын газар: \dotfill \\[0.5cm]
+    Хаяг, утас: \makebox[5cm]{\dotfill}
+\end{titlepage}
+
+% ============================================================================
+% Copyright and Declaration
+% ============================================================================
+\begin{declaration}
+\addchaptertocentry{\authorshipname}
+
+\noindent Миний бие \shortname, ``\ttitle'' сэдэвт энэхүү төгсөлтийн ажил нь миний өөрийн бүтээл бөгөөд дараахыг нотолж байна. Үүнд:
+
+\begin{itemize}
+    \item Энэхүү ажлыг боловсролын зэрэг авах зорилгоор бүхэлд нь буюу голлон өөрөө гүйцэтгэсэн.
+    \item Ажлын аль нэг хэсгийг өөр байгууллага, сургуульд өмнө нь зэрэг, мэргэшил авах зорилгоор илгээгээгүй.
+    \item Бусдын хэвлүүлсэн ажил, өгөгдөл, санаа, эх кодоос ашигласан тохиолдолд эх үүсвэрийг тодорхой заасан.
+    \item Судалгааны болон хэрэгжилтийн явцад тусалсан эх үүсвэр, зөвлөгөө, дэмжлэгийг зохих байдлаар дурдсан.
+    \item Хамтарсан ажил ашигласан бол тухайн хувь нэмрийг ялган тодорхойлсон.
+\end{itemize}
+\bigskip
+
+\noindent Гарын үсэг: \rule[-0.5em]{12.7em}{0.5pt}
+\bigskip
+
+\noindent Огноо: \rule[-0.5em]{15em}{0.5pt}
+\end{declaration}
+
+\clearpage
+
+% ============================================================================
+% Abstract (Mongolian)
+% ============================================================================
+\chapter*{Хураангуй}
+\addcontentsline{toc}{chapter}{Хураангуй}
+
+Энэхүү дипломын ажил нь Facebook хуудасны олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, TextBlob болон scikit-learn-д суурилсан үндсэн шинжилгээ, Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
+
+\textbf{Судалгааны үндсэн зорилгууд:}
+\begin{itemize}
+    \item Facebook хуудасны зорилтот жагсаалтыг удирдаж, scraper процессыг backend-ээс эхлүүлэх боломжтой болгох
+    \item Нийтлэл, сэтгэгдэл, зураг болон likes, shares, comment count зэрэг оролцооны өгөгдлийг хадгалах
+    \item Цуглуулсан өгөгдөл дээр TextBlob fallback бүхий sentiment analysis, LDA topic modeling, engagement score тооцоолол хийх
+    \item React dashboard-аар live backend өгөгдлийг харуулах, backend холбогдохгүй үед demo fallback ашиглах
+    \item Gemini API ашиглан сүүлийн өгөгдлөөс уншигдахуйц тайлан, зөвлөмж үүсгэх
+\end{itemize}
+
+Систем нь Facebook төвтэй өгөгдөл цуглуулах pipeline, REST API, өгөгдлийн сан, frontend dashboard, scraper target management, automation log viewer, AI report generation гэсэн бодит хэрэгжсэн бүрэлдэхүүнтэй. Энэхүү хувилбар нь repository-д бодитоор байгаа Facebook төвтэй workflow-г л үндсэн боломж гэж авч үзсэн.
+
+\textbf{Түлхүүр үгс:} Facebook scraper, React dashboard, FastAPI, PostgreSQL, SQLAlchemy, TextBlob, LDA, Gemini, social media analytics
+
+% ============================================================================
+% Acknowledgments
+% ============================================================================
+\begin{acknowledgements}
+\addchaptertocentry{\acknowledgementname}
+
+Энэхүү төгсөлтийн ажлыг гүйцэтгэх явцад судалгааны чиглэл, системийн архитектур, хэрэгжилтийн хүрээг тодорхойлоход зөвлөгөө өгч дэмжсэн удирдагч багш \supname-д гүн талархал илэрхийлье. Мөн суралцах хугацаанд мэдээллийн технологийн онол, практикийн мэдлэг олгож, мэргэжлийн ур чадварыг хөгжүүлэхэд хувь нэмэр оруулсан \facname-ийн багш нартаа талархал илэрхийлж байна.
+
+Судалгаа, хөгжүүлэлтийн явцад дэмжлэг үзүүлсэн гэр бүл, найз нөхөд болон төслийн туршилт, бичиг баримтын боловсруулалтад тусалсан бүх хүнд баярлалаа.
+
+\end{acknowledgements}
+
+% ============================================================================
+% Abbreviations
+% ============================================================================
+\begin{abbreviations}{ll}
+API & Application Programming Interface \\
+AI & Artificial Intelligence \\
+CRUD & Create, Read, Update, Delete \\
+CSV & Comma-Separated Values \\
+DOM & Document Object Model \\
+JSON & JavaScript Object Notation \\
+LDA & Latent Dirichlet Allocation \\
+NLP & Natural Language Processing \\
+ORM & Object-Relational Mapping \\
+REST & Representational State Transfer \\
+SQL & Structured Query Language \\
+UI & User Interface \\
+URL & Uniform Resource Locator \\
+\end{abbreviations}
 
 % ============================================================================
 % Table of Contents
@@ -128,25 +378,994 @@ headsepline,
 \myformat
 
 % ============================================================================
-% Chapters
+% Chapter 1: Introduction
 % ============================================================================
+\chapter{Оршил}
 
-\include{Chapters/Chapter1}
-\include{Chapters/Chapter2}
-\include{Chapters/Chapter3}
-\include{Chapters/Chapter4}
-\include{Chapters/Chapter5}
-\include{Chapters/Chapter6}
+\section{Судалгааны үндэслэл}
+
+Олон нийтийн Facebook хуудас дээр үүсэж буй нийтлэл, сэтгэгдэл, реакцын хэмжээ нь хэрэглэгчдийн сонирхол, санал хандлага, контентийн үр нөлөөг ойлгоход хэрэгтэй өгөгдөл болдог. Гэвч уг өгөгдлийг гараар цуглуулах нь цаг их зарцуулдаг, давтагдах боломж муутай, олон хуудас дээр тогтмол хянахад хүндрэлтэй. Иймээс scraper, backend API, өгөгдлийн сан, dashboard, AI тайланг нэгтгэсэн систем шаардлагатай.
+
+Энэ төслийн бодит хэрэгжилт нь Facebook өгөгдөл дээр төвлөрсөн. Frontend нь live backend өгөгдлийг харуулж, scraper target list буюу \texttt{pages.txt}-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, sentiment, topic, trend, export болон scraper control функцийг өгдөг.
+
+\section{Судалгааны зорилго}
+
+Энэхүү дипломын ажлын зорилго нь Facebook хуудасны нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулах, хадгалах, шинжлэх, хэрэглэгчид dashboard болон AI тайлан хэлбэрээр хүргэх систем боловсруулах явдал юм.
+
+\textbf{Системийн бодит зорилтууд:}
+\begin{enumerate}
+    \item Facebook page URL/ID жагсаалтыг frontend болон backend-ээр удирдах
+    \item Selenium WebDriver ашиглан Facebook хуудаснаас пост, сэтгэгдэл, зураг, engagement metadata цуглуулах
+    \item PostgreSQL/SQLAlchemy ашиглан \texttt{facebook\_posts}, \texttt{post\_comments}, \texttt{post\_images}, \texttt{analysis\_results} хүснэгтүүдэд хадгалах
+    \item FastAPI ашиглан posts, comments, images, stats, sentiment, topics, trends, scraper control endpoint-ууд гаргах
+    \item React/Vite dashboard ашиглан live data, demo fallback, chart, query, backend health, scraper logs харуулах
+    \item Google Gemini API ашиглан сүүлийн өгөгдлөөс тайлан, зөвлөмж үүсгэх
+\end{enumerate}
+
+\section{Судалгааны асуулт}
+
+\begin{enumerate}
+    \item Facebook хуудаснаас нийтлэл, сэтгэгдлийг browser automation ашиглан давтагдах боломжтой байдлаар цуглуулж болох уу?
+    \item Цуглуулсан өгөгдлийг REST API болон dashboard-аар хэрэглэгчид ойлгомжтой байдлаар хүргэж болох уу?
+    \item TextBlob, LDA topic modeling, engagement score болон Gemini report generation-ийг нэг pipeline-д нэгтгэснээр судалгааны болон контент хяналтын шийдвэрт хэрэгтэй мэдээлэл гаргаж болох уу?
+\end{enumerate}
+
+\section{Судалгааны таамаглал}
+
+\begin{itemize}
+    \item \textbf{H1:} Facebook scraper, relational storage, FastAPI endpoint, React dashboard-ыг нэгтгэснээр өгөгдөл цуглуулах ба хянах ажлын гараар хийх ачааллыг бууруулна.
+    \item \textbf{H2:} Likes, shares, comments, text length, hashtag count зэрэг feature-д суурилсан engagement score нь постуудыг харьцуулахад хэрэглэхүйц индикатор болно.
+    \item \textbf{H3:} Gemini-д өгөгдлийн товч summary дамжуулах нь dashboard-ийн тоон үзүүлэлтийг уншигдахуйц зөвлөмж болгон хувиргахад тусална.
+\end{itemize}
+
+\section{Судалгааны ач холбогдол}
+
+\begin{itemize}
+    \item Facebook хуудасны өгөгдөл цуглуулах, хадгалах, шалгах үйлдлийг нэг workflow болгоно.
+    \item Маркетинг, судалгаа, контент хяналтын ажилд dashboard болон export боломж өгнө.
+    \item Browser automation, REST API, ORM, frontend visualization, AI report generation-ийг нэг системд нэгтгэсэн жишээ болно.
+\end{itemize}
+
+\section{Судалгааны хүрээ ба хязгаарлалт}
+
+\textbf{Хүрээ:}
+\begin{itemize}
+    \item Facebook хуудасны нийтлэл, сэтгэгдэл, зураг, engagement metadata цуглуулах
+    \item PostgreSQL үндсэн хадгалалт, SQLite тохиргооны fallback боломж
+    \item FastAPI REST endpoint, Bearer token хамгаалалттай v1 endpoint-ууд
+    \item React/Vite frontend dashboard, data source manager, admin query, Gemini report UI
+    \item TextBlob/basic sentiment, LDA topic modeling, keyword trend extraction, engagement score
+\end{itemize}
+
+\textbf{Хязгаарлалт:}
+\begin{itemize}
+    \item Бусад платформын scraper бодитоор хэрэгжээгүй.
+    \item Deep-learning sentiment model болон graph-based interaction analysis үндсэн хэрэгжилтэд ашиглагдаагүй.
+    \item Sentiment analysis нь голчлон англи текстэд илүү тохиромжтой; Монгол хэлний тусгай загвар бэлтгээгүй.
+    \item Facebook UI болон access policy өөрчлөгдвөл scraper selector, login, modal handling дахин тохируулах шаардлагатай.
+\end{itemize}
+
+\section{Судалгааны аргачлалын ерөнхий загвар}
+
+\begin{enumerate}
+    \item \textbf{Өгөгдөл цуглуулалт:} \texttt{pages.txt}-д заасан Facebook page-уудаас scraper ажиллуулах
+    \item \textbf{Хадгалалт:} SQLAlchemy model-уудаар пост, сэтгэгдэл, зураг, analysis result хадгалах
+    \item \textbf{API:} FastAPI endpoint-уудаар өгөгдөл унших, статистик авах, scraper эхлүүлэх, log харах
+    \item \textbf{Frontend:} React dashboard-аар live data, fallback data, chart, query, health status харуулах
+    \item \textbf{AI report:} Recent posts summary-г Gemini prompt-д дамжуулж тайлан үүсгэх
+    \item \textbf{Баталгаажуулалт:} build, endpoint structure, database schema, UI workflow, LaTeX compilation-ээр шалгах
+\end{enumerate}
+
+\section{Дипломын ажлын бүтэц}
+
+\begin{description}
+    \item[1-р бүлэг:] Оршил - зорилго, хүрээ, хязгаарлалт
+    \item[2-р бүлэг:] Онолын хэсэг - ашигласан технологийн үндэслэл
+    \item[3-р бүлэг:] Арга зүй - бодит архитектур, өгөгдлийн загвар, алгоритм
+    \item[4-р бүлэг:] Хэрэгжилт - frontend, backend, scraper, database, AI report
+    \item[5-р бүлэг:] Үр дүн - хэрэгжилтийн баталгаажуулалт, workflow, хязгаарлалт
+    \item[6-р бүлэг:] Дүгнэлт - хийсэн ажил, үлдсэн сайжруулалт
+\end{description}
+
+% ============================================================================
+% Chapter 2: Literature Review
+% ============================================================================
+\chapter{Онолын хэсэг}
+
+\section{Facebook өгөгдөл цуглуулах онол}
+
+Нийгмийн сүлжээний өгөгдөл нь ихэвчлэн динамик ачаалагддаг тул энгийн HTTP хүсэлтээр бүх контент, comment modal, lazy-loaded post list бүрэн авах боломжгүй. Ийм нөхцөлд Selenium WebDriver зэрэг browser automation хэрэгсэл ашиглан бодит browser session үүсгэж, scroll, navigation, modal interaction хийх нь практик шийдэл болдог.
+
+BeautifulSoup нь Selenium-оор ачаалсан HTML/DOM бүтцээс текст, link, image URL, metadata зэрэг мэдээллийг ялгах parser-ийн үүрэгтэй. Энэ хоёр технологийг хослуулснаар JavaScript-heavy page дээр browser control болон content parsing-ийг салгаж зохион байгуулах боломжтой.
+
+\section{REST API ба dashboard архитектур}
+
+FastAPI нь Python backend дээр REST endpoint хурдан үүсгэх, Pydantic model-оор request/response validation хийх, Swagger documentation автоматаар гаргах давуу талтай. React dashboard нь backend JSON endpoint-уудаас өгөгдөл авч, chart, card, table, query form, log console зэрэг UI хэлбэрээр хэрэглэгчид хүргэнэ.
+
+Энэ төслийн хувьд frontend болон backend тусдаа ажиллах боломжтой. Frontend нь backend амжилтгүй үед demo fallback ашигладаг тул development болон presentation орчинд системийн UI тасрахгүй.
+
+\section{Өгөгдлийн сан ба ORM}
+
+Нийтлэл, сэтгэгдэл, зураг, analysis result нь харилцаатай entity тул relational database тохиромжтой. SQLAlchemy ORM нь Python class болон database table-ийг холбож, session, transaction, cascade delete, duplicate update зэрэг логикийг төвлөрүүлдэг. PostgreSQL нь production хадгалалт, SQLite нь lightweight fallback/development тохиргоо байдлаар ашиглагдаж болно.
+
+\section{Sentiment, topic, engagement analysis}
+
+TextBlob нь polarity болон subjectivity тооцох хөнгөн sentiment analysis хэрэгсэл юм. Хэрэв TextBlob байхгүй бол basic keyword matching fallback ашиглаж болно. Энэ нь өндөр нарийвчлалтай deep learning model биш боловч эхний шатны dashboard insight-д хангалттай baseline өгдөг.
+
+Topic modeling-д CountVectorizer болон Latent Dirichlet Allocation (LDA) ашигласнаар постын текстүүдээс давтагдах keyword cluster гаргаж болно. Engagement analysis-д likes, shares, comments зэрэг observable metric-ээс нийлмэл оноо гаргах нь постуудыг хооронд нь харьцуулах энгийн боловч ойлгомжтой арга юм.
+
+\section{AI тайлан үүсгэх}
+
+Google Gemini API зэрэг LLM үйлчилгээ нь structured summary data-г уншигдахуйц тайлан, зөвлөмж болгон хувиргах боломж өгдөг. Энэ төсөлд Gemini нь scraper эсвэл database-ийн оронд ажиллахгүй; харин dashboard дээрх recent posts-ийн товч нэгтгэлийг тайлбарлах AI давхарга болж ашиглагдана.
+
+\section{Ижил төстэй шийдлүүдтэй харьцуулалт}
+
+\begin{table}[H]
+\centering
+\caption{Төслийн бодит шийдлийн харьцуулалт}
+\small
+\renewcommand{\arraystretch}{1.28}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{3.2cm}|L{5.1cm}|L{5.1cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Шийдэл} & \textbf{Давуу тал} & \textbf{Хязгаарлалт} \\
+\hline
+Commercial social listening tools & Олон платформ, enterprise dashboard & Үнэтэй, data access/API хязгаарлалттай \\
+\hline
+API-only collection & Тогтвортой, дүрмийн дагуу access & Facebook public page data-д API access хязгаарлагдмал \\
+\hline
+Browser automation scraper & Динамик UI-тай ажиллах боломжтой & UI өөрчлөгдвөл selector засвар шаардана \\
+\hline
+Энэ төсөл & Scraper, API, DB, dashboard, AI report нэг workflow-д орсон & Facebook төвтэй, production benchmark dataset байхгүй \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Техникийн сорилтууд}
+
+\begin{itemize}
+    \item Facebook layout болон selector байнга өөрчлөгдөх магадлалтай.
+    \item Login/session/cookie workflow тогтвортой байх шаардлагатай.
+    \item Labeled dataset байхгүй үед sentiment accuracy-г бодитоор хэмжих боломж хязгаарлагдана.
+    \item Frontend, backend, database credentials-ийг deployment орчинд зөв тохируулах шаардлагатай.
+\end{itemize}
+
+% ============================================================================
+% Chapter 3: Methodology
+% ============================================================================
+\chapter{Арга зүй}
+
+\section{Системийн архитектур}
+
+Бодит систем нь frontend, backend, scraper, database, ML analysis, AI report гэсэн үндсэн давхаргатай. Төслийн гол урсгал нь Facebook target list удирдах, scraper ажиллуулах, PostgreSQL-д хадгалах, FastAPI-аар өгөгдөл буцаах, React dashboard дээр харуулах, шаардлагатай үед Gemini тайлан үүсгэх хэлбэртэй.
+
+\begin{itemize}
+    \item \textbf{Frontend:} React 19, Vite, TypeScript, Tailwind, Recharts, lucide-react, Supabase client
+    \item \textbf{Backend API:} FastAPI, Pydantic, Bearer token хамгаалалт, scraper process control
+    \item \textbf{Scraper:} Selenium WebDriver, BeautifulSoup, page list, log file, screenshot/image workflow
+    \item \textbf{Database:} SQLAlchemy ORM, PostgreSQL үндсэн хадгалалт, SQLite тохиргооны fallback
+    \item \textbf{Analysis:} TextBlob/basic sentiment, scikit-learn LDA topic modeling, engagement score/prediction
+    \item \textbf{AI report:} Google Gemini API ашигласан summary, insight, recommendation generation
+\end{itemize}
+
+\subsection{Өгөгдлийн сангийн ERD диаграм}
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.96\textwidth,center}
+\begin{tikzpicture}[
+    entity/.style={draw, rounded corners, align=left, fill=blue!5, font=\small, text width=4.15cm, inner sep=6pt},
+    key/.style={font=\bfseries},
+    rel/.style={-Latex, thick}
+]
+    \node[entity] (post) at (0,0) {
+        \textbf{FacebookPost}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} unique\\
+        \texttt{page\_name, content}\\
+        \texttt{likes, shares, comments}
+    };
+
+    \node[entity] (comment) at (-5.2,-3.2) {
+        \textbf{PostComment}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{author\_name, content}\\
+        \texttt{likes, timestamp}
+    };
+
+    \node[entity] (image) at (0,-3.2) {
+        \textbf{PostImage}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{image\_url}\\
+        \texttt{local\_path}
+    };
+
+    \node[entity] (analysis) at (5.2,-3.2) {
+        \textbf{AnalysisResult}\\
+        \texttt{id} PK\\
+        \texttt{post\_id} FK\\
+        \texttt{analysis\_type}\\
+        \texttt{result JSON}
+    };
+
+    \draw[rel] (post.south west) -- node[above, sloped]{1:N} (comment.north east);
+    \draw[rel] (post.south) -- node[right]{1:N} (image.north);
+    \draw[rel] (post.south east) -- node[above, sloped]{1:N} (analysis.north west);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Өгөгдлийн сангийн үндсэн entity холбоо}
+\label{fig:database-erd}
+\end{figure}
+
+\subsection{Системийн архитектурын диаграм}
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1.0cm, align=center, fill=blue!5, font=\small},
+    ext/.style={draw, rounded corners, minimum width=3.0cm, minimum height=1.0cm, align=center, fill=gray!10, font=\small},
+    arr/.style={-Latex, thick}
+]
+    \node[ext] (user) at (0,0) {Хэрэглэгч};
+    \node[box] (frontend) at (4.1,0) {React/Vite\\Dashboard};
+    \node[box] (api) at (8.2,0) {FastAPI\\Backend};
+    \node[box] (scraper) at (4.1,-2.3) {Facebook Scraper\\Selenium + BS4};
+    \node[box] (db) at (8.2,-2.3) {SQLAlchemy\\PostgreSQL};
+    \node[box] (analysis) at (4.1,-4.6) {Analysis\\TextBlob + sklearn};
+    \node[box] (ai) at (8.2,-4.6) {Gemini\\Report};
+    \node[ext] (fb) at (0,-2.3) {Facebook};
+    \node[ext] (sheets) at (12.3,-2.3) {Google Sheets\\Export};
+
+    \draw[arr] (user.east) -- (frontend.west);
+    \draw[arr] (frontend.east) -- (api.west);
+    \draw[arr] (api.south) -- (db.north);
+    \draw[arr] (api.south west) -- (scraper.north east);
+    \draw[arr] (fb.east) -- (scraper.west);
+    \draw[arr] (scraper.east) -- (db.west);
+    \draw[arr] (db.south west) -- (analysis.north east);
+    \draw[arr] (analysis.east) -- (ai.west);
+    \draw[arr] (api.east) -- ++(1.0,0) |- (sheets.north);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Системийн бодит архитектурын диаграм}
+\label{fig:architecture-diagram}
+\end{figure}
+
+\subsection{Өгөгдлийн урсгал}
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    flowstep/.style={draw, rounded corners, minimum width=3.2cm, minimum height=1.0cm, align=center, fill=green!7, font=\small},
+    arr/.style={-Latex, thick}
+]
+    \node[flowstep] (s1) at (0,0) {pages.txt\\Targets};
+    \node[flowstep] (s2) at (4.1,0) {Selenium\\Scraping};
+    \node[flowstep] (s3) at (8.2,0) {SQLAlchemy\\Storage};
+    \node[flowstep] (s4) at (8.2,-2.3) {FastAPI\\JSON};
+    \node[flowstep] (s5) at (4.1,-2.3) {React\\Dashboard};
+    \node[flowstep] (s6) at (0,-2.3) {TextBlob/LDA\\Engagement};
+    \node[flowstep] (s7) at (4.1,-4.6) {Gemini\\Report};
+
+    \draw[arr] (s1.east) -- (s2.west);
+    \draw[arr] (s2.east) -- (s3.west);
+    \draw[arr] (s3.south) -- (s4.north);
+    \draw[arr] (s4.west) -- (s5.east);
+    \draw[arr] (s3.south west) -- (s6.north east);
+    \draw[arr] (s6.east) -- (s5.west);
+    \draw[arr] (s5.south) -- (s7.north);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Өгөгдлийн урсгалын бодит дараалал}
+\label{fig:dataflow-diagram}
+\end{figure}
+
+\section{Технологийн сонголт}
+
+\begin{table}[H]
+\centering
+\caption{Бодит ашигласан технологийн сонголт}
+\small
+\renewcommand{\arraystretch}{1.28}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{3.0cm}|L{5.2cm}|L{5.2cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Технологи} & \textbf{Хэрэглээ} & \textbf{Сонгосон шалтгаан} \\
+\hline
+React/Vite/\newline TypeScript & Dashboard, admin, scraper target UI, AI report UI & Хурдан хөгжүүлэлт, component-based бүтэц, Vite build \\
+\hline
+FastAPI & REST API, auth, scraper process control, stats endpoint & Pydantic validation, docs, Python backend-тэй сайн нийцдэг \\
+\hline
+Selenium WebDriver & Facebook browser automation & JavaScript динамик хуудсыг бодит browser-оор ачаалах шаардлагатай \\
+\hline
+BeautifulSoup & HTML parsing & Selenium-оор авсан DOM-оос текст, холбоос, metadata ялган авах \\
+\hline
+SQLAlchemy + PostgreSQL & Relational storage & Post/comment/image/result entity-г харилцаатай хадгалах \\
+\hline
+TextBlob + scikit-learn & Sentiment, topic, engagement analysis & Хөнгөн, dependency багатай, demo болон basic analysis-д тохиромжтой \\
+\hline
+Gemini API & AI тайлан, Q\&A, topic/report synthesis & Dashboard-ийн тоон өгөгдлийг уншигдахуйц зөвлөмж болгох \\
+\hline
+Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} table өөрчлөгдөхөд dashboard refresh хийх боломж \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Өгөгдлийн загвар}
+
+Өгөгдлийн сангийн үндсэн model нь \texttt{beta/db/models.py} файлд тодорхойлогдсон.
+
+\begin{itemize}
+    \item \textbf{FacebookPost:} id, page\_name, post\_id, post\_url, content, timestamp, likes, shares, comment\_count, scraped\_at
+    \item \textbf{PostImage:} id, post\_id, image\_url, local\_path, downloaded\_at
+    \item \textbf{PostComment:} id, post\_id, comment\_id, author\_name, author\_url, content, timestamp, likes, reply\_to\_id, scraped\_at
+    \item \textbf{AnalysisResult:} id, post\_id, analysis\_type, result(JSON string), analyzed\_at
+\end{itemize}
+
+Харьцаа нь \texttt{FacebookPost} $\rightarrow$ \texttt{PostImage} (1:N), \texttt{FacebookPost} $\rightarrow$ \texttt{PostComment} (1:N) бөгөөд post устгахад холбоотой comment, image cascade байдлаар устах ORM тохиргоотой.
+
+\section{Алгоритм}
+
+\subsection{Scraper workflow}
+\begin{enumerate}
+    \item \texttt{pages.txt}-ээс Facebook page URL/ID жагсаалт унших
+    \item Selenium browser session эхлүүлэх, шаардлагатай directory/log үүсгэх
+    \item Page бүр рүү navigate хийж, scroll болон selector-based extraction хийх
+    \item BeautifulSoup болон Selenium selector ашиглан post, image, comment data ялгах
+    \item SQLAlchemy \texttt{DatabaseManager.save\_post()} ашиглан duplicate шалгаж хадгалах
+    \item Log файлыг \texttt{/api/v1/scraper/logs} endpoint-оор frontend-д харуулах
+\end{enumerate}
+
+\subsection{Analysis workflow}
+\begin{enumerate}
+    \item Text preprocessing: URL, mention, hashtag, punctuation, whitespace цэвэрлэх
+    \item Sentiment: TextBlob боломжтой үед polarity/subjectivity; боломжгүй үед keyword fallback
+    \item Topic: CountVectorizer + LatentDirichletAllocation ашиглан keyword-based сэдэв гаргах
+    \item Engagement: likes + shares $\times$ 2 + comments $\times$ 1.5 оноо тооцоолох
+    \item Data хангалттай үед GradientBoostingRegressor эсвэл CatBoost optional model ашиглан score таамаглах
+    \item Үр дүнг \texttt{analysis\_results} хүснэгтэд JSON string хэлбэрээр хадгалах
+\end{enumerate}
+
+\subsection{Frontend workflow}
+\begin{enumerate}
+    \item \texttt{/health}, \texttt{/api/v1/stats}, \texttt{/api/v1/posts} endpoint-уудаас snapshot авах
+    \item Backend амжилтгүй үед mock data fallback харуулах
+    \item Recharts ашиглан engagement trend, recent volume, latest signals харуулах
+    \item Admin query дээр platform, keyword, date range ашиглан loaded posts filter хийх
+    \item Gemini report товч дээр latest posts summary-г prompt болгон дамжуулах
+\end{enumerate}
+
+\section{UML болон Бизнес процессын диаграмууд}
+
+\subsection{Бизнес процессын диаграм (BPMN)}
+Төслийн өгөгдөл цуглуулалт болон тайлан боловсруулах ерөнхий процессыг BPMN хэлбэрийн урсгалын диаграмаар дор харуулав.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    node distance=1cm and 1cm,
+    start/.style={circle, draw, minimum size=0.8cm, fill=green!20},
+    end/.style={circle, draw, minimum size=0.8cm, fill=red!20, thick},
+    task/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center, fill=blue!10, text width=2.5cm},
+    gateway/.style={diamond, draw, minimum size=1cm, fill=yellow!20, align=center},
+    arr/.style={-Latex, thick}
+]
+    \node[start] (start) {Start};
+    \node[task, right=of start] (t1) {Target URL оруулах};
+    \node[task, right=of t1] (t2) {Scraper процесс эхлэх};
+    \node[gateway, right=0.8cm of t2] (g1) {Амжилттай?};
+    \node[task, below=of g1] (t3) {DB-д хадгалах};
+    \node[task, left=of t3] (t4) {AI/ML шинжилгээ};
+    \node[task, left=of t4] (t5) {UI харуулах};
+    \node[task, left=of t5] (t6) {Тайлан үүсгэх};
+    \node[end, left=of t6] (end) {End};
+    
+    \node[task, above=1cm of g1] (err) {Алдааны лог};
+
+    \draw[arr] (start) -- (t1);
+    \draw[arr] (t1) -- (t2);
+    \draw[arr] (t2) -- (g1);
+    \draw[arr] (g1) -- node[right] {Тийм} (t3);
+    \draw[arr] (g1) -- node[left] {Үгүй} (err);
+    \draw[arr] (err) -| (t2);
+    \draw[arr] (t3) -- (t4);
+    \draw[arr] (t4) -- (t5);
+    \draw[arr] (t5) -- (t6);
+    \draw[arr] (t6) -- (end);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Өгөгдөл цуглуулах системийн BPMN процесс}
+\end{figure}
+
+\subsection{Use Case диаграм}
+Системийн гол хэрэглэгчийн үйлдэл болон үүргийг тодорхойлно.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.8\textwidth,center}
+\begin{tikzpicture}[
+    actor/.style={circle, draw, minimum size=0.8cm, fill=gray!20, font=\small},
+    usecase/.style={ellipse, draw, minimum width=2.5cm, minimum height=1cm, fill=blue!5, align=center, text width=2.5cm, font=\small},
+    arr/.style={-Latex, thick}
+]
+    \node[actor] (user) at (0, 0) {Хэрэглэгч};
+    \node[actor] (sys) at (8, 0) {Систем};
+    
+    \node[usecase] (uc1) at (4, 3) {Dashboard харах};
+    \node[usecase] (uc2) at (4, 1.5) {Тайлан үүсгэх};
+    \node[usecase] (uc3) at (4, 0) {Target хуудас удирдах};
+    \node[usecase] (uc4) at (4, -1.5) {Өгөгдөл татах};
+    \node[usecase] (uc5) at (4, -3) {Шинжилгээ хийх};
+
+    \draw[arr] (user) -- (uc1);
+    \draw[arr] (user) -- (uc2);
+    \draw[arr] (user) -- (uc3);
+    
+    \draw[arr] (sys) -- (uc4);
+    \draw[arr] (sys) -- (uc5);
+    \draw[arr, dashed] (uc3) -- node[right, font=\footnotesize] {trigger} (uc4);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Системийн Use Case диаграм}
+\end{figure}
+
+\subsection{Sequence диаграм}
+AI тайлан үүсгэх үеийн дарааллыг харуулна.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    box/.style={rectangle, draw, minimum width=2cm, minimum height=0.8cm, fill=blue!10, align=center, font=\small},
+    line/.style={dashed, thick},
+    msg/.style={-Latex, thick}
+]
+    \node[box] (u) at (0,0) {Хэрэглэгч};
+    \node[box] (f) at (3,0) {Frontend};
+    \node[box] (a) at (6,0) {FastAPI};
+    \node[box] (d) at (9,0) {Database};
+    \node[box] (g) at (12,0) {Gemini API};
+
+    \draw[line] (u) -- (0,-6);
+    \draw[line] (f) -- (3,-6);
+    \draw[line] (a) -- (6,-6);
+    \draw[line] (d) -- (9,-6);
+    \draw[line] (g) -- (12,-6);
+
+    \draw[msg] (0,-1) -- node[above, font=\footnotesize] {Тайлан хүсэх} (3,-1);
+    \draw[msg] (3,-1.7) -- node[above, font=\footnotesize] {GET /api/report} (6,-1.7);
+    \draw[msg] (6,-2.4) -- node[above, font=\footnotesize] {Query data} (9,-2.4);
+    \draw[msg] (9,-3.1) -- node[above, font=\footnotesize] {Return data} (6,-3.1);
+    \draw[msg] (6,-3.8) -- node[above, font=\footnotesize] {Prompt + Data} (12,-3.8);
+    \draw[msg] (12,-4.5) -- node[above, font=\footnotesize] {Markdown report} (6,-4.5);
+    \draw[msg] (6,-5.2) -- node[above, font=\footnotesize] {JSON result} (3,-5.2);
+    \draw[msg] (3,-5.7) -- node[above, font=\footnotesize] {Render UI} (0,-5.7);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{AI тайлан үүсгэх Sequence диаграм}
+\end{figure}
+
+\subsection{Activity диаграм}
+Scraping процессийн үйл ажиллагааны дараалал.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\begin{tikzpicture}[
+    start/.style={circle, fill=black, minimum size=0.3cm},
+    end/.style={circle, draw, thick, minimum size=0.4cm, path picture={\fill[black] (path picture bounding box.center) circle(1mm);}},
+    act/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=0.8cm, fill=blue!5, align=center, font=\small},
+    decision/.style={diamond, draw, minimum size=0.8cm, fill=yellow!10, align=center, font=\small},
+    arr/.style={-Latex, thick}
+]
+    \node[start] (s) at (0,0) {};
+    \node[act, below=0.6cm of s] (a1) {Хуудасны URL унших};
+    \node[act, below=0.6cm of a1] (a2) {Browser нээх};
+    \node[decision, below=0.8cm of a2] (d1) {\shortstack{URL\\дууссан?}};
+    \node[act, right=1.5cm of d1] (a3) {Page рүү хандах};
+    \node[act, below=0.6cm of a3] (a4) {HTML Parse хийх};
+    \node[act, below=0.6cm of a4] (a5) {DB-д хадгалах};
+    \node[act, below=0.8cm of d1] (a6) {Browser хаах};
+    \node[end, below=0.6cm of a6] (e) {};
+
+    \draw[arr] (s) -- (a1);
+    \draw[arr] (a1) -- (a2);
+    \draw[arr] (a2) -- (d1);
+    \draw[arr] (d1) -- node[above, font=\footnotesize] {Үгүй} (a3);
+    \draw[arr] (d1) -- node[right, font=\footnotesize] {Тийм} (a6);
+    \draw[arr] (a3) -- (a4);
+    \draw[arr] (a4) -- (a5);
+    \draw[arr] (a5) -| ++(-2.5,-1) -| (d1.west);
+    \draw[arr] (a6) -- (e);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Scraping хуудасны Activity диаграм}
+\end{figure}
+
+\subsection{State диаграм}
+Scraper үйлчилгээний төлөвүүд.
+
+\begin{figure}[H]
+\centering
+\begin{adjustbox}{max width=0.8\textwidth,center}
+\begin{tikzpicture}[
+    state/.style={rectangle, draw, rounded corners=12pt, minimum width=2cm, minimum height=1cm, fill=blue!10, align=center, font=\small},
+    start/.style={circle, fill=black, minimum size=0.3cm},
+    arr/.style={-Latex, thick}
+]
+    \node[start] (s) at (0,0) {};
+    \node[state, right=1.2cm of s] (idle) {Idle};
+    \node[state, right=2.5cm of idle] (init) {Initializing};
+    \node[state, below=2cm of init] (running) {Scraping};
+    \node[state, left=2.5cm of running] (error) {Error};
+
+    \draw[arr] (s) -- (idle);
+    \draw[arr] (idle) edge[bend left] node[above, font=\footnotesize] {Start} (init);
+    \draw[arr] (init) edge[bend left] node[right, font=\footnotesize] {Ready} (running);
+    \draw[arr] (running) edge[bend left] node[right, font=\footnotesize] {Complete} (idle);
+    \draw[arr] (running) edge node[above, sloped, font=\footnotesize] {Fail} (error);
+    \draw[arr] (init) edge node[below, sloped, font=\footnotesize] {Fail} (error);
+    \draw[arr] (error) edge node[left, font=\footnotesize] {Reset} (idle);
+\end{tikzpicture}
+\end{adjustbox}
+\caption{Scraper үйлчилгээний State диаграм}
+\end{figure}
+
+\section{Туршилтын орчин}
+
+\begin{itemize}
+    \item Frontend: Node.js, Vite, React, TypeScript
+    \item Backend: Python, FastAPI, uvicorn, SQLAlchemy
+    \item Scraper: Selenium, webdriver-manager, BeautifulSoup, browser driver
+    \item Database: PostgreSQL connection string; SQLite fallback config
+    \item AI: \texttt{VITE\_GEMINI\_API\_KEY} болон/эсвэл \texttt{GEMINI\_API\_KEY}
+\end{itemize}
+
+% ============================================================================
+% Chapter 4: Implementation
+% ============================================================================
+\chapter{Хэрэгжилт}
+
+\section{Төслийн бүтэц}
+
+Төслийн root хэсэгт frontend, backend, Supabase migration, thesis material зэрэг хэсгүүд байрлана. Бодит application code нь дараах байдлаар зохион байгуулагдсан.
+
+\begin{itemize}
+    \item \texttt{src/}: React/Vite frontend
+    \item \texttt{src/components/}: Dashboard, DataSources, PredictiveAnalysis, AdminControl болон UI components
+    \item \texttt{src/lib/}: backend API client, Gemini client, Supabase client, mock data
+    \item \texttt{beta/}: FastAPI backend, scraper, database, ML, integrations
+    \item \texttt{beta/api\_server.py}: REST API, health, stats, posts, analysis, scraper control
+    \item \texttt{beta/scraper/}: BrowserManager, PostScraper, EdgeFacebookScraper зэрэг scraper code
+    \item \texttt{beta/db/}: SQLAlchemy database manager, model, config
+    \item \texttt{beta/ml/}: DataAnalyzer, GeminiAnalyzer болон sentiment/topic analysis module
+\end{itemize}
+
+\section{Frontend хэрэгжилт}
+
+Frontend нь React 19 болон Vite дээр бүтээгдсэн. \texttt{App.tsx} нь Dashboard, Data Sources, AI Analysis, Admin, Settings гэсэн үндсэн tab-уудыг удирдана.
+
+\subsection{Dashboard}
+
+\texttt{Dashboard.tsx} нь backend-ээс \texttt{/api/v1/posts} болон \texttt{/api/v1/stats} endpoint-уудаар өгөгдөл уншиж, дараах үзүүлэлтийг харуулдаг.
+
+\begin{itemize}
+    \item Posts collected, engagement, estimated reach, average sentiment cards
+    \item Recharts ашигласан line/bar/area chart
+    \item Latest signals буюу recent posts list
+    \item Backend live эсвэл demo fallback status badge
+    \item Supabase realtime channel ашиглан \texttt{facebook\_posts} table өөрчлөгдөхөд refresh хийх hook
+\end{itemize}
+
+\subsection{Data Sources}
+
+\texttt{DataSources.tsx} нь scraper target management хэсэг юм. Энэ хэсэг backend-ийн pages, scraper run, scraper status, scraper logs endpoint-уудтай ажиллана.
+
+\begin{itemize}
+    \item Page URL/ID нэмэх, устгах, хадгалах
+    \item Scraper process эхлүүлэх
+    \item Scraper active/idle төлөв харах
+    \item Log файлын сүүлийн мөрүүдийг terminal UI хэлбэрээр харуулах
+\end{itemize}
+
+\subsection{Predictive Analysis}
+
+\texttt{PredictiveAnalysis.tsx} нь live backend posts байгаа эсэхийг шалгаж, байгаа бол latest 50 posts-оос summary dataset үүсгэнэ. Backend байхгүй үед mock social data fallback ашиглана. Дараа нь \texttt{generatePredictiveAnalysis()} функцээр Gemini prompt илгээж Монгол хэл дээр тайлан үүсгэнэ.
+
+\subsection{Admin Control}
+
+\texttt{AdminControl.tsx} нь backend health, stats, recent posts snapshot уншиж, browser-side query/filter хийх боломж өгдөг. Энэ хэсгийн toggle болон limit controls нь одоогийн хувилбарт UI-level control бөгөөд backend configuration-г шууд өөрчлөхгүй.
+
+\section{Backend API хэрэгжилт}
+
+\texttt{beta/api\_server.py} нь FastAPI application. Backend startup үед database manager, analysis module, Google Sheets exporter, Gemini integration-ийг initialize хийхийг оролддог.
+
+\begin{table}[H]
+\centering
+\caption{Backend endpoint-уудын үндсэн бүлэг}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{4.4cm}|L{9.2cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Endpoint бүлэг} & \textbf{Үүрэг} \\
+\hline
+\texttt{/health} & Backend, database, analyzer, sheets, gemini initialization status \\
+\hline
+\texttt{/api/v1/posts}, \texttt{/posts} & Post list болон single post унших \\
+\hline
+\texttt{/posts/\{post\_id\}/}\newline\texttt{comments} & Post-ийн comments унших/үүсгэх \\
+\hline
+\texttt{/posts/\{post\_id\}/}\newline\texttt{images} & Post-ийн image records унших/үүсгэх \\
+\hline
+\texttt{/api/v1/stats} & Total posts, pages, comments, average engagement metrics \\
+\hline
+\texttt{/api/v1/sentiment} & Single/batch sentiment analysis \\
+\hline
+\texttt{/api/v1/topics}, \texttt{/api/v1/trends} & Topic modeling болон keyword/hashtag trend extraction \\
+\hline
+\texttt{/api/v1/pages} & \texttt{pages.txt} унших/бичих \\
+\hline
+\texttt{/api/v1/scraper/*} & Scraper process start/status/logs \\
+\hline
+\texttt{/gemini/*} & Gemini summary, Q\&A, topic detection \\
+\hline
+\texttt{/export/sheets} & Google Sheets export \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Scraper хэрэгжилт}
+
+Scraper хэсэг нь Selenium WebDriver болон BeautifulSoup ашиглан Facebook page content-ийг авахад чиглэсэн. \texttt{run\_scraper.py} нь command-line entry point бөгөөд \texttt{--headless}, \texttt{--max-posts}, \texttt{--no-screenshots}, \texttt{--no-images}, \texttt{--debug} сонголтуудтай. Backend scraper endpoint нь энэ script-ийг background process болгон эхлүүлдэг.
+
+\textbf{Scraper workflow:}
+\begin{enumerate}
+    \item Log directory болон output directory үүсгэнэ.
+    \item \texttt{pages.txt}-ээс target list уншина.
+    \item Target бүр дээр AutoScraper ашиглан scrape хийнэ.
+    \item Амжилт/алдааг \texttt{logs/facebook\_scraper.log} файлд бичнэ.
+    \item Frontend log endpoint-оор сүүлийн мөрүүдийг харуулна.
+\end{enumerate}
+
+\section{Database layer}
+
+Database хэрэгжилт нь SQLAlchemy ORM дээр суурилсан. \texttt{DatabaseManager} нь engine/session үүсгэх, table initialize хийх, post/comment/image/result хадгалах, query хийх, duplicate update хийх, health check хийх үүрэгтэй.
+
+\textbf{Гол шинжүүд:}
+\begin{itemize}
+    \item Existing \texttt{post\_id} байгаа үед update хийх
+    \item Comment duplicate-г \texttt{comment\_id} эсвэл author/content-оор шалгах
+    \item Image duplicate-г URL-аар шалгах
+    \item Analysis result-г \texttt{post\_id + analysis\_type} түлхүүрээр update/save хийх
+\end{itemize}
+
+\section{Analysis хэрэгжилт}
+
+\texttt{DataAnalyzer} нь гурван үндсэн функцтэй.
+
+\begin{itemize}
+    \item \textbf{Sentiment analysis:} TextBlob боломжтой үед polarity/subjectivity тооцоолно. Боломжгүй үед basic keyword matching fallback ажиллана.
+    \item \textbf{Topic classification:} CountVectorizer болон LDA ашиглан top keywords бүхий topic label үүсгэнэ.
+    \item \textbf{Engagement prediction:} likes + shares $\times$ 2 + comments $\times$ 1.5 оноо тооцоолж, data хангалттай үед GradientBoostingRegressor/CatBoost optional model ашиглана.
+\end{itemize}
+
+Sentiment analyzer хэсэг нь dependency байхгүй үед TextBlob/basic fallback ашиглахаар зохион байгуулагдсан. Иймээс энэ дипломын бодит scope-д lightweight sentiment analysis-ийг үндсэн хэрэгжилт гэж авч үзсэн.
+
+\section{AI report хэрэгжилт}
+
+AI report нь хоёр замаар хэрэгжсэн.
+
+\begin{itemize}
+    \item Frontend талд \texttt{@google/genai} ашиглаж \texttt{gemini-2.5-flash} model-д latest data summary prompt илгээдэг.
+    \item Backend талд \texttt{google-generativeai} ашигласан \texttt{GeminiAnalyzer} нь summary, insights, questions, improvement, critique төрлийн prompt илгээдэг.
+\end{itemize}
+
+AI report хэсэгт зөвхөн Gemini integration-ийг ашигласан технологи гэж авч үзсэн.
+
+\section{Export ба integration}
+
+Backend нь Google Sheets export integration-тэй. Мөн frontend нь Supabase client ашиглан realtime channel subscribe хийдэг. Үндсэн backend storage нь \texttt{db/database.py}-ийн SQLAlchemy manager юм.
+
+\section{Системийн туршилт (Test cases)}
+Хөгжүүлэлтийн явцад системийн модулиуд зөв ажиллаж байгаа эсэхийг дараах туршилтын тохиолдлуудад үндэслэн баталгаажуулсан.
+
+\begin{table}[H]
+\centering
+\caption{Системийн туршилтын хувилбарууд (Test cases)}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|c|L{3.5cm}|L{4.2cm}|L{3cm}|c|}
+\hline
+\rowcolor{gray!20}\textbf{No} & \textbf{Туршилтын үйлдэл} & \textbf{Хүлээгдэж буй үр дүн} & \textbf{Бодит үр дүн} & \textbf{Төлөв} \\
+\hline
+1 & Target URL нэмэх & URLs жагсаалтад шинээр нэмэгдэж \texttt{pages.txt} файлд хадгалагдана & Амжилттай хадгалагдсан & Pass \\
+\hline
+2 & Scraper асаах & Selenium WebDriver нээгдэж зорилтот хуудасны мэдээллийг татна & Амжилттай татаж лог үүссэн & Pass \\
+\hline
+3 & Өгөгдөл хадгалах & Татсан постыг давхардалгүйгээр PostgreSQL баазад хадгалах & Баазад амжилттай орсон & Pass \\
+\hline
+4 & API Health Check & \texttt{/health} endpoint 200 OK болон DB статус буцаах & 200 OK буцаасан & Pass \\
+\hline
+5 & AI Тайлан үүсгэх & Gemini API руу өгөгдөл илгээж, Markdown тайлан текст ирнэ & Тайлан текст ирсэн & Pass \\
+\hline
+6 & Emotion Analysis & TextBlob/LDA амжилттай ажиллаж score JSON гарна & Score баазад бүртгэгдсэн & Pass \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+% ============================================================================
+% Chapter 5: Results
+% ============================================================================
+\chapter{Үр дүн}
+
+\section{Хэрэгжилтийн үр дүн}
+
+Төслийн бодит хэрэгжилтээр Facebook өгөгдөл цуглуулах, хадгалах, API-аар түгээх, dashboard дээр харах, Gemini-ээр тайлан үүсгэх үндсэн workflow бүрдсэн. Энэ бүлэгт fabricated benchmark бус, repository-д байгаа хэрэгжилтийн баталгаажсан боломжуудыг нэгтгэн харуулав.
+
+\begin{table}[H]
+\centering
+\caption{Хэрэгжсэн модулиудын нэгтгэл}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{3.6cm}|L{9.8cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Модуль} & \textbf{Бодит үр дүн} \\
+\hline
+Frontend dashboard & Live backend posts/statistics унших, demo fallback харуулах, chart болон recent post cards гаргах \\
+\hline
+Data source manager & \texttt{pages.txt} target list унших/хадгалах, scraper run/status/log endpoint ашиглах \\
+\hline
+Admin control & Backend health, stats, posts snapshot харуулах, browser-side keyword/date/platform filter хийх \\
+\hline
+FastAPI backend & Posts, comments, images, stats, sentiment, topics, trends, sheets export, Gemini, scraper control endpoint-ууд \\
+\hline
+Scraper & Facebook target list унших, Selenium/BeautifulSoup workflow ажиллуулах, log file үүсгэх \\
+\hline
+Database & PostgreSQL/SQLAlchemy model, duplicate-aware save, analysis result storage \\
+\hline
+Analysis & TextBlob/basic sentiment, LDA topic modeling, engagement score/prediction \\
+\hline
+AI report & Gemini API ашиглан recent data summary-аас Монгол хэл дээр тайлан, зөвлөмж үүсгэх \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Frontend workflow-ийн үр дүн}
+
+Frontend нь хэрэглэгчид шууд харагдах үндсэн ажлын талбар болсон. Dashboard tab нь backend өгөгдөлтэй холбогдсон үед live mode, холбогдохгүй үед demo mode гэж ялган харуулдаг. Энэ нь demo presentation болон backend availability хоёр нөхцөлийг нэг UI-аар даах боломж өгсөн.
+
+\textbf{Хэрэгжсэн frontend боломжууд:}
+\begin{itemize}
+    \item Engagement trend, recent volume, latest signals charts/cards
+    \item Backend status badge болон refresh action
+    \item Scraper target list add/remove/save
+    \item Scraper start, active status, log polling
+    \item Admin query: platform, keyword, date range filter
+    \item Gemini report generation button болон output panel
+    \item Settings tab дээр API endpoint болон deployment configuration харах
+\end{itemize}
+
+\section{Backend API-ийн үр дүн}
+
+FastAPI backend нь frontend болон external хэрэглээнд зориулсан JSON interface болж ажиллана. Protected \texttt{/api/v1/*} endpoint-ууд Bearer token ашиглах боломжтой. \texttt{/docs} болон \texttt{/redoc} нь API documentation гаргана.
+
+\begin{table}[H]
+\centering
+\caption{API workflow баталгаажуулалт}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{3.6cm}|L{9.8cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Workflow} & \textbf{Үр дүн} \\
+\hline
+Health check & Database/analyzer/sheets/gemini initialization flag буцаана \\
+\hline
+Posts/statistics & Dashboard-д хэрэгтэй post list, total posts, total pages, total comments, average metrics буцаана \\
+\hline
+Scraper control & Target list унших/бичих, scraper process эхлүүлэх, active status, log tail буцаах боломжтой \\
+\hline
+Analysis & Sentiment, topic, engagement result-уудыг post бүр дээр тооцоолж хадгалах бүтэцтэй \\
+\hline
+Export & Google Sheets exporter initialize болсон үед spreadsheet export хийх боломжтой \\
+\hline
+Gemini & Backend environment-д API key байгаа үед summary/Q\&A/topic prompt ажиллана \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+\section{Өгөгдлийн сангийн үр дүн}
+
+SQLAlchemy model-ууд нь Facebook post, image, comment, analysis result гэсэн бодит entity-үүдийг хадгална. \texttt{DatabaseManager.save\_post()} нь post давхардлыг \texttt{post\_id}-аар шалгаж update хийх, comment болон image duplicate-г тусдаа шалгах логиктой. Энэ нь scraper-г давтан ажиллуулах үед нэг post олон удаа duplication үүсгэх эрсдэлийг бууруулна.
+
+\section{Analysis workflow-ийн үр дүн}
+
+Analysis хэсэг нь хөнгөн dependency-тэй байдлаар хэрэгжсэн. TextBlob байгаа үед polarity болон subjectivity гаргана, байхгүй үед keyword-based fallback ажиллана. Topic modeling нь LDA ашигладаг бөгөөд өгөгдөл цөөн үед \texttt{insufficient\_data} гэж буцаах хамгаалалттай. Engagement хэсэг нь бодит likes, shares, comment count-оос score үүсгэж post-уудыг high/medium/low түвшинд ангилах боломжтой.
+
+Энэ хувилбарт баталгаажуулсан labeled dataset болон test report байхгүй тоон benchmark-уудыг үр дүнгээс хассан. Судалгааны үнэн зөв байдлыг хадгалахын тулд зөвхөн repository-д байгаа кодоор нотлогдох боломжуудыг тайлбарлав.
+
+\section{Тайлангийн боловсруулалт ба AI Тайлан}
+
+Төслийн чухал үр дүнгийн нэг нь цуглуулсан өгөгдлийг уншигдахуйц тайлан хэлбэрт оруулах "AI Тайлан" (Report) боловсруулалт юм. Google Gemini API ашиглан системийн мэдээллийн сангаас сүүлийн нийтлэл болон хэрэглэгчдийн хандлагыг нэгтгэн, системийн UI дээр бүрэн хэмжээний зөвлөмж тайлан үүсгэдэг. Энэ тайлан нь дараах бүтэцтэй гардаг.
+
+\begin{itemize}
+    \item \textbf{Ерөнхий дүгнэлт (Executive Summary):} Өгөгдлийн ерөнхий хандлага, нийтлэлүүдийн хамрах хүрээг дүгнэх.
+    \item \textbf{Гол ойлголтууд (Key Insights):} Хамгийн их хандалттай нийтлэл, гол тренд үгсийг ялгах.
+    \item \textbf{Зөвлөмжүүд (Recommendations):} Цаашид ямар арга хэмжээ авахыг хиймэл оюунаар дүгнүүлэн зөвлөх.
+\end{itemize}
+
+Ийнхүү тайлан боловсруулснаар, олон эх сурвалжаас ирсэн түүхийг өгөгдлийг энгийн хэрэглэгч уншиж ойлгох, шийдвэр гаргах үйл явцдаа ашиглах бааз суурь болж байна. AI тайлан үүсгэх явц нь системийн хүчин чадлыг харуулахын зэрэгцээ бизнесийн өдөр тутмын хэрэгцээнд удирдах ажилтнуудад шууд тайлан өгөх бодит практик хэрэгжилт болж өгсөн.
+
+\section{Хязгаарлалт ба эрсдэл}
+
+\begin{itemize}
+    \item Facebook UI өөрчлөгдөхөд selector болон modal handling эвдрэх эрсдэлтэй.
+    \item Backend болон frontend-д зарим текст encoding issue харагдаж байгаа тул Монгол текстийн display/output-г тусад нь цэвэрлэх шаардлагатай.
+    \item Supabase frontend realtime hook байгаа боловч backend үндсэн storage нь PostgreSQL/SQLAlchemy тул deployment орчинд schema болон credentials нийцүүлэх хэрэгтэй.
+    \item Gemini report нь API key болон network availability-аас хамаарна.
+    \item Admin toggle/limit controls нь одоогоор browser-side UI state бөгөөд backend policy-г шууд өөрчлөхгүй.
+    \item Бусад платформын scraper болон deep-learning sentiment model нь хэрэгжсэн feature биш.
+\end{itemize}
+
+\section{Үр дүнгийн хэлэлцүүлэг}
+
+\textbf{RQ1-ийн хүрээнд:} Selenium болон BeautifulSoup ашигласан scraper workflow, target list, log management хэрэгжсэн тул Facebook өгөгдөл цуглуулах үндсэн pipeline бүрдсэн.
+
+\textbf{RQ2-ийн хүрээнд:} FastAPI endpoint-ууд болон React dashboard нь live backend data-г chart, card, query view хэлбэрээр хэрэглэгчид хүргэж байна. Backend unavailable үед demo fallback ажилладаг нь presentation болон development-д хэрэгтэй болсон.
+
+\textbf{RQ3-ийн хүрээнд:} TextBlob/basic sentiment, LDA topic modeling, engagement score, Gemini report generation нь өгөгдлийг зөвлөмж болгон хувиргах эхний шатны pipeline үүсгэсэн. Гэхдээ өндөр нарийвчлалтай model evaluation хийхийн тулд labeled dataset, reproducible benchmark, Монгол хэлний sentiment model шаардлагатай.
+
+% ============================================================================
+% Chapter 6: Conclusion
+% ============================================================================
+\chapter{Дүгнэлт}
+
+\section{Үндсэн үр дүн}
+
+Энэхүү дипломын ажлын хүрээнд Facebook өгөгдлийг цуглуулах, хадгалах, API-аар дамжуулах, dashboard дээр хянах, Gemini ашиглан тайлан үүсгэх системийг боловсруулсан. Ажил дууссаны дараах бодит үр дүн нь дараах байдалтай байна.
+
+\begin{enumerate}
+    \item \textbf{Facebook scraper workflow:} \texttt{pages.txt}-д хадгалсан target list-ээр scraper ажиллуулах, log үүсгэх, backend-ээс scraper start/status/log хянах боломж бүрдсэн.
+    \item \textbf{REST API:} FastAPI backend нь health, posts, comments, images, stats, sentiment, topics, trends, export, Gemini, scraper control endpoint-уудтай болсон.
+    \item \textbf{Database layer:} PostgreSQL/SQLAlchemy model болон duplicate-aware save logic хэрэгжсэн.
+    \item \textbf{Frontend dashboard:} React/Vite dashboard нь live backend data, fallback demo data, chart, recent posts, admin query, scraper controls, Gemini report UI-г нэгтгэсэн.
+    \item \textbf{Analysis pipeline:} TextBlob/basic sentiment, LDA topic modeling, engagement scoring, Gemini report generation ажиллах бүтэцтэй болсон.
+\end{enumerate}
+
+\section{Шинэлэг тал}
+
+\begin{itemize}
+    \item Scraper target management, process control, log viewer-ийг frontend UI-тай холбосон.
+    \item Backend live data болон demo fallback-ийг нэг dashboard-д нэгтгэсэн.
+    \item Relational storage, API, dashboard, AI report generation-ийг дипломын нэг системийн workflow болгон хэрэгжүүлсэн.
+    \item Analysis result-г database-д хадгалах боломжтой болгож, post-level analysis-г дараа нь дахин ашиглах нөхцөл бүрдүүлсэн.
+\end{itemize}
+
+\section{Хязгаарлалт}
+
+\begin{itemize}
+    \item Системийн scraper хэсэг Facebook дээр төвлөрсөн; бусад платформын scraper байхгүй.
+    \item Монгол хэлний sentiment analysis-д зориулсан тусгай model бэлтгээгүй.
+    \item Deep-learning sentiment код үндсэн dependency болон trained model-гүй тул production feature гэж үзээгүй.
+    \item Admin controls-ийн зарим тохиргоо backend-д persist хийхгүй, UI state хэвээр байна.
+    \item Scraper нь browser automation тул Facebook-ийн layout, login, access policy өөрчлөлтөд мэдрэг.
+\end{itemize}
+
+\section{Цаашдын хөгжүүлэлт}
+
+\begin{enumerate}
+    \item Монгол хэлний labeled dataset бүрдүүлж sentiment model сургах
+    \item Admin limit/toggle controls-ийг backend configuration болон database-д persist хийх
+    \item Scraper selector test болон regression test нэмэх
+    \item Supabase/PostgreSQL deployment schema-г нэг мөр болгож realtime refresh-г production-д баталгаажуулах
+    \item Labeled benchmark dataset ашиглан sentiment/topic/engagement model-ийн бодит accuracy, F1 болон regression алдааг хэмжих
+    \item Scraper ажиллах үед queue/job status table нэмж олон хэрэглэгчийн үед process control сайжруулах
+\end{enumerate}
+
+\section{Нэгтгэл}
+
+Энэхүү ажил нь төлөвлөгөөний бүх өргөн боломжийг биш, харин repository-д бодитоор хэрэгжсэн Facebook төвтэй social media analysis workflow-г баримтжуулсан. Үндсэн үнэ цэн нь өгөгдөл цуглуулах, хадгалах, харах, шинжлэх, AI тайлан болгох алхмуудыг нэг usable системд холбосонд оршино. Цаашид model evaluation, Монгол хэлний NLP, scraper reliability, production configuration хэсгийг сайжруулснаар системийг судалгааны болон байгууллагын хэрэглээнд илүү тогтвортой ашиглах боломжтой.
+
+% ============================================================================
+% References
+% ============================================================================
+\defformat
+\chapter*{Ном зүй}
+\addcontentsline{toc}{chapter}{Ном зүй}
+
+\begin{enumerate}
+    \item Mitchell, R. (2018). \textit{Web Scraping with Python: Collecting More Data from the Modern Web}. O\'Reilly Media.
+
+    \item Selenium Documentation. (2024). \textit{Selenium WebDriver}. Retrieved from \url{https://www.selenium.dev/documentation/}
+
+    \item FastAPI Documentation. (2024). \textit{FastAPI}. Retrieved from \url{https://fastapi.tiangolo.com/}
+
+    \item SQLAlchemy Documentation. (2024). \textit{SQLAlchemy}. Retrieved from \url{https://www.sqlalchemy.org/}
+
+    \item React Documentation. (2024). \textit{React}. Retrieved from \url{https://react.dev/}
+
+    \item Vite Documentation. (2024). \textit{Vite}. Retrieved from \url{https://vite.dev/}
+
+    \item Loria, S. (2020). \textit{TextBlob: Simplified Text Processing}. Retrieved from \url{https://textblob.readthedocs.io/}
+
+    \item Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+
+    \item Google AI for Developers. (2024). \textit{Gemini API Documentation}. Retrieved from \url{https://ai.google.dev/}
+
+    \item Supabase Documentation. (2024). \textit{Supabase JavaScript Client}. Retrieved from \url{https://supabase.com/docs/}
+\end{enumerate}
 
 % ============================================================================
 % Appendix
 % ============================================================================
 \appendix
-\include{Appendices/AppendixA}
-\include{Appendices/AppendixB}% ============================================================================
-% Bibliography
-% ============================================================================
-\defformat
-\printbibliography[heading=bibintoc,title={Ном зүй}]
+\chapter{Хавсралт}
+
+\section{Системийн тохиргооны жишээ}
+
+Туршилтын орчинд дараах үндсэн тохиргоог хэрэглэсэн: Python орчин, Firefox WebDriver, өгөгдлийн сангийн холболт, API токен, скрапингийн delay параметрүүд. Эдгээр тохиргоо нь туршилтыг дахин гүйцэтгэхэд шаардлагатай суурь нөхцөлийг бүрдүүлнэ.
+
+
+\section{API Endpoint жишээ}
+
+Системд ашигласан гол endpoint-уудыг дараах байдлаар бүлэглэж болно.
+
+\begin{table}[H]
+\centering
+\caption{Хавсралтын endpoint жагсаалт}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{|L{4.2cm}|L{9.2cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Endpoint} & \textbf{Зориулалт} \\ \hline
+\texttt{/health} & Backend болон dependency status шалгах \\ \hline
+\texttt{/api/v1/posts}, \texttt{/api/v1/stats} & Dashboard-ийн үндсэн өгөгдөл унших \\ \hline
+\texttt{/api/v1/pages} & Scraper target list унших, хадгалах \\ \hline
+\texttt{/api/v1/scraper/run},\newline\texttt{/api/v1/scraper/}\newline\texttt{status},\newline\texttt{/api/v1/scraper/logs} & Scraper ажиллуулах, төлөв болон log харах \\ \hline
+\texttt{/api/v1/sentiment}, \texttt{/api/v1/topics}, \texttt{/api/v1/trends} & Analysis workflow ажиллуулах \\ \hline
+\texttt{/gemini/analyze}, \texttt{/gemini/ask} & AI тайлан болон асуулт-хариулт үүсгэх \\ \hline
+\texttt{/export/sheets} & Google Sheets export хийх \\ \hline
+\end{tabular}
+\end{adjustbox}
+\normalsize
+\end{table}
+
+
+\section{Өгөгдлийн сангийн схем}
+
+Өгөгдлийн сангийн үндсэн схем нь \texttt{FacebookPost}, \texttt{PostComment}, \texttt{PostImage}, \texttt{AnalysisResult} хүснэгтүүд дээр төвлөрсөн. \texttt{FacebookPost} нь үндсэн контент болон engagement metric, \texttt{PostComment} нь сэтгэгдлийн өгөгдөл, \texttt{PostImage} нь дагалдах медиа мэдээлэл, \texttt{AnalysisResult} нь sentiment/topic/engagement шинжилгээний JSON үр дүнг хадгална.
+
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+

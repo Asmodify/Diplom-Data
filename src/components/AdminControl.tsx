@@ -120,10 +120,10 @@ export function AdminControl() {
   };
 
   const visibleSummary = [
-    { title: 'Backend status', value: backendHealth?.status ?? (backendBusy ? 'checking' : 'offline'), hint: backendHealth?.version ? `v${backendHealth.version}` : 'Render API', icon: ServerCog },
-    { title: 'Live posts', value: String(backendStats?.total_posts ?? visiblePosts.length), hint: 'Scraper database records', icon: Database },
-    { title: 'Storage', value: backendHealth?.firebase ? 'Connected' : 'Fallback', hint: 'Firebase/Supabase integration', icon: ShieldCheck },
-    { title: 'Frontend', value: 'Ready', hint: backendBusy ? 'Refreshing snapshot' : 'Static Vite build', icon: Activity },
+    { title: 'Backend төлөв', value: backendHealth?.status ?? (backendBusy ? 'checking' : 'offline'), hint: backendHealth?.version ? `v${backendHealth.version}` : 'Render API', icon: ServerCog },
+    { title: 'Бодит постууд', value: String(backendStats?.total_posts ?? visiblePosts.length), hint: 'Scraper баазын бичлэгүүд', icon: Database },
+    { title: 'Хадгалалт', value: backendHealth?.firebase ? 'Connected' : 'Нөөц', hint: 'Firebase/Supabase нэгтгэл', icon: ShieldCheck },
+    { title: 'Фронтенд', value: 'Ready', hint: backendBusy ? 'Төлөвийг шинэчилж байна' : 'Статик Vite хувилбар', icon: Activity },
   ] as const;
 
   return (
@@ -136,31 +136,31 @@ export function AdminControl() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="flex flex-wrap gap-2 rounded-lg border border-slate-200 bg-white p-1">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="limits">Limits</TabsTrigger>
-          <TabsTrigger value="collect">Query</TabsTrigger>
-          <TabsTrigger value="ops">Operations</TabsTrigger>
+          <TabsTrigger value="overview">Тойм</TabsTrigger>
+          <TabsTrigger value="limits">Хязгаарууд</TabsTrigger>
+          <TabsTrigger value="collect">Хайлт</TabsTrigger>
+          <TabsTrigger value="ops">Журмууд</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-5 xl:grid-cols-[1fr_0.95fr]">
             <Card>
               <CardHeader className="border-b border-slate-200 pb-4">
-                <CardTitle>Control switches</CardTitle>
-                <CardDescription>Browser-side controls for the main system modules.</CardDescription>
+                <CardTitle>Удирдлагын тохируулга</CardTitle>
+                <CardDescription>Гол системийн модулиудын хөтөч дээрх удирдлага.</CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 md:grid-cols-2">
-                <ToggleRow label="Scraping" description="Allow scraper automation tasks to run." enabled={controls.scrapingEnabled} onToggle={() => toggleControl('scrapingEnabled')} />
-                <ToggleRow label="AI analysis" description="Enable predictive and text analysis features." enabled={controls.aiAnalysisEnabled} onToggle={() => toggleControl('aiAnalysisEnabled')} />
-                <ToggleRow label="API access" description="Keep protected REST endpoints available." enabled={controls.apiAccessEnabled} onToggle={() => toggleControl('apiAccessEnabled')} />
-                <ToggleRow label="Auto sync" description="Mirror collected data to cloud storage." enabled={controls.autoSyncEnabled} onToggle={() => toggleControl('autoSyncEnabled')} />
+                <ToggleRow label="Цуглуулах" description="Автоматжуулсан цуглуулах ажлуудыг ажиллахыг зөвшөөрөх." enabled={controls.scrapingEnabled} onToggle={() => toggleControl('scrapingEnabled')} />
+                <ToggleRow label="AI Шинжилгээ" description="Урьдчилан таамаглах болон текст шинжилгээний функцуудыг идэвхжүүлэх." enabled={controls.aiAnalysisEnabled} onToggle={() => toggleControl('aiAnalysisEnabled')} />
+                <ToggleRow label="API хандалт" description="Хамгаалагдсан REST цэгүүдийг нээлттэй байлгах." enabled={controls.apiAccessEnabled} onToggle={() => toggleControl('apiAccessEnabled')} />
+                <ToggleRow label="Автомат синхрончлол" description="Цуглуулсан өгөгдлийг үүлэн хадгалалттай синхрончлох." enabled={controls.autoSyncEnabled} onToggle={() => toggleControl('autoSyncEnabled')} />
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="border-b border-slate-200 pb-4">
-                <CardTitle>Backend sync</CardTitle>
-                <CardDescription>Health and data status for the connected API.</CardDescription>
+                <CardTitle>Backend синхрончлол</CardTitle>
+                <CardDescription>Холбогдсон API-н эрүүл мэнд болон өгөгдлийн төлөв.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
@@ -178,13 +178,13 @@ export function AdminControl() {
         <TabsContent value="limits">
           <Card>
             <CardHeader className="border-b border-slate-200 pb-4">
-              <CardTitle>Collection limits</CardTitle>
-              <CardDescription>Operational limits used to keep scraping and API workloads predictable.</CardDescription>
+              <CardTitle>Цуглуулах хязгаар</CardTitle>
+              <CardDescription>Цуглуулах болон API ачааллыг хянахын тулд ашиглагддаг үйл ажиллагааны хязгаар.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-3">
-              <LimitField label="Posts per run" value={limits.maxPostsPerRun} onChange={(value) => setLimits((prev) => ({ ...prev, maxPostsPerRun: value }))} />
-              <LimitField label="Comments per post" value={limits.maxCommentsPerPost} onChange={(value) => setLimits((prev) => ({ ...prev, maxCommentsPerPost: value }))} />
-              <LimitField label="Interval minutes" value={limits.scrapeIntervalMinutes} onChange={(value) => setLimits((prev) => ({ ...prev, scrapeIntervalMinutes: value }))} />
+              <LimitField label="Нэг удаагийн гүйлт дэх пост" value={limits.maxPostsPerRun} onChange={(value) => setLimits((prev) => ({ ...prev, maxPostsPerRun: value }))} />
+              <LimitField label="Пост тус бүрийн сэтгэгдэл" value={limits.maxCommentsPerPost} onChange={(value) => setLimits((prev) => ({ ...prev, maxCommentsPerPost: value }))} />
+              <LimitField label="Завсарлах хугацаа (минут)" value={limits.scrapeIntervalMinutes} onChange={(value) => setLimits((prev) => ({ ...prev, scrapeIntervalMinutes: value }))} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -192,15 +192,15 @@ export function AdminControl() {
         <TabsContent value="collect">
           <Card>
             <CardHeader className="border-b border-slate-200 pb-4">
-              <CardTitle>Keyword and date query</CardTitle>
-              <CardDescription>Filter the currently loaded posts by platform, terms, and date range.</CardDescription>
+              <CardTitle>Түлхүүр үг болон огнооны хайлт</CardTitle>
+              <CardDescription>Одоо ачаалагдсан постуудыг платформ, үг болон огноогоор шүүх.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
-                <Field label="Platform" value={collectionQuery.platform} placeholder="facebook / twitter / instagram / all" onChange={(value) => setCollectionQuery((prev) => ({ ...prev, platform: value }))} />
-                <Field label="Keywords" value={collectionQuery.keywords} placeholder="AI, election, policy" onChange={(value) => setCollectionQuery((prev) => ({ ...prev, keywords: value }))} />
-                <Field label="Start date" type="date" value={collectionQuery.startDate} onChange={(value) => setCollectionQuery((prev) => ({ ...prev, startDate: value }))} />
-                <Field label="End date" type="date" value={collectionQuery.endDate} onChange={(value) => setCollectionQuery((prev) => ({ ...prev, endDate: value }))} />
+                <Field label="Платформ" value={collectionQuery.platform} placeholder="facebook / twitter / instagram / all" onChange={(value) => setCollectionQuery((prev) => ({ ...prev, platform: value }))} />
+                <Field label="Түлхүүр үгс" value={collectionQuery.keywords} placeholder="AI, election, policy" onChange={(value) => setCollectionQuery((prev) => ({ ...prev, keywords: value }))} />
+                <Field label="Эхлэх огноо" type="date" value={collectionQuery.startDate} onChange={(value) => setCollectionQuery((prev) => ({ ...prev, startDate: value }))} />
+                <Field label="Дуусах огноо" type="date" value={collectionQuery.endDate} onChange={(value) => setCollectionQuery((prev) => ({ ...prev, endDate: value }))} />
               </div>
 
               <Button onClick={runCollectionQuery}>
@@ -209,7 +209,7 @@ export function AdminControl() {
               </Button>
 
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                {collectionQuery.lastRunSummary || 'No query has been executed yet.'}
+                {collectionQuery.lastRunSummary || 'Одоогоор ямар нэг хайлт хийгдээгүй байна.'}
               </div>
 
               <div className="grid gap-3 lg:grid-cols-2">
@@ -233,15 +233,15 @@ export function AdminControl() {
         <TabsContent value="ops">
           <Card>
             <CardHeader className="border-b border-slate-200 pb-4">
-              <CardTitle>Backend health</CardTitle>
-              <CardDescription>Current operational flags returned by the backend health endpoint.</CardDescription>
+              <CardTitle>Backend эрүүл мэнд</CardTitle>
+              <CardDescription>Backend эрүүл мэндийн цэгээс буцаагдсан одоогийн төлөвүүд.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <MiniInfo label="Status" value={backendHealth?.status ?? 'unknown'} />
-                <MiniInfo label="Version" value={backendHealth?.version ?? 'n/a'} />
+                <MiniInfo label="Status" value={backendHealth?.status ?? 'Тодорхойгүй'} />
+                <MiniInfo label="Хувилбар" value={backendHealth?.version ?? 'n/a'} />
                 <MiniInfo label="Firebase" value={backendHealth?.firebase ? 'Connected' : 'Offline'} />
-                <MiniInfo label="Analyzer" value={backendHealth?.analyzer ? 'Enabled' : 'Disabled'} />
+                <MiniInfo label="Analyzer" value={backendHealth?.analyzer ? 'Идэвхжсэн' : 'Хаагдсан'} />
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {backendStatus}

@@ -151,10 +151,10 @@ export function Dashboard() {
   return (
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard icon={Database} label="Posts collected" value={totalPosts.toLocaleString()} hint={backendStatus === 'live' ? 'Live backend data' : 'Demo fallback data'} />
-        <MetricCard icon={Activity} label="Engagement" value={totalEngagement.toLocaleString()} hint="Likes, comments, and shares" />
-        <MetricCard icon={TrendingUp} label="Estimated reach" value={totalReach.toLocaleString()} hint="Calculated from sample data" />
-        <MetricCard icon={Sparkles} label="Avg. sentiment" value={`${(avgSentiment * 100).toFixed(1)}%`} hint="Positive leaning score" />
+        <MetricCard icon={Database} label="Цуглуулсан постууд" value={totalPosts.toLocaleString()} hint={backendStatus === 'live' ? 'Бодит backend өгөгдөл' : 'Туршилтын өгөгдөл'} />
+        <MetricCard icon={Activity} label="Хандалт" value={totalEngagement.toLocaleString()} hint="Таалагдалт, сэтгэгдэл, болон хуваалцалт" />
+        <MetricCard icon={TrendingUp} label="Тооцоолсон хүртээмж" value={totalReach.toLocaleString()} hint="Өгөгдлөөс тооцоолсон" />
+        <MetricCard icon={Sparkles} label="Дундаж хандлага" value={`${(avgSentiment * 100).toFixed(1)}%`} hint="Эерэг хандлагын оноо" />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.35fr_0.65fr]">
@@ -162,12 +162,12 @@ export function Dashboard() {
           <CardHeader className="border-b border-slate-200 pb-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <CardTitle>Engagement trend</CardTitle>
-                <CardDescription>Daily engagement grouped by social platform.</CardDescription>
+                <CardTitle>Хандалтын чиг хандлага</CardTitle>
+                <CardDescription>Сошиал платформоор бүлэглэсэн өдөр тутмын хандалт.</CardDescription>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className={cn(backendStatus === 'live' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700')}>
-                  {backendStatus === 'live' ? 'Live' : backendStatus === 'loading' ? 'Loading' : 'Demo'}
+                  {backendStatus === 'live' ? 'Шууд' : backendStatus === 'loading' ? 'Ачаалж байна' : 'Туршилт'}
                 </Badge>
                 <Button variant="outline" size="sm" onClick={() => void loadDashboard()} disabled={refreshing}>
                   <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} />
@@ -195,13 +195,13 @@ export function Dashboard() {
 
         <Card>
           <CardHeader className="border-b border-slate-200 pb-4">
-            <CardTitle>System snapshot</CardTitle>
-            <CardDescription>Current data source and collection shape.</CardDescription>
+            <CardTitle>Системийн тойм</CardTitle>
+            <CardDescription>Одоогийн өгөгдлийн эх сурвалж болон цуглуулгын байдал.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <InfoRow label="Data source" value={backendStatus === 'live' ? 'Render backend' : 'Local demo data'} />
-            <InfoRow label="Samples loaded" value={sourceData.length.toLocaleString()} />
-            <InfoRow label="Active platforms" value="Facebook, Twitter, Instagram" />
+            <InfoRow label="Өгөгдлийн эх сурвалж" value={backendStatus === 'live' ? 'Render backend' : 'Дотоод туршилтын өгөгдөл'} />
+            <InfoRow label="Ачаалагдсан өгөгдөл" value={sourceData.length.toLocaleString()} />
+            <InfoRow label="Идэвхтэй платформууд" value="Facebook, Twitter, Instagram" />
             <div className="h-[150px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={aggregatedByDate} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
@@ -225,8 +225,8 @@ export function Dashboard() {
       <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
         <Card>
           <CardHeader className="border-b border-slate-200 pb-4">
-            <CardTitle>Recent volume</CardTitle>
-            <CardDescription>Total engagement in the latest chart window.</CardDescription>
+            <CardTitle>Сүүлийн үеийн хэмжээ</CardTitle>
+            <CardDescription>Сүүлийн графикийн хугацаан дахь нийт хандалт.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-[280px]">
@@ -247,8 +247,8 @@ export function Dashboard() {
           <CardHeader className="border-b border-slate-200 pb-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <CardTitle>Latest signals</CardTitle>
-                <CardDescription>Newest collected posts shown as compact operational cards.</CardDescription>
+                <CardTitle>Сүүлийн үеийн мэдээллүүд</CardTitle>
+                <CardDescription>Хамгийн сүүлд цуглуулсан постуудыг картууд хэлбэрээр харуулж байна.</CardDescription>
               </div>
               <MessageSquare className="h-5 w-5 text-slate-400" />
             </div>
@@ -265,7 +265,7 @@ export function Dashboard() {
                     {post.engagement.toLocaleString()}
                   </Badge>
                 </div>
-                <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-700">{post.content || 'No post text available.'}</p>
+                <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-700">{post.content || 'Мэдээллийн текст байхгүй байна.'}</p>
               </article>
             ))}
           </CardContent>

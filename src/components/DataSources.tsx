@@ -13,7 +13,7 @@ export function DataSources() {
   const [pages, setPages] = useState<string[]>([]);
   const [newPage, setNewPage] = useState('');
   const [scraperActive, setScraperActive] = useState(false);
-  const [scraperLogs, setScraperLogs] = useState('Console initialized. Start automation to collect data.');
+  const [scraperLogs, setScraperLogs] = useState('Консол эхэллээ. Мэдээлэл цуглуулахын тулд автоматжуулалтыг эхлүүлнэ үү.');
   const [loadingPages, setLoadingPages] = useState(true);
   const [savingPages, setSavingPages] = useState(false);
   const [runningScraper, setRunningScraper] = useState(false);
@@ -40,7 +40,7 @@ export function DataSources() {
       if (logsPayload.logs) setScraperLogs(logsPayload.logs);
     } catch (err) {
       console.error('Failed to load scraper config', err);
-      setScraperLogs('Could not reach the local scraper API. The page manager is still available in the browser.');
+      setScraperLogs('Дотоод scraper API-тай холбогдож чадсангүй. Хуудасны менежер хөтчөөр дамжуулан ашиглах боломжтой хэвээр байна.');
     } finally {
       setLoadingPages(false);
     }
@@ -127,9 +127,9 @@ export function DataSources() {
   return (
     <div className="space-y-5">
       <div className="grid gap-4 md:grid-cols-3">
-        <SummaryCard title="Connected sources" value={`${connectedCount}/${dataSources.length}`} hint="Available social connectors" icon={CheckCircle2} />
-        <SummaryCard title="Scraper status" value={scraperActive ? 'Running' : 'Idle'} hint={scraperActive ? 'Polling logs every 2 seconds' : 'Ready to start'} icon={scraperActive ? Loader2 : Play} spin={scraperActive} />
-        <SummaryCard title="Targets" value={String(pages.length)} hint="Configured scraping pages" icon={Server} />
+        <SummaryCard title="Холбогдсон эх сурвалжууд" value={`${connectedCount}/${dataSources.length}`} hint="Боломжит сошиал холболтууд" icon={CheckCircle2} />
+        <SummaryCard title="Scraper байдал" value={scraperActive ? 'Ажиллаж байна' : 'Хүлээгдэж байна'} hint={scraperActive ? '2 секунд тутамд лог шалгаж байна' : 'Эхлүүлэхэд бэлэн'} icon={scraperActive ? Loader2 : Play} spin={scraperActive} />
+        <SummaryCard title="Зорилтууд" value={String(pages.length)} hint="Тохируулсан цуглуулах хуудсууд" icon={Server} />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
@@ -137,8 +137,8 @@ export function DataSources() {
           <CardHeader className="border-b border-slate-200 pb-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <CardTitle>Scraping targets</CardTitle>
-                <CardDescription>Manage page URLs or IDs stored by the backend pages.txt workflow.</CardDescription>
+                <CardTitle>Цуглуулах зорилтууд</CardTitle>
+                <CardDescription>Backend-ийн pages.txt-д хадгалагдсан хуудасны URL эсвэл ID-г удирдах.</CardDescription>
               </div>
               <Badge variant="outline" className="w-fit border-blue-200 bg-blue-50 text-blue-700">{pages.length} targets</Badge>
             </div>
@@ -158,9 +158,9 @@ export function DataSources() {
             </div>
 
             {loadingPages ? (
-              <EmptyState icon={Loader2} title="Loading targets" description="Reading scraper configuration from the backend." spin />
+              <EmptyState icon={Loader2} title="Зорилтуудыг ачаалж байна" description="Backend-ээс scraper тохиргоог уншиж байна." spin />
             ) : pages.length === 0 ? (
-              <EmptyState icon={Server} title="No targets yet" description="Add a page URL or ID above, then save the list." />
+              <EmptyState icon={Server} title="Зорилт алга" description="Дээр хуудасны URL эсвэл ID оруулж, жагсаалтыг хадгална уу." />
             ) : (
               <div className="max-h-[300px] divide-y divide-slate-200 overflow-y-auto rounded-lg border border-slate-200">
                 {pages.map((page, index) => (
@@ -177,7 +177,7 @@ export function DataSources() {
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button onClick={handleSavePages} disabled={savingPages || loadingPages} className="flex-1">
                 {savingPages ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                {savingPages ? 'Saving' : 'Save targets'}
+                {savingPages ? 'Хадгалж байна' : 'Зорилтуудыг хадгалах'}
               </Button>
               <Button variant="outline" onClick={loadConfiguration}>
                 <RefreshCw className="h-4 w-4" />
@@ -191,8 +191,8 @@ export function DataSources() {
           <CardHeader className="border-b border-slate-200 pb-4">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <CardTitle>Automation console</CardTitle>
-                <CardDescription>Live scraper status and process output.</CardDescription>
+                <CardTitle>Автоматжуулалтын консол</CardTitle>
+                <CardDescription>Шууд scraper статус болон процессын үр дүн.</CardDescription>
               </div>
               <span className={cn('h-2.5 w-2.5 rounded-full', scraperActive ? 'bg-emerald-500' : 'bg-slate-300')} />
             </div>
@@ -203,7 +203,7 @@ export function DataSources() {
             </pre>
             <Button onClick={handleLaunchScraper} disabled={scraperActive || runningScraper} className="w-full">
               {runningScraper ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
-              {runningScraper ? 'Starting scraper' : scraperActive ? 'Scraper is running' : 'Start scraping'}
+              {runningScraper ? 'Scraper эхэлж байна' : scraperActive ? 'Scraper ажиллаж байна' : 'Цуглуулж эхлэх'}
             </Button>
           </CardContent>
         </Card>
@@ -219,7 +219,7 @@ export function DataSources() {
                   <p className="mt-1 text-xs text-slate-500">
                     {source.connected && source.lastSync
                       ? `Synced ${formatDistanceToNow(new Date(source.lastSync), { addSuffix: true })}`
-                      : 'Not connected'}
+                      : 'Холбогдоогүй'}
                   </p>
                 </div>
                 <Badge variant="outline" className={source.connected ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-50 text-slate-500'}>

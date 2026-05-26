@@ -31,38 +31,38 @@ const tabs: Array<{
 }> = [
   {
     id: 'dashboard',
-    label: 'Dashboard',
-    description: 'Live collection metrics, engagement trends, and recent social signals.',
+    label: 'Хянах самбар',
+    description: 'Шууд цуглуулсан тоон үзүүлэлтүүд, хандалтын чиг хандлага болон сүүлийн үеийн сошиал мэдээллүүд.',
     icon: LayoutDashboard,
   },
   {
     id: 'sources',
-    label: 'Data Sources',
-    description: 'Manage scraping targets, source health, and automation logs.',
+    label: 'Өгөгдлийн эх сурвалжууд',
+    description: 'Цуглуулах зорилтууд, эх сурвалжийн байдал болон автоматжуулалтын түүхийг удирдах.',
     icon: Database,
   },
   {
     id: 'analysis',
-    label: 'AI Analysis',
-    description: 'Generate predictive summaries from the latest collected posts.',
+    label: 'AI Шинжилгээ',
+    description: 'Хамгийн сүүлд цуглуулсан постуудаас урьдчилан таамагласан хураангуй үүсгэх.',
     icon: BarChart3,
   },
   {
     id: 'admin',
-    label: 'Admin',
-    description: 'Inspect backend health, query collected data, and tune limits.',
+    label: 'Админ',
+    description: 'Арын системийн эрүүл мэндийг шалгах, цуглуулсан өгөгдлийг шүүх болон хязгаарыг тохируулах.',
     icon: ShieldCheck,
   },
   {
     id: 'overview',
-    label: 'AI Overview',
-    description: 'Learn about AI concepts: generative models, LLMs, and embeddings.',
+    label: 'AI Тойм',
+    description: 'AI ойлголтуудын талаар суралцах: үүсгэгч загварууд, LLMs болон эмбеддингүүд.',
     icon: BookOpen,
   },
   {
     id: 'settings',
-    label: 'Settings',
-    description: 'Review system configuration and deployment endpoints.',
+    label: 'Тохиргоо',
+    description: 'Системийн тохиргоо болон байршуулах төгсгөлийн цэгүүдийг шалгах.',
     icon: Settings,
   },
 ];
@@ -127,10 +127,10 @@ export default function App() {
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
-                    Social Media Analysis System
+                    Сошиал Медиа Шинжилгээний Систем
                   </Badge>
                   <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
-                    Backend aware
+                    Backend-тэй холбогдсон
                   </Badge>
                 </div>
                 <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
@@ -142,9 +142,9 @@ export default function App() {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3 xl:w-[560px]">
-                <StatusTile icon={Activity} label="Pipeline" value="Collect -> Store -> Analyze" />
-                <StatusTile icon={ServerCog} label="Runtime" value="FastAPI + Supabase" />
-                <StatusTile icon={Bot} label="AI layer" value="Gemini reports" />
+                <StatusTile icon={Activity} label="Дамжлага" value="Цуглуулах -> Хадгалах -> Шинжлэх" />
+                <StatusTile icon={ServerCog} label="Ажиллах орчин" value="FastAPI + Supabase" />
+                <StatusTile icon={Bot} label="AI давхарга" value="Gemini тайлангууд" />
               </div>
             </div>
           </header>
@@ -211,9 +211,9 @@ function Sidebar({
       </nav>
 
       <div className="mt-auto rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Project scope</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Төслийн цар хүрээ</p>
         <p className="mt-2 text-sm leading-6 text-slate-700">
-          Scraping, storage, monitoring, and AI-assisted reporting for diploma research data.
+          Дипломын судалгааны өгөгдөлд зориулсан мэдээлэл цуглуулах, хадгалах, хянах болон AI-ийн тусламжтай тайлагнах.
         </p>
       </div>
     </div>
@@ -227,8 +227,8 @@ function Brand() {
         <BarChart3 className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-sm font-semibold leading-5 text-slate-950">Insight Console</p>
-        <p className="text-xs text-slate-500">Social analytics workspace</p>
+        <p className="text-sm font-semibold leading-5 text-slate-950">Ойлголтын Удирдлага</p>
+        <p className="text-xs text-slate-500">Сошиал шинжилгээний ажлын талбар</p>
       </div>
     </div>
   );
@@ -257,17 +257,17 @@ function StatusTile({
 function SettingsPanel() {
   const items = [
     ['Backend API', import.meta.env.VITE_BACKEND_API_URL || 'https://diplom-data-api.onrender.com'],
-    ['Local API', import.meta.env.VITE_API_URL || 'http://localhost:8000'],
-    ['Auth mode', import.meta.env.VITE_API_TOKEN ? 'Token configured' : 'Development token fallback'],
-    ['Deployment', 'Vite frontend, Render/FastAPI backend'],
+    ['Дотоод API', import.meta.env.VITE_API_URL || 'http://localhost:8000'],
+    ['Баталгаажуулах горим', import.meta.env.VITE_API_TOKEN ? 'Токен тохируулагдсан' : 'Хөгжүүлэлтийн токен'],
+    ['Байршуулалт', 'Vite frontend, Render/FastAPI backend'],
   ];
 
   return (
     <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">Configuration</h2>
+        <h2 className="text-lg font-semibold text-slate-950">Тохиргоо</h2>
         <p className="mt-1 text-sm leading-6 text-slate-600">
-          These values are read from the Vite environment and used by the frontend API clients.
+          Эдгээр утгуудыг Vite орчноос уншиж, frontend API харилцагчид ашигладаг.
         </p>
         <div className="mt-5 divide-y divide-slate-200 rounded-lg border border-slate-200">
           {items.map(([label, value]) => (
@@ -280,12 +280,12 @@ function SettingsPanel() {
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">System Notes</h2>
+        <h2 className="text-lg font-semibold text-slate-950">Системийн Тэмдэглэл</h2>
         <div className="mt-4 space-y-3">
           {[
-            'Dashboard uses live backend posts when available and demo data when the API is unreachable.',
-            'Scraper target management expects the local FastAPI service endpoints to be running.',
-            'AI reports are generated on demand to keep network usage explicit.',
+            'Хянах самбар нь backend-ээс бодит постуудыг ашиглах ба холбогдох боломжгүй үед туршилтын өгөгдлийг ашигладаг.',
+            'Цуглуулах зорилтуудыг удирдах хэсэг нь дотоод FastAPI үйлчилгээг ажиллаж байхыг шаарддаг.',
+            'Сүлжээний ачааллыг тодорхой байлгахын тулд AI тайлангуудыг зөвхөн шаардлагатай үед үүсгэдэг.',
           ].map((note) => (
             <p key={note} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
               {note}

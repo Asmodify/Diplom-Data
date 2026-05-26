@@ -2,17 +2,15 @@
 \babel@toc {mongolian}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {2.1}{\ignorespaces Төслийн шийдлийн харьцуулалт}}{6}{table.caption.36}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Төслийн бодит шийдлийн харьцуулалт}}{5}{table.caption.8}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces UC-01: Dashboard харах}}{13}{table.caption.50}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces UC-02: Scraper ажиллуулах}}{14}{table.caption.51}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces UC-03: AI тайлан үүсгэх}}{15}{table.caption.52}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Бодит ашигласан технологийн сонголт}}{9}{table.caption.12}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Backend endpoint-уудын үндсэн бүлэг}}{22}{table.caption.78}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Backend endpoint-уудын үндсэн бүлэг}}{16}{table.caption.18}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Системийн туршилтын хувилбарууд (Test cases)}}{18}{table.caption.19}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Хэрэгжсэн модулиудын нэгтгэл}}{27}{table.caption.92}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces API workflow баталгаажуулалт}}{30}{table.caption.102}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Хэрэгжсэн модулиудын нэгтгэл}}{19}{table.caption.20}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces API workflow баталгаажуулалт}}{20}{table.caption.21}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Хавсралтын endpoint жагсаалт}}{34}{table.caption.122}%
-\addvspace {10\p@ }
+\contentsline {table}{\numberline {A.1}{\ignorespaces Хавсралтын endpoint жагсаалт}}{27}{table.caption.23}%
