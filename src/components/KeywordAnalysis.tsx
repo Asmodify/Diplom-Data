@@ -69,7 +69,7 @@ export function KeywordAnalysis() {
       
       // Fallback demo data
       setTrends([
-        { trend: '#сонгууль2024', platform: 'facebook', mentions: 1240, type: 'hashtag' },
+        { trend: '#сонгууль2026', platform: 'facebook', mentions: 1240, type: 'hashtag' },
         { trend: '#мэдээ', platform: 'facebook', mentions: 850, type: 'hashtag' },
         { trend: 'хууль', platform: 'facebook', mentions: 720, type: 'keyword' },
         { trend: 'эдийн засаг', platform: 'facebook', mentions: 680, type: 'keyword' },
