@@ -125,12 +125,22 @@ export function SentimentAnalysis() {
       setSingleError('Шинжилгээ хийхэд алдаа гарлаа. Backend холболтоо шалгана уу.');
       // Demo fallback
       setTimeout(() => {
+        // Simple deterministic hash function based on the input text
+        let hash = 0;
+        for (let i = 0; i < singleText.length; i++) {
+          hash = ((hash << 5) - hash) + singleText.charCodeAt(i);
+          hash |= 0; // Convert to 32bit integer
+        }
+        
+        // Use the hash to determine deterministic but pseudo-random values
+        const normalizedHash = Math.abs(hash) / 2147483647; // 0 to 1
+        
         setSingleResult({
-          sentiment: Math.random() > 0.5 ? 'positive' : 'negative',
-          polarity: Math.random() * 2 - 1,
-          confidence: 0.85 + Math.random() * 0.1,
-          emotion: 'joy',
-          is_sarcastic: Math.random() > 0.8
+          sentiment: normalizedHash > 0.6 ? 'positive' : (normalizedHash < 0.3 ? 'negative' : 'neutral'),
+          polarity: (normalizedHash * 2) - 1, // -1 to 1
+          confidence: 0.75 + (normalizedHash * 0.2), // 0.75 to 0.95
+          emotion: normalizedHash > 0.6 ? 'joy' : (normalizedHash < 0.3 ? 'anger' : 'neutral'),
+          is_sarcastic: (Math.abs(hash) % 10) === 7 // 10% chance
         });
         setSingleError(null);
       }, 800);
