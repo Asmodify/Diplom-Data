@@ -116,3 +116,29 @@
   border: 3px solid transparent;
   background-clip: content-box;
 }
+
+/* Custom Utilities for New Components */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.glass-card {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.sentiment-badge-positive {
+  @apply bg-emerald-100 text-emerald-800 border-emerald-200;
+}
+
+.sentiment-badge-negative {
+  @apply bg-red-100 text-red-800 border-red-200;
+}
+
+.sentiment-badge-neutral {
+  @apply bg-slate-100 text-slate-800 border-slate-200;
+}

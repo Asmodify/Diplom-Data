@@ -118,3 +118,66 @@ function extractKeywords(content: string): string[] {
 
   return Array.from(new Set(tokens)).slice(0, 5);
 }
+
+// ----------------------------------------------------------------------------
+// NEW API METHODS FOR SENTIMENT & KEYWORDS
+// ----------------------------------------------------------------------------
+
+const API_TOKEN = backendEnv.env?.VITE_API_TOKEN || 'dev-token-change-in-production';
+
+export async function analyzeSentiment(text: string, language: string = 'en'): Promise<any> {
+  return requestJson<any>('/api/v1/sentiment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_TOKEN}`,
+    },
+    body: JSON.stringify({ text, language }),
+  });
+}
+
+export async function batchAnalyzeSentiment(texts: string[], language: string = 'en'): Promise<any> {
+  return requestJson<any>('/api/v1/sentiment/batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${API_TOKEN}`,
+    },
+    body: JSON.stringify({ texts, language }),
+  });
+}
+
+export async function getTrends(limit: number = 10, platform: string = 'facebook'): Promise<any> {
+  const params = new URLSearchParams({
+    platform,
+    limit: limit.toString(),
+  });
+  return requestJson<any>(`/api/v1/trends?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${API_TOKEN}`,
+    },
+  });
+}
+
+export async function getTopics(limit: number = 10, platform: string = 'facebook'): Promise<any> {
+  const params = new URLSearchParams({
+    platform,
+    limit: limit.toString(),
+  });
+  return requestJson<any>(`/api/v1/topics?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${API_TOKEN}`,
+    },
+  });
+}
+
+export async function searchPosts(page_name?: string, limit: number = 500): Promise<BackendPost[]> {
+  const params = new URLSearchParams({
+    limit: limit.toString(),
+  });
+  if (page_name && page_name !== 'all') {
+    params.append('page_name', page_name);
+  }
+  return requestJson<BackendPost[]>(`/api/v1/posts?${params}`);
+}
+

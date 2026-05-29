@@ -6,8 +6,11 @@ import {
   BookOpen,
   Bot,
   Database,
+  Heart,
+  Hash,
   LayoutDashboard,
   Menu,
+  Search,
   ServerCog,
   Settings,
   ShieldCheck,
@@ -20,8 +23,11 @@ import { PredictiveAnalysis } from './components/PredictiveAnalysis';
 import { AdminControl } from './components/AdminControl';
 import { Badge } from './components/ui/badge';
 import { Overview } from './components/Overview';
+import { SentimentAnalysis } from './components/SentimentAnalysis';
+import { KeywordAnalysis } from './components/KeywordAnalysis';
+import { KeywordSearch } from './components/KeywordSearch';
 
-type TabId = 'dashboard' | 'sources' | 'analysis' | 'admin' | 'overview' | 'settings';
+type TabId = 'dashboard' | 'sentiment' | 'keywords' | 'search' | 'sources' | 'analysis' | 'admin' | 'overview' | 'settings';
 
 const tabs: Array<{
   id: TabId;
@@ -34,6 +40,24 @@ const tabs: Array<{
     label: 'Хянах самбар',
     description: 'Шууд цуглуулсан тоон үзүүлэлтүүд, хандалтын чиг хандлага болон сүүлийн үеийн сошиал мэдээллүүд.',
     icon: LayoutDashboard,
+  },
+  {
+    id: 'sentiment',
+    label: 'Хандлагын шинжилгээ',
+    description: 'AI ашиглан постуудын хандлагыг тодорхойлж, хүмүүсийн сэтгэл хөдлөлийг хэмжих.',
+    icon: Heart,
+  },
+  {
+    id: 'keywords',
+    label: 'Түлхүүр үгийн шинжилгээ',
+    description: 'Тренд болж буй сэдэв болон түлхүүр үгсийг нээн илрүүлэх.',
+    icon: Hash,
+  },
+  {
+    id: 'search',
+    label: 'Хайлт',
+    description: 'Цуглуулсан өгөгдөл дотроос шүүлтүүр ашиглан нарийвчилсан хайлт хийх.',
+    icon: Search,
   },
   {
     id: 'sources',
@@ -158,6 +182,9 @@ export default function App() {
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'dashboard' && <Dashboard />}
+              {activeTab === 'sentiment' && <SentimentAnalysis />}
+              {activeTab === 'keywords' && <KeywordAnalysis />}
+              {activeTab === 'search' && <KeywordSearch />}
               {activeTab === 'sources' && <DataSources />}
               {activeTab === 'analysis' && <PredictiveAnalysis />}
               {activeTab === 'admin' && <AdminControl />}
