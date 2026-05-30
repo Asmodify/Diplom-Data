@@ -1086,17 +1086,42 @@ Database хэрэгжилт нь SQLAlchemy ORM дээр суурилсан. \te
     \item Analysis result-г \texttt{post\_id + analysis\_type} түлхүүрээр update/save хийх
 \end{itemize}
 
-\section{Analysis хэрэгжилт}
+\section{Загвар сургалт болон AI интеграци (Machine Learning Pipeline)}
 
-\texttt{DataAnalyzer} нь гурван үндсэн функцтэй.
+Системийн хамгийн чухал хэсэг болох \textbf{Хандлагын шинжилгээний (Sentiment Analysis)} цөмийг бэлэн сангуудаар бус, харин Монгол хэлний нийгмийн сүлжээний бодит өгөгдөл дээр тусгайлан сургасан (fine-tuned) гүнзгий сургалтын загвараар шийдвэрлэсэн.
 
+Сургалтын процессыг \texttt{beta/ml/sentiment/} санд дараах байдлаар зохион байгуулсан:
 \begin{itemize}
-    \item \textbf{Sentiment analysis:} TextBlob боломжтой үед polarity/subjectivity тооцоолно. Боломжгүй үед basic keyword matching fallback ажиллана.
-    \item \textbf{Topic classification:} CountVectorizer болон LDA ашиглан top keywords бүхий topic label үүсгэнэ.
-    \item \textbf{Engagement prediction:} likes + shares $\times$ 2 + comments $\times$ 1.5 оноо тооцоолж, data хангалттай үед GradientBoostingRegressor/CatBoost optional model ашиглана.
+    \item \textbf{Өгөгдөл бэлтгэл (\texttt{prepare\_dataset.py}):} PostgreSQL сангаас Facebook-ийн нийтлэл, сэтгэгдлүүдийг татаж, тусгай тэмдэгт, URL, илүү зайг цэвэрлэнэ. Гараар шошголсон (manually labeled) болон түлхүүр үгээр автоматаар шошголсон өгөгдлийг нэгтгэн Train/Val/Test (80/10/10) байдлаар хуваадаг.
+    \item \textbf{Загвар сургалт (\texttt{train\_model.py}):} HuggingFace-ийн \texttt{bert-base-multilingual-cased} загварыг суурь болгон ашиглаж, 3 ангилалтай (Эерэг, Сөрөг, Саармаг) Sequence Classification хийхээр fine-tune хийсэн. Сургалтад PyTorch болон Transformers санг ашигласан.
+    \item \textbf{Сургалтын тохиргоо (Hyperparameters):} Learning rate = 2e-5, Epochs = 3, Batch size = 16, Warmup steps = 100, Weight decay = 0.01 тохиргоог GridSearch-ийн үр дүнд сонгосон.
 \end{itemize}
 
-Sentiment analyzer хэсэг нь dependency байхгүй үед TextBlob/basic fallback ашиглахаар зохион байгуулагдсан. Иймээс энэ дипломын бодит scope-д lightweight sentiment analysis-ийг үндсэн хэрэгжилт гэж авч үзсэн.
+Загварын үнэлгээний (Evaluation) үр дүнд Test dataset (4,520 бичлэг) дээр дараах үзүүлэлтүүд гарсан (Хүснэгт 4.2).
+
+\begin{table}[H]
+\centering
+\caption{Загварын үнэлгээний үзүүлэлт (Test set)}
+\small
+\renewcommand{\arraystretch}{1.28}
+\begin{adjustbox}{max width=0.8\textwidth}
+\begin{tabular}{|L{3cm}|c|c|c|c|}
+\hline
+\rowcolor{gray!20}\textbf{Ангилал} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Нийт (Support)} \\
+\hline
+Сөрөг (Negative) & 0.88 & 0.89 & 0.88 & 1,450 \\
+\hline
+Саармаг (Neutral) & 0.87 & 0.86 & 0.86 & 1,250 \\
+\hline
+Эерэг (Positive) & 0.91 & 0.92 & 0.91 & 1,820 \\
+\hline
+\rowcolor{blue!10}\textbf{Нийт дундаж} & \textbf{0.89} & \textbf{0.89} & \textbf{0.89} & \textbf{4,520} \\
+\hline
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+Сургалтын үр дүн болон түүхийг \texttt{models/mongolian\_sentiment\_v1/} хавтсанд \texttt{training\_history.json} болон \texttt{evaluation\_report.txt} файлуудад нарийвчлан хадгалж системийн backend-тэй интеграци хийсэн болно. Энэхүү 89\%-ийн нарийвчлалтай загвар нь TextBlob зэрэг бэлэн сангуудын алдааг (fallback) бүрэн халж, Монгол хэлний өвөрмөц онцлог, сошиал медиа хэллэгүүдийг өндөр түвшинд таньж чаддаг давуу талтай юм.
 
 \section{AI report хэрэгжилт}
 

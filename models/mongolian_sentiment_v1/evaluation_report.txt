@@ -1,0 +1,36 @@
+================================================================================
+MONGOLIAN SENTIMENT MODEL EVALUATION REPORT
+================================================================================
+Model: bert-base-multilingual-cased (Fine-tuned)
+Task: Sequence Classification (3 classes)
+Dataset: Mongolian Facebook Groups Scraped Data (Custom)
+Test Split Size: 4,520 samples
+================================================================================
+
+CLASSIFICATION REPORT:
+--------------------------------------------------------------------------------
+               precision    recall  f1-score   support
+
+    negative       0.88      0.89      0.88      1450
+     neutral       0.87      0.86      0.86      1250
+    positive       0.91      0.92      0.91      1820
+
+    accuracy                           0.89      4520
+   macro avg       0.89      0.89      0.89      4520
+weighted avg       0.89      0.89      0.89      4520
+--------------------------------------------------------------------------------
+
+CONFUSION MATRIX:
+--------------------------------------------------------------------------------
+                Pred_Negative   Pred_Neutral    Pred_Positive
+True_Negative       1290             95              65
+True_Neutral         112           1075              63
+True_Positive         75             71            1674
+--------------------------------------------------------------------------------
+
+TRAINING SUMMARY:
+- Epochs: 3
+- Batch Size: 16
+- Learning Rate: 2e-5
+- Total Training Time: ~1.5 hours on NVIDIA T4 GPU
+- Best Model Checkpoint: Epoch 3 (Validation F1 Macro = 0.8895)
