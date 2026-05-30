@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Ready
+    Ready --> Loading
+    Loading --> Visual
+    Loading --> Degraded
+    Visual --> Collecting
+    Collecting --> Processing
+    Processing --> Reporting
+    Reporting --> [*]
+    Processing --> Error
+    Error --> Loading

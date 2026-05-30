@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as Хэрэглэгч
+    participant FE as Фронтенд
+    participant API as FastAPI
+    participant DB as Database
+    participant GM as Gemini
+
+    User->>FE: Тайлан хүсэх
+    FE->>API: POST /gemini/analyze
+    API->>DB: Query latest posts
+    DB-->>API: Return posts
+    API->>GM: Send prompt
+    GM-->>API: Return report
+    API-->>FE: Return report
+    FE-->>User: Render report

@@ -1,12 +1,12 @@
-\babel@toc {mongolian}{}\relax 
-\babel@toc {mongolian}{}\relax 
+\xpg@aux {}{mongolian}
+\xpg@aux {}{mongolian}
 \contentsline {chapter}{Зохиогч эрхийн хамгаалал}{I}{section*.1}%
 \contentsline {chapter}{Хураангуй}{II}{chapter*.2}%
 \contentsline {chapter}{Талархал}{III}{section*.3}%
 \contentsline {chapter}{\numberline {1}Оршил}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Судалгааны үндэслэл}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Судалгааны зорилго}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Судалгааны асуулт}{1}{section.1.3}%
+\contentsline {section}{\numberline {1.3}Судалгааны асуулт}{2}{section.1.3}%
 \contentsline {section}{\numberline {1.4}Судалгааны таамаглал}{2}{section.1.4}%
 \contentsline {section}{\numberline {1.5}Судалгааны ач холбогдол}{2}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Судалгааны хүрээ ба хязгаарлалт}{2}{section.1.6}%
@@ -20,55 +20,55 @@
 \contentsline {section}{\numberline {2.5}AI тайлан үүсгэх}{5}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Ижил төстэй шийдлүүдтэй харьцуулалт}{5}{section.2.6}%
 \contentsline {section}{\numberline {2.7}Техникийн сорилтууд}{5}{section.2.7}%
-\contentsline {chapter}{\numberline {3}Арга зүй}{7}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Системийн архитектур}{7}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Өгөгдлийн сангийн ERD диаграм}{7}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Системийн архитектурын диаграм}{8}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Өгөгдлийн урсгал}{8}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Технологийн сонголт}{9}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Өгөгдлийн загвар}{9}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Алгоритм}{10}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Scraper workflow}{10}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Analysis workflow}{10}{subsection.3.4.2}%
+\contentsline {chapter}{\numberline {3}Арга зүй}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Системийн архитектур}{6}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Өгөгдлийн сангийн ERD диаграм}{6}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Системийн архитектурын диаграм}{7}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Өгөгдлийн урсгал}{7}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Технологийн сонголт}{8}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Өгөгдлийн загвар}{8}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Алгоритм}{9}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Scraper workflow}{9}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Analysis workflow}{9}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Frontend workflow}{10}{subsection.3.4.3}%
-\contentsline {section}{\numberline {3.5}UML болон Бизнес процессын диаграмууд}{11}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Бизнес процессын диаграм (BPMN)}{11}{subsection.3.5.1}%
+\contentsline {section}{\numberline {3.5}UML болон Бизнес процессын диаграмууд}{10}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Бизнес процессын диаграм (BPMN)}{10}{subsection.3.5.1}%
 \contentsline {subsection}{\numberline {3.5.2}Use Case диаграм}{11}{subsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.5.3}Sequence диаграм}{12}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.3}Sequence диаграм}{11}{subsection.3.5.3}%
 \contentsline {subsection}{\numberline {3.5.4}Activity диаграм}{12}{subsection.3.5.4}%
 \contentsline {subsection}{\numberline {3.5.5}State диаграм}{13}{subsection.3.5.5}%
-\contentsline {section}{\numberline {3.6}Туршилтын орчин}{13}{section.3.6}%
-\contentsline {chapter}{\numberline {4}Хэрэгжилт}{14}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Төслийн бүтэц}{14}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Frontend хэрэгжилт}{14}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Dashboard}{14}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Data Sources}{14}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Predictive Analysis}{15}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}Admin Control}{15}{subsection.4.2.4}%
-\contentsline {section}{\numberline {4.3}Backend API хэрэгжилт}{15}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Scraper хэрэгжилт}{16}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Database layer}{17}{section.4.5}%
-\contentsline {section}{\numberline {4.6}Analysis хэрэгжилт}{17}{section.4.6}%
-\contentsline {section}{\numberline {4.7}AI report хэрэгжилт}{17}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Export ба integration}{18}{section.4.8}%
-\contentsline {section}{\numberline {4.9}Системийн туршилт (Test cases)}{18}{section.4.9}%
-\contentsline {chapter}{\numberline {5}Үр дүн}{19}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Хэрэгжилтийн үр дүн}{19}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Frontend workflow-ийн үр дүн}{19}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Backend API-ийн үр дүн}{20}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Өгөгдлийн сангийн үр дүн}{20}{section.5.4}%
+\contentsline {section}{\numberline {3.6}Туршилтын орчин}{14}{section.3.6}%
+\contentsline {chapter}{\numberline {4}Хэрэгжилт}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Төслийн бүтэц}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Frontend хэрэгжилт}{15}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Dashboard}{15}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Data Sources}{15}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Predictive Analysis}{16}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Admin Control}{16}{subsection.4.2.4}%
+\contentsline {section}{\numberline {4.3}Backend API хэрэгжилт}{16}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Scraper хэрэгжилт}{17}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Database layer}{18}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Analysis хэрэгжилт}{18}{section.4.6}%
+\contentsline {section}{\numberline {4.7}AI report хэрэгжилт}{18}{section.4.7}%
+\contentsline {section}{\numberline {4.8}Export ба integration}{19}{section.4.8}%
+\contentsline {section}{\numberline {4.9}Системийн туршилт (Test cases)}{19}{section.4.9}%
+\contentsline {chapter}{\numberline {5}Үр дүн}{20}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Хэрэгжилтийн үр дүн}{20}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Frontend workflow-ийн үр дүн}{20}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Backend API-ийн үр дүн}{21}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Өгөгдлийн сангийн үр дүн}{21}{section.5.4}%
 \contentsline {section}{\numberline {5.5}Analysis workflow-ийн үр дүн}{21}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Тайлангийн боловсруулалт ба AI Тайлан}{21}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Хязгаарлалт ба эрсдэл}{21}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Үр дүнгийн хэлэлцүүлэг}{22}{section.5.8}%
-\contentsline {chapter}{\numberline {6}Дүгнэлт}{23}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Үндсэн үр дүн}{23}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Шинэлэг тал}{23}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Хязгаарлалт}{23}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Цаашдын хөгжүүлэлт}{24}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Нэгтгэл}{24}{section.6.5}%
-\contentsline {chapter}{Ном зүй}{25}{chapter*.22}%
-\contentsline {chapter}{\numberline {A}Хавсралт}{26}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Системийн тохиргооны жишээ}{26}{section.A.1}%
-\contentsline {section}{\numberline {A.2}API Endpoint жишээ}{26}{section.A.2}%
-\contentsline {section}{\numberline {A.3}Өгөгдлийн сангийн схем}{27}{section.A.3}%
+\contentsline {section}{\numberline {5.6}Тайлангийн боловсруулалт ба AI Тайлан}{22}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Хязгаарлалт ба эрсдэл}{22}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Үр дүнгийн хэлэлцүүлэг}{23}{section.5.8}%
+\contentsline {chapter}{\numberline {6}Дүгнэлт}{24}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Үндсэн үр дүн}{24}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Шинэлэг тал}{24}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Хязгаарлалт}{24}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Цаашдын хөгжүүлэлт}{25}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Нэгтгэл}{25}{section.6.5}%
+\contentsline {chapter}{Ном зүй}{26}{chapter*.22}%
+\contentsline {chapter}{\numberline {A}Хавсралт}{27}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Системийн тохиргооны жишээ}{27}{section.A.1}%
+\contentsline {section}{\numberline {A.2}API Endpoint жишээ}{27}{section.A.2}%
+\contentsline {section}{\numberline {A.3}Өгөгдлийн сангийн схем}{28}{section.A.3}%

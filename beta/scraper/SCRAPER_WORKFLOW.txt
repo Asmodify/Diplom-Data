@@ -1,0 +1,55 @@
+How the Facebook scraper works
+=============================
+
+Overview
+--------
+This project contains several cooperating components that automate browsing Facebook, locate posts, extract post content and comments, and optionally save screenshots and images. The main components are:
+
+- Browser/session manager (BrowserManager): starts and maintains a Selenium WebDriver (Firefox), applies anti-detection preferences and JS/CSS injections, verifies login state, and provides human-like interactions (typing, scrolling, clicking). Handles session restarts and timeout recovery.
+- EdgeFacebookScraper / FacebookScraper: higher-level scraper classes that initialize a browser (Edge or Firefox), handle login (cookie-based, credential-based, or manual), navigate to a profile/page, and orchestrate scraping operations.
+- PostScraper: focused on extracting data from individual post elements (content, date, likes, comments, shares, images) and collecting comments/replies. Provides fallbacks and selector heuristics to handle different Facebook UI variants.
+
+Execution flow (high-level)
+---------------------------
+1. Initialize driver: the scraper creates a WebDriver instance with options to hide automation (disable navigator.webdriver, automation flags), set viewport/window size, and configure preferences (disable images, cache, etc.).
+2. Login: the scraper attempts cookie-based login (fastest), then credential-based login, and finally waits for a manual login if required. Login verification is done by checking for known UI elements (feed, navigation, Home button) and URL patterns.
+3. Navigate to target: a profile or page URL is opened; the scraper waits for main content to load and uses several selector fallbacks to locate the feed area.
+4. Load content: the scraper scrolls the page using simulated human scrolling to trigger lazy-loaded content. It uses randomized delays and checks for loading indicators to avoid too-aggressive scrolling.
+5. Locate posts: the scraper uses multiple CSS/XPath selectors (role="article", data-ad-preview/message variants, etc.) to find post containers. It uses feed-level selectors first and falls back to document-wide searches if needed.
+6. Extract post data: for each post element, PostScraper extracts text content, timestamp/date, interaction counts (likes/comments/shares), images, and screenshots (if enabled). It uses robust selector fallbacks and a clean_text helper to remove paywall messages or unwanted text.
+7. Extract comments/replies: the scraper expands comment sections (clicking "view more comments" when necessary), detects comment containers (including localization variants), and collects author, text, and timestamps. Reply extraction is recursive up to a configured depth.
+8. Deduplicate and aggregate: scraped posts are deduplicated by keys such as content, URL, and timestamp, and aggregated into the final result list.
+9. Save artifacts: optional screenshots and downloaded images are written to configured directories. Post data dictionaries include references/paths and timestamps.
+10. Cleanup: the scraper gracefully quits the browser on completion or error.
+
+Anti-detection and robustness measures
+-------------------------------------
+- Browser prefs and flags: disable common automation indicators, mask navigator.webdriver, use random viewport sizes, and set other Firefox/Edge preferences.
+- Human-like interactions: simulated typing, randomized delays between keystrokes, human-like scrolling increments, and click offsets to mimic a real user.
+- Selector fallbacks: multiple CSS/XPath selectors per target (feed, post content, comments) to adapt to UI changes and different Facebook variants.
+- Retry logic: retry loops for scrolling/loading content and retry limits for session restart attempts and scraping loops.
+- Error handling: exceptions are caught and logged; the scraper tries to continue when a single post or comment fails to parse.
+
+Configuration and inputs
+------------------------
+- Credentials and cookies: optional `fb_credentials.py` supplies `FB_EMAIL`, `FB_PASSWORD`, and a `cookies` dict used for cookie-based login.
+- Runtime flags: `headless`, `max_posts`/`max_comments`, `take_screenshots`, and `download_images` control behavior and resource use.
+- Paths: screenshots and image downloads are written to `screenshots/` and `images/` directories by default.
+
+Outputs
+-------
+- The scrapers return lists of dictionaries describing posts. Typical fields: `post_text`/`content`, `post_url`, `post_time`/`date`, `likes`, `comments` (count or list), `shares`, `images` (list of metadata), `screenshot` or `screenshot_path`, and `scraped_at` timestamp.
+- Artifacts (screenshots, images) are saved to disk when enabled.
+
+Where to look in code
+----------------------
+- Session & login management: `browser_manager.py`
+- Edge-based scraping and BeautifulSoup-based extraction: `edge_scraper.py`
+- Simple Firefox scraper example: `fb_scraper.py`
+- Post extraction logic: `post_scraper.py`
+
+Notes and limitations
+---------------------
+- Facebook's UI and class names change frequently; the scraper relies on multiple fallbacks but may require updates over time.
+- Some interactions (two-factor auth, checkpoints) require manual intervention.
+- Running at scale against Facebook may violate terms of service — use responsibly and ethically.

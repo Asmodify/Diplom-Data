@@ -26,6 +26,8 @@ import { Overview } from './components/Overview';
 import { SentimentAnalysis } from './components/SentimentAnalysis';
 import { KeywordAnalysis } from './components/KeywordAnalysis';
 import { KeywordSearch } from './components/KeywordSearch';
+import { Landing } from './components/Landing';
+import { Login } from './components/Login';
 
 type TabId = 'dashboard' | 'sentiment' | 'keywords' | 'search' | 'sources' | 'analysis' | 'admin' | 'overview' | 'settings';
 
@@ -92,7 +94,8 @@ const tabs: Array<{
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
+  const [appState, setAppState] = useState<'landing' | 'login' | 'dashboard'>('landing');
+  const [activeTab, setActiveTab] = useState<TabId>('sentiment');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const activeTabMeta = useMemo(
@@ -104,6 +107,14 @@ export default function App() {
     setActiveTab(tab);
     setMobileOpen(false);
   };
+
+  if (appState === 'landing') {
+    return <Landing onNavigate={setAppState} />;
+  }
+
+  if (appState === 'login') {
+    return <Login onLogin={() => setAppState('dashboard')} onBack={() => setAppState('landing')} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#f4f7fb] text-slate-900">
@@ -250,12 +261,12 @@ function Sidebar({
 function Brand() {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white">
-        <BarChart3 className="h-5 w-5" />
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20 text-white">
+        <Heart className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-sm font-semibold leading-5 text-slate-950">Ойлголтын Удирдлага</p>
-        <p className="text-xs text-slate-500">Сошиал шинжилгээний ажлын талбар</p>
+        <p className="text-sm font-bold tracking-tight text-slate-950">SentimentAI</p>
+        <p className="text-xs text-slate-500 font-medium">Хандлагын Шинжилгээ</p>
       </div>
     </div>
   );

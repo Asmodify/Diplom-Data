@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="F8FAFC"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>
+    <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+    <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="800" name="Accent"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="220000" cy="6858000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill></a:ln></p:spPr>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="360000"/><a:ext cx="11000000" cy="600000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="2850"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="2850"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Machine Learning pipeline</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="3" name="Subtitle"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="565000" y="930000"/><a:ext cx="10800000" cy="360000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1450"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1450"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Цуглуулсан датаас таамаглал гаргах урсгал</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="801" name="Rule"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="1320000"/><a:ext cx="11100000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="CBD5E1"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="10" name="Chip Raw posts/comments"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="700000" y="1880000"/><a:ext cx="1900000" cy="420000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="E2E8F0"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="E2E8F0"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="1010" name="Chip Text Raw posts/comments"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="790000" y="1965000"/><a:ext cx="1720000" cy="260000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="ctr"><a:endParaRPr lang="mn-MN" sz="1250"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1250"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Raw posts/comments</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="20" name="Chip Preprocessing"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="3000000" y="1880000"/><a:ext cx="1700000" cy="420000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="DBEAFE"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="DBEAFE"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="1020" name="Chip Text Preprocessing"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="3090000" y="1965000"/><a:ext cx="1520000" cy="260000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="ctr"><a:endParaRPr lang="mn-MN" sz="1250"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1250"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Preprocessing</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="30" name="Chip Feature engineering"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="5200000" y="1880000"/><a:ext cx="2100000" cy="420000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="DCFCE7"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="DCFCE7"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="1030" name="Chip Text Feature engineering"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="5290000" y="1965000"/><a:ext cx="1920000" cy="260000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="ctr"><a:endParaRPr lang="mn-MN" sz="1250"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1250"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Feature engineering</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="40" name="Chip Models"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="7800000" y="1880000"/><a:ext cx="1300000" cy="420000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FEF3C7"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="FEF3C7"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="1040" name="Chip Text Models"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="7890000" y="1965000"/><a:ext cx="1120000" cy="260000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="ctr"><a:endParaRPr lang="mn-MN" sz="1250"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1250"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Models</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="50" name="Chip Prediction"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="9700000" y="1880000"/><a:ext cx="1500000" cy="420000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FCE7F3"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="FCE7F3"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="1050" name="Chip Text Prediction"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="9790000" y="1965000"/><a:ext cx="1320000" cy="260000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="ctr"><a:endParaRPr lang="mn-MN" sz="1250"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1250"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Prediction</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="60" name="m1"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="2600000" y="2090000"/><a:ext cx="400000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="19050"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp><p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="61" name="m2"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="4700000" y="2090000"/><a:ext cx="500000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="19050"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp><p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="62" name="m3"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="7300000" y="2090000"/><a:ext cx="500000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="19050"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp><p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="63" name="m4"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="9100000" y="2090000"/><a:ext cx="600000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="19050"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp><p:sp>
+  <p:nvSpPr><p:cNvPr id="70" name="ML bullets"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="950000" y="3350000"/><a:ext cx="10000000" cy="1600000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1600"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Preprocessing: URL, mention, hashtag тэмдэглэгээ, илүүдэл тэмдэгт, whitespace цэвэрлэсэн.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1600"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Feature engineering: content_length, word_count, hashtag_count, mention_count, question/exclamation, likes, shares, comment_count, hour, day_of_week.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1600"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Model үр дүн: sentiment label, topic cluster, engagement score, high engagement probability.</a:t></a:r></a:p></p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="900" name="Footer"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="11100000" y="6640000"/><a:ext cx="900000" cy="240000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="r"><a:endParaRPr lang="mn-MN" sz="1000"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1000"><a:solidFill><a:srgbClr val="94A3B8"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>8</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+  </p:spTree></p:cSld>
+  <p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
+</p:sld>

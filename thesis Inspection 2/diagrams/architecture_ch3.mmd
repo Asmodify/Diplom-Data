@@ -1,0 +1,8 @@
+flowchart LR
+  User --> Frontend["React/Vite Dashboard"]
+  Frontend --> API["FastAPI Backend"]
+  API --> DB["SQLAlchemy / PostgreSQL"]
+  API --> Scraper["Facebook Scraper\nSelenium + BS4"]
+  DB --> Analysis["Analysis Module\nTextBlob + sklearn"]
+  Analysis --> Gemini["Gemini API"]
+  Facebook["Facebook Pages"] --> Scraper

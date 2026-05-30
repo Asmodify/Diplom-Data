@@ -1,0 +1,22 @@
+flowchart TB
+  subgraph User
+    U["User / Analyst / Admin"]
+  end
+  subgraph Frontend
+    F["React / Vite Dashboard"]
+  end
+  subgraph Backend
+    API["FastAPI Backend"]
+    Scraper["Selenium Scraper"]
+    DB["SQLAlchemy / PostgreSQL"]
+    Analysis["Analysis Module"]
+  end
+  subgraph AI
+    Gemini["Gemini API"]
+  end
+
+  U --> F --> API
+  API --> DB
+  API --> Scraper
+  DB --> Analysis --> Gemini
+  F --> Gemini

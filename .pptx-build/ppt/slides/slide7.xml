@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="F8FAFC"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>
+    <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+    <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="800" name="Accent"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="220000" cy="6858000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill></a:ln></p:spPr>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="360000"/><a:ext cx="11000000" cy="600000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="2850"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="2850"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Өгөгдлийн загвар</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="3" name="Subtitle"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="565000" y="930000"/><a:ext cx="10800000" cy="360000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1450"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1450"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>ML-д орох нэг ижил бүтэцтэй дата</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="801" name="Rule"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="1320000"/><a:ext cx="11100000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="CBD5E1"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="10" name="Card FacebookPost"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="760000" y="1700000"/><a:ext cx="3200000" cy="1850000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="F0FDFA"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="D1D5DB"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="11" name="Card title FacebookPost"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="980000" y="1870000"/><a:ext cx="2760000" cy="300000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1500"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1500"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>FacebookPost</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="12" name="Card body FacebookPost"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="980000" y="2260000"/><a:ext cx="2760000" cy="1150000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1200"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1200"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>page_name, post_id, post_url, content, timestamp, likes, shares, comment_count, scraped_at</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="20" name="Card PostComment"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="4450000" y="1700000"/><a:ext cx="3200000" cy="1850000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="EFF6FF"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="D1D5DB"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="21" name="Card title PostComment"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="4670000" y="1870000"/><a:ext cx="2760000" cy="300000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1500"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1500"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>PostComment</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="22" name="Card body PostComment"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="4670000" y="2260000"/><a:ext cx="2760000" cy="1150000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1200"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1200"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>post_id, comment_id, author_name, content, timestamp, likes, reply_to_id, scraped_at</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="30" name="Card AnalysisResult"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="8140000" y="1700000"/><a:ext cx="3200000" cy="1850000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFF7ED"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="D1D5DB"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="31" name="Card title AnalysisResult"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="8360000" y="1870000"/><a:ext cx="2760000" cy="300000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1500"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1500"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>AnalysisResult</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="32" name="Card body AnalysisResult"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="8360000" y="2260000"/><a:ext cx="2760000" cy="1150000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1200"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1200"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>post_id, analysis_type, result JSON, analyzed_at. Sentiment, topic, engagement result хадгална.</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="40" name="Data note"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="980000" y="4300000"/><a:ext cx="9400000" cy="850000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Энэ бүтэц нь scraper-ээс ирсэн түүхий өгөгдлийг ML, AI report, dashboard-д дахин ашиглах боломжтой болгосон.</a:t></a:r></a:p></p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="900" name="Footer"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="11100000" y="6640000"/><a:ext cx="900000" cy="240000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="r"><a:endParaRPr lang="mn-MN" sz="1000"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1000"><a:solidFill><a:srgbClr val="94A3B8"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>7</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+  </p:spTree></p:cSld>
+  <p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
+</p:sld>

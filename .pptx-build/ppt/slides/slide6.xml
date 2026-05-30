@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="F8FAFC"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>
+    <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+    <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="800" name="Accent"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="220000" cy="6858000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill></a:ln></p:spPr>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="2" name="Title"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="360000"/><a:ext cx="11000000" cy="600000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="2850"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="2850"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Scraper хэрхэн ашиглагдсан бэ?</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="3" name="Subtitle"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="565000" y="930000"/><a:ext cx="10800000" cy="360000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1450"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1450"><a:solidFill><a:srgbClr val="64748B"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Бид өгөгдлийг group/page-үүдээс цуглуулсан гэж тайлбарлах хэсэг</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+    <p:cxnSp>
+  <p:nvCxnSpPr><p:cNvPr id="801" name="Rule"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr>
+  <p:spPr><a:xfrm><a:off x="560000" y="1320000"/><a:ext cx="11100000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="CBD5E1"/></a:solidFill></a:ln></p:spPr>
+</p:cxnSp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="10" name="Use bullets"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="760000" y="1650000"/><a:ext cx="10400000" cy="3550000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Хэрэглэгч dashboard дээр зорилтот Facebook group/page URL эсвэл нэрсийг оруулна.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>API нь pages.txt файлыг шинэчилж, /api/v1/scraper/run endpoint-оор scraper process ажиллуулна.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Scraper нь page бүрээр орж пост, сэтгэгдэл, engagement metric-үүдийг татаж авна.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Цуглуулсан өгөгдөл PostgreSQL/SQLite/Firebase хадгалалтад бичигдэж, давхардлыг post_id/comment_id-аар хянана.</a:t></a:r></a:p><a:p><a:pPr marL="300000" indent="-180000"><a:buChar char="•"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Frontend нь /scraper/status болон /scraper/logs endpoint-оор явцыг бодит хугацаанд харуулна.</a:t></a:r></a:p></p:txBody>
+</p:sp>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="900" name="Footer"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="11100000" y="6640000"/><a:ext cx="900000" cy="240000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="r"><a:endParaRPr lang="mn-MN" sz="1000"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1000"><a:solidFill><a:srgbClr val="94A3B8"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>6</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+  </p:spTree></p:cSld>
+  <p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
+</p:sld>

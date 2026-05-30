@@ -1,4 +1,4 @@
-% ============================================================================
+﻿% ============================================================================
 % Дипломын ажил - Нийгмийн сүлжээний мэдээлэл цуглуулагч ба анализ хийх систем
 % ============================================================================
 \documentclass[
@@ -11,15 +11,11 @@ headsepline,
 ]{MUST-Thesis}
 
 % ============================================================================
-% Packages - XeLaTeX compatible
+% Packages
 % ============================================================================
-\usepackage{fontspec}
-\usepackage{polyglossia}
-\setmainlanguage{mongolian}
-\setotherlanguage{english}
-\setmainfont{Times New Roman}
-\setsansfont{Arial}
-\setmonofont{Consolas}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english,mongolian]{babel}
 \usepackage[table]{xcolor}
 \usepackage{rotating}
 \usepackage{float}
@@ -44,7 +40,7 @@ headsepline,
 \usepackage{pdflscape}
 \usepackage{pgf}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta,shapes.geometric,shapes,arrows,automata,shadows,fadings}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,shapes,arrows,automata}
 \newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
 
 \definecolor{Cover}{RGB}{102,255,255}
@@ -254,7 +250,42 @@ headsepline,
     \end{center}
 \end{titlepage}
 
+\begin{titlepage}
+    \begin{center}
+        {\scshape\Large \univname\par}
+        {\scshape\large \facname\par}\vspace{1cm}
+        \textbf{\Large ШҮҮМЖИЙН ХУУДАС}\\[1cm]
+    \end{center}
 
+    \normalsize
+    \deptname-ийн төгсөх курсын оюутан \shortname-ын ``\ttitle'' сэдэвт төгсөлтийн ажлын шүүмж.
+
+    \begin{enumerate}
+        \item Төслөөр дэвшүүлсэн асуудал, түүнтэй холбоотой онолын материал уншиж судалсан байдал.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Төслийн ерөнхий агуулга, шийдсэн зүйлүүд, хүрсэн үр дүн, харьцуулалт ба дүгнэлт.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Эмх цэгцтэй, стандарт хангасан байдлаар диплом бичих шаардлагыг биелүүлсэн эсэх.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Төслөөр орхигдуулсан болон дутуу болсон зүйлүүд, цаашид анхаарах зүйлүүд.
+        \begin{center}
+            \dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.1cm]\dotfill \\[0.4cm]
+        \end{center}
+        \item Ерөнхий оноо. (5 оноо)
+        \begin{center}
+            \dotfill \\[0.8cm]
+        \end{center}
+    \end{enumerate}
+    Шүүмж бичсэн: \makebox[3cm]{\dotfill} /\readname/ \\[0.5cm]
+    Ажлын газар: \dotfill \\[0.5cm]
+    Хаяг, утас: \makebox[5cm]{\dotfill}
+\end{titlepage}
 
 % ============================================================================
 % Copyright and Declaration
@@ -287,15 +318,15 @@ headsepline,
 \chapter*{Хураангуй}
 \addcontentsline{toc}{chapter}{Хураангуй}
 
-Энэхүү дипломын ажил нь зорилтот Facebook хуудсууд болон группуудээс (жишээ нь: https://www.facebook.com/groups/369785350059670, https://www.facebook.com/groups/995968413758817, https://www.facebook.com/spacehub.mn) олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, Монгол хэлний өгөгдөл дээр тусгайлан сургаж сайжруулсан (fine-tuned) Sentiment Analysis загвар болон Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
+Энэхүү дипломын ажил нь Facebook хуудасны олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, TextBlob болон scikit-learn-д суурилсан үндсэн шинжилгээ, Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
 
 \textbf{Судалгааны үндсэн зорилгууд:}
 \begin{itemize}
     \item Facebook хуудасны зорилтот жагсаалтыг удирдаж, scraper процессыг backend-ээс эхлүүлэх боломжтой болгох
     \item Нийтлэл, сэтгэгдэл, зураг болон likes, shares, comment count зэрэг оролцооны өгөгдлийг хадгалах
-    \item Цуглуулсан бодит өгөгдөл дээр Монгол хэлний контентод зориулан тусгайлан сургасан (fine-tuned) загвар ашиглан sentiment analysis, LDA topic modeling, engagement score тооцоолол хийх
-    \item React dashboard-аар live backend өгөгдлийг харуулах
-    \item Gemini API ашиглан бодит өгөгдлөөс уншигдахуйц тайлан, зөвлөмж үүсгэх
+    \item Цуглуулсан өгөгдөл дээр TextBlob fallback бүхий sentiment analysis, LDA topic modeling, engagement score тооцоолол хийх
+    \item React dashboard-аар live backend өгөгдлийг харуулах, backend холбогдохгүй үед demo fallback ашиглах
+    \item Gemini API ашиглан сүүлийн өгөгдлөөс уншигдахуйц тайлан, зөвлөмж үүсгэх
 \end{itemize}
 
 Систем нь Facebook төвтэй өгөгдөл цуглуулах pipeline, REST API, өгөгдлийн сан, frontend dashboard, scraper target management, automation log viewer, AI report generation гэсэн бодит хэрэгжсэн бүрэлдэхүүнтэй. Энэхүү хувилбар нь repository-д бодитоор байгаа Facebook төвтэй workflow-г л үндсэн боломж гэж авч үзсэн.
@@ -355,7 +386,7 @@ URL & Uniform Resource Locator \\
 
 Олон нийтийн Facebook хуудас дээр үүсэж буй нийтлэл, сэтгэгдэл, реакцын хэмжээ нь хэрэглэгчдийн сонирхол, санал хандлага, контентийн үр нөлөөг ойлгоход хэрэгтэй өгөгдөл болдог. Гэвч уг өгөгдлийг гараар цуглуулах нь цаг их зарцуулдаг, давтагдах боломж муутай, олон хуудас дээр тогтмол хянахад хүндрэлтэй. Иймээс scraper, backend API, өгөгдлийн сан, dashboard, AI тайланг нэгтгэсэн систем шаардлагатай.
 
-Энэ төслийн бодит хэрэгжилт нь зорилтот Facebook групп, хуудсуудаас (https://www.facebook.com/groups/369785350059670, https://www.facebook.com/groups/995968413758817, https://www.facebook.com/spacehub.mn зэрэг) цуглуулсан бодит өгөгдөл дээр төвлөрсөн. Frontend нь цуглуулсан бодит өгөгдлийг харуулж, scraper target list-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, тусгайлан сургасан загвар бүхий sentiment, topic, trend, export болон scraper control функцийг өгдөг.
+Энэ төслийн бодит хэрэгжилт нь Facebook өгөгдөл дээр төвлөрсөн. Frontend нь live backend өгөгдлийг харуулж, scraper target list буюу \texttt{pages.txt}-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, sentiment, topic, trend, export болон scraper control функцийг өгдөг.
 
 \section{Судалгааны зорилго}
 
@@ -363,12 +394,12 @@ URL & Uniform Resource Locator \\
 
 \textbf{Системийн бодит зорилтууд:}
 \begin{enumerate}
-    \item Facebook page болон group URL/ID жагсаалтыг (жишээлбэл, 369785350059670, 995968413758817, spacehub.mn) frontend болон backend-ээр удирдах
+    \item Facebook page URL/ID жагсаалтыг frontend болон backend-ээр удирдах
     \item Selenium WebDriver ашиглан Facebook хуудаснаас пост, сэтгэгдэл, зураг, engagement metadata цуглуулах
     \item PostgreSQL/SQLAlchemy ашиглан \texttt{facebook\_posts}, \texttt{post\_comments}, \texttt{post\_images}, \texttt{analysis\_results} хүснэгтүүдэд хадгалах
-    \item FastAPI ашиглан posts, comments, images, stats, sentiment (fine-tuned model), topics, trends, scraper control endpoint-ууд гаргах
-    \item React/Vite dashboard ашиглан live data, chart, query, backend health, scraper logs харуулах
-    \item Google Gemini API ашиглан бодит өгөгдлөөс тайлан, зөвлөмж үүсгэх
+    \item FastAPI ашиглан posts, comments, images, stats, sentiment, topics, trends, scraper control endpoint-ууд гаргах
+    \item React/Vite dashboard ашиглан live data, demo fallback, chart, query, backend health, scraper logs харуулах
+    \item Google Gemini API ашиглан сүүлийн өгөгдлөөс тайлан, зөвлөмж үүсгэх
 \end{enumerate}
 
 \section{Судалгааны асуулт}
@@ -479,16 +510,7 @@ Google Gemini API зэрэг LLM үйлчилгээ нь structured summary data
 \hline
 \rowcolor{gray!20}\textbf{Шийдэл} & \textbf{Давуу тал} & \textbf{Хязгаарлалт} \\
 \hline
-Commercial social listening tools & Олон платформ, enterprise dashboard \usetikzlibrary{shapes.geometric, shadows}
-\begin{tikzpicture}[
-  proc/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
-    minimum width=3.2cm, minimum height=0.7cm, text centered, font=\small, align=center},
-  term/.style={rectangle, draw=black!60, fill=gray!10, rounded corners=6pt, drop shadow,
-    minimum width=2.5cm, minimum height=0.6cm, text centered, font=\small},
-  dec/.style={diamond, draw=black!60, fill=yellow!15, aspect=2, drop shadow,
-    minimum width=2.5cm, text centered, font=\small, align=center},
-  arr/.style={->, >=Stealth, thick, black!70}
-]\end{tikzpicture} & Үнэтэй, data access/API хязгаарлалттай \\
+Commercial social listening tools & Олон платформ, enterprise dashboard & Үнэтэй, data access/API хязгаарлалттай \\
 \hline
 API-only collection & Тогтвортой, дүрмийн дагуу access & Facebook public page data-д API access хязгаарлагдмал \\
 \hline
@@ -532,125 +554,30 @@ Browser automation scraper & Динамик UI-тай ажиллах болом�
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-  entity/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=2pt,
-    minimum width=3.6cm, minimum height=0.7cm, text centered, font=\small\bfseries},
-  attr/.style={rectangle, draw=black!50, fill=white,
-    minimum width=3.6cm, minimum height=0.6cm, text centered, font=\footnotesize},
-  header/.style={rectangle, draw=black!70, fill=blue!20,
-    minimum width=3.6cm, minimum height=0.65cm, text centered, font=\small\bfseries},
-  line/.style={->, >=Stealth, thick, black!70},
-  label/.style={font=\footnotesize\bfseries, fill=white, inner sep=1pt}
-]
-
-%% FACEBOOKPOST (center top)
-\node[header] (fp_h) at (0,0) {FACEBOOKPOST};
-\node[attr, below=0pt of fp_h] (fp1) {\textit{string}\ \ \ id \hfill \textbf{PK}};
-\node[attr, below=0pt of fp1] (fp2) {\textit{string}\ \ \ post\_id};
-\node[attr, below=0pt of fp2] (fp3) {\textit{string}\ \ \ page\_name};
-\node[attr, below=0pt of fp3] (fp4) {\textit{string}\ \ \ content};
-\node[attr, below=0pt of fp4] (fp5) {\textit{datetime}\ timestamp};
-
-%% POSTCOMMENT (bottom left)
-\node[header] (pc_h) at (-4.8,-5.2) {POSTCOMMENT};
-\node[attr, below=0pt of pc_h] (pc1) {\textit{string}\ \ \ id \hfill \textbf{PK}};
-\node[attr, below=0pt of pc1] (pc2) {\textit{string}\ \ \ post\_id \hfill \textbf{FK}};
-\node[attr, below=0pt of pc2] (pc3) {\textit{string}\ \ \ comment\_id};
-\node[attr, below=0pt of pc3] (pc4) {\textit{string}\ \ \ author\_name};
-
-%% POSTIMAGE (bottom center)
-\node[header] (pi_h) at (0,-5.2) {POSTIMAGE};
-\node[attr, below=0pt of pi_h] (pi1) {\textit{string}\ \ \ id \hfill \textbf{PK}};
-\node[attr, below=0pt of pi1] (pi2) {\textit{string}\ \ \ post\_id \hfill \textbf{FK}};
-\node[attr, below=0pt of pi2] (pi3) {\textit{string}\ \ \ image\_url};
-
-%% ANALYSISRESULT (bottom right)
-\node[header] (ar_h) at (4.8,-5.2) {ANALYSISRESULT};
-\node[attr, below=0pt of ar_h] (ar1) {\textit{string}\ \ \ id \hfill \textbf{PK}};
-\node[attr, below=0pt of ar1] (ar2) {\textit{string}\ \ \ post\_id \hfill \textbf{FK}};
-\node[attr, below=0pt of ar2] (ar3) {\textit{string}\ \ \ analysis\_type};
-
-%% Relationships
-\draw[line] (fp5.south) -- ++(0,-0.3) -| (pc_h.north)
-  node[label, pos=0.25, above] {1:N};
-\draw[line] (fp5.south) -- (pi_h.north)
-  node[label, pos=0.5, right] {1:N};
-\draw[line] (fp5.south) -- ++(0,-0.3) -| (ar_h.north)
-  node[label, pos=0.25, above] {1:N};
-
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.96\textwidth,center}
+\includegraphics[width=0.92\textwidth]{Figures/erd_mermaid.png}
+\end{adjustbox}
 \caption{Өгөгдлийн сангийн үндсэн entity холбоо}
 \label{fig:database-erd}
 \end{figure}
 
 \subsection{Системийн архитектурын диаграм}
 
-\begin{figure}[H]
+\begin{figure}[p]
 \centering
-\begin{tikzpicture}[
-  box/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=3pt,
-    minimum width=2.9cm, minimum height=0.85cm, text centered, font=\small, align=center},
-  sysbox/.style={rectangle, draw=black!40, fill=yellow!10, rounded corners=5pt, inner sep=8pt},
-  arr/.style={->, >=Stealth, thick, black!60}
-]
-\node[sysbox, minimum width=4.2cm, minimum height=1.6cm] at (0,0.1) {};
-\node[font=\footnotesize\itshape] at (1.8,0.7) {User};
-\node[box, fill=yellow!20] (user) at (0,0) {Шинжээч / Админ};
-
-\node[sysbox, minimum width=4.5cm, minimum height=1.6cm] at (0,-2.15) {};
-\node[font=\footnotesize\itshape] at (1.9,-1.55) {Frontend};
-\node[box, fill=green!10] (fe) at (0,-2.15) {React / Vite Dashboard};
-
-\node[sysbox, minimum width=9.8cm, minimum height=4.0cm] at (0,-5.8) {};
-\node[font=\footnotesize\itshape] at (4.3,-4.0) {Backend};
-\node[box] (api) at (0,-5.2) {FastAPI Backend};
-\node[box] (scrap) at (-3.0,-6.9) {Selenium Scraper};
-\node[box] (db) at (1.5,-6.9) {SQLAlchemy / PostgreSQL};
-\node[box] (anal) at (1.5,-5.2) {};
-\node[font=\small, align=center] at (1.5,-5.2) {Analysis\\Module};
-
-\node[sysbox, minimum width=3.2cm, minimum height=1.6cm] at (0,-8.8) {};
-\node[font=\footnotesize\itshape] at (1.4,-8.2) {AI};
-\node[box, fill=purple!10] (gem) at (0,-8.8) {Gemini API};
-
-\draw[arr] (user) -- (fe);
-\draw[arr] (fe.south) -- ++(0,-0.25) -| (api.north);
-\draw[arr] (fe.south) -- ++(0,-0.25) -| (anal.north);
-\draw[arr] (api) -- (scrap);
-\draw[arr] (api) -- (db);
-\draw[arr] (db.south) -- (gem.north);
-\draw[arr] (gem.north) -- ++(0,0.5) -| (fe.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{Figures/system_architecture.png}
 \caption{Системийн бодит архитектурын диаграм}
 \label{fig:architecture-diagram}
 \end{figure}
+\clearpage
 
 \subsection{Өгөгдлийн урсгал}
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-  box/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=3pt,
-    minimum width=2.2cm, minimum height=1.0cm, text centered, font=\small, align=center},
-  arr/.style={->, >=Stealth, thick, black!60},
-  node distance=0.7cm
-]
-\node[box] (pages) at (0,0) {pages.txt\\Targets};
-\node[box] (sel) at (3,0) {Selenium\\Scraping};
-\node[box] (sql) at (6,0) {SQLAlchemy\\Storage};
-\node[box] (api) at (9,1.0) {FastAPI\\JSON};
-\node[box] (tb) at (9,-1.0) {TextBlob/LDA\\Engagement};
-\node[box] (dash) at (12,0) {React\\Dashboard};
-\node[box] (gem) at (15,0) {Gemini\\Report};
-
-\draw[arr] (pages) -- (sel);
-\draw[arr] (sel) -- (sql);
-\draw[arr] (sql.east) -- ++(0.4,0) |- (api.west);
-\draw[arr] (sql.east) -- ++(0.4,0) |- (tb.west);
-\draw[arr] (api.east) -- ++(0.4,0) |- (dash.west);
-\draw[arr] (tb.east) -- ++(0.4,0) |- (dash.west);
-\draw[arr] (dash) -- (gem);
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\includegraphics[width=0.92\textwidth]{Figures/dataflow_mermaid.png}
+\end{adjustbox}
 \caption{Өгөгдлийн урсгалын бодит дараалал}
 \label{fig:dataflow-diagram}
 \end{figure}
@@ -705,30 +632,31 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 
 \subsection{Scraper workflow}
 \begin{enumerate}
-    \item Facebook группын URL жагсаалт (жишээлбэл: \texttt{facebook.com/groups/369785350059670}) унших.
-    \item Selenium WebDriver ашиглан browser session эхлүүлэх, Facebook-д нууцлалтайгаар нэвтэрч session cookies үүсгэх.
-    \item Group-ийн хуудас руу шилжиж, динамик ачаалагдах (infinite scrolling) DOM бүтцийг 10-15 удаа гүйлгэж бүрэн ачаалах.
-    \item BeautifulSoup болон нарийвчилсан CSS selector-уудыг ашиглан post-ын нийтлэл, зураг, сэтгэгдэл (comment), реакц (like, share) мэдээллийг ялгаж авах.
-    \item SQLAlchemy ашиглан \texttt{DatabaseManager.save\_post()} дуудаж, шинэ нийтлэлүүдийг хадгалахын зэрэгцээ хуучин нийтлэлүүдийн engagement өөрчлөлтийг шинэчлэх (upsert).
-    \item Олон бүлгээс их хэмжээний өгөгдөл татахад block-луулахаас сэргийлж random sleep intervals болон error handling логик ажиллуулах.
+    \item \texttt{pages.txt}-ээс Facebook page URL/ID жагсаалт унших
+    \item Selenium browser session эхлүүлэх, шаардлагатай directory/log үүсгэх
+    \item Page бүр рүү navigate хийж, scroll болон selector-based extraction хийх
+    \item BeautifulSoup болон Selenium selector ашиглан post, image, comment data ялгах
+    \item SQLAlchemy \texttt{DatabaseManager.save\_post()} ашиглан duplicate шалгаж хадгалах
+    \item Log файлыг \texttt{/api/v1/scraper/logs} endpoint-оор frontend-д харуулах
 \end{enumerate}
 
 \subsection{Analysis workflow}
 \begin{enumerate}
-    \item Текст цэвэрлэгээ: Монгол хэлний кирилл үсэгт тааруулан тусгай тэмдэгт, URL, илүү зай цэвэрлэх.
-    \item Sentiment: Монгол хэлний сэтгэгдэл, нийтлэлийн өгөгдөл (Facebook groups-ээс цуглуулсан) дээр тусгайлан сургаж сайжруулсан (fine-tuned) Transformer загвар ашиглан эерэг, сөрөг, саармаг ангилал болон confidence score гаргах. Загварын сургалтын үед learning rate=2e-5, epochs=3, batch\_size=16 тохиргоог ашиглан 89\%-ийн нарийвчлал (accuracy) гаргаж авсан.
-    \item Topic: Scikit-learn LDA ашиглан голлох сэдвүүдийн (topics) түлхүүр үгсийг гаргах.
-    \item Engagement: likes + shares $\times$ 2 + comments $\times$ 1.5 томьёогоор контентын нөлөөллийг тооцоолох.
-    \item Боловсруулсан анализын үр дүнг \texttt{analysis\_results} хүснэгтэд JSON байдлаар урт хугацаанд хадгалах.
+    \item Text preprocessing: URL, mention, hashtag, punctuation, whitespace цэвэрлэх
+    \item Sentiment: TextBlob боломжтой үед polarity/subjectivity; боломжгүй үед keyword fallback
+    \item Topic: CountVectorizer + LatentDirichletAllocation ашиглан keyword-based сэдэв гаргах
+    \item Engagement: likes + shares $\times$ 2 + comments $\times$ 1.5 оноо тооцоолох
+    \item Data хангалттай үед GradientBoostingRegressor эсвэл CatBoost optional model ашиглан score таамаглах
+    \item Үр дүнг \texttt{analysis\_results} хүснэгтэд JSON string хэлбэрээр хадгалах
 \end{enumerate}
 
 \subsection{Frontend workflow}
 \begin{enumerate}
-    \item FastAPI \texttt{/api/v1/posts}, \texttt{/api/v1/stats} endpoint-уудаас бодит мэдээллийн сангаас дата татах.
-    \item Landing page, Login page, болон Sentiment Analysis-д төвлөрсөн Dashboard гэсэн 3 үндсэн төлөвтэйгөөр ажиллах.
-    \item Dashboard дээр Recharts ашиглан sentiment trend, engagement volume зэргийг динамикаар зурах.
-    \item Шинжээч хэрэглэгчдэд зориулсан keyword, sentiment score шүүлтүүрээр өгөгдлийг шүүх.
-    \item Gemini AI товчийг дарж хамгийн сүүлийн бодит өгөгдлөөс хураангуй тайлан болон аналитик дүгнэлтүүдийг гаргах.
+    \item \texttt{/health}, \texttt{/api/v1/stats}, \texttt{/api/v1/posts} endpoint-уудаас snapshot авах
+    \item Backend амжилтгүй үед mock data fallback харуулах
+    \item Recharts ашиглан engagement trend, recent volume, latest signals харуулах
+    \item Admin query дээр platform, keyword, date range ашиглан loaded posts filter хийх
+    \item Gemini report товч дээр latest posts summary-г prompt болгон дамжуулах
 \end{enumerate}
 
 \section{UML болон Бизнес процессын диаграмууд}
@@ -738,221 +666,52 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-  proc/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=2pt,
-    minimum width=2.8cm, minimum height=0.7cm, text centered, font=\small},
-  dec/.style={diamond, draw=black!70, fill=blue!15, aspect=2,
-    minimum width=2.5cm, minimum height=0.8cm, text centered, font=\small, align=center},
-  term/.style={ellipse, draw=black!70, fill=gray!20,
-    minimum width=1.5cm, minimum height=0.6cm, text centered, font=\small},
-  arr/.style={->, >=Stealth, thick, black!60}
-]
-\node[term] (start) at (0,0) {Эхлэл};
-\node[proc] (enter) at (0,-1.5) {Target URL оруулах};
-\node[proc] (run) at (0,-3.0) {Scraper процесс эхлэх};
-\node[dec] (ok) at (0,-4.8) {Амжилт\-тай?};
-\node[proc] (save) at (3.8,-4.8) {DB-д хадгалах};
-\node[proc] (ai) at (6.8,-4.8) {AI/ML шинжилгээ};
-\node[proc] (show) at (9.8,-4.8) {UI харуулах};
-\node[proc] (report) at (12.8,-4.8) {Тайлан үүсгэх};
-\node[proc] (log) at (0,-7.0) {Алдааны лог};
-\node[term] (end) at (12.8,-7.0) {Дуусгавар};
-
-\draw[arr] (start) -- (enter);
-\draw[arr] (enter) -- (run);
-\draw[arr] (run) -- (ok);
-\draw[arr] (ok) -- node[above, font=\footnotesize]{Тийм} (save);
-\draw[arr] (save) -- (ai);
-\draw[arr] (ai) -- (show);
-\draw[arr] (show) -- (report);
-\draw[arr] (ok) -- node[left, font=\footnotesize]{Үгүй} (log);
-\draw[arr] (report) -- (end);
-\draw[arr] (log.east) -- ++(1.0,0) |- (end.west);
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\includegraphics[width=0.92\textwidth]{Figures/bpmn_mermaid.png}
+\end{adjustbox}
 \caption{Өгөгдөл цуглуулах системийн BPMN процесс}
 \end{figure}
 
 \subsection{Use Case диаграм}
 Системийн гол хэрэглэгчийн үйлдэл болон үүргийг frontend, backend, өгөгдөл цуглуулалт, шинжилгээний боломжуудтай холбон тодорхойлно.
 
-\begin{figure}[H]
+\begin{figure}[p]
 \centering
-\begin{tikzpicture}[
-  actor/.style={rectangle, draw=black!60, fill=gray!10, drop shadow,
-    minimum width=2.0cm, minimum height=0.7cm, text centered, font=\small},
-  usecase/.style={ellipse, draw=black!60, fill=blue!15, drop shadow,
-    minimum width=4.2cm, minimum height=0.9cm, text centered, font=\small, align=center},
-  sysrect/.style={rectangle, draw=black!40, fill=gray!5,
-    minimum width=8.5cm, minimum height=11.5cm, rounded corners=5pt},
-  arr/.style={->, >=Stealth, thick, black!60}
-]
-%% System boundary
-\node[sysrect, anchor=north west] at (1.5,0.4) {};
-\node[font=\footnotesize\itshape] at (5.7,0.25) {Сошиал медиа шинжилгээний систем};
-
-%% Use cases (inside system)
-\node[usecase] (uc1) at (5.7,-1.2) {Хяналтын самбар харах};
-\node[usecase] (uc2) at (5.7,-2.7) {Зорилтот хуудас удирдах};
-\node[usecase] (uc3) at (5.7,-4.2) {Пост, статистик хайх};
-\node[usecase] (uc4) at (5.7,-5.7) {Өгөгдөл цуглуулах};
-\node[usecase] (uc5) at (5.7,-7.2) {AI тайлан үүсгэх};
-\node[usecase] (uc6) at (5.7,-8.7) {Хандлага, сэдэв шинжлэх};
-\node[usecase] (uc7) at (5.7,-10.2) {Лог, системийн төлөв хянах};
-\node[usecase] (uc8) at (5.7,-11.7) {Хүснэгт рүү экспорт хийх};
-
-%% Actors (outside)
-\node[actor] (analyst) at (-0.8,-2.0) {Шинжээч};
-\node[actor] (admin) at (-0.8,-6.5) {Админ};
-\node[actor] (ext) at (-0.8,-11.7) {Гадаад үйлчилгээ};
-
-%% Connections
-\draw[arr] (analyst.east) -- (uc1.west);
-\draw[arr] (analyst.east) -- (uc3.west);
-\draw[arr] (analyst.east) -- (uc5.west);
-\draw[arr] (admin.east) -- (uc2.west);
-\draw[arr] (admin.east) -- (uc4.west);
-\draw[arr] (admin.east) -- (uc6.west);
-\draw[arr] (admin.east) -- (uc7.west);
-\draw[arr] (ext.east) -- (uc8.west);
-\end{tikzpicture}
+\includegraphics[height=0.74\textheight]{Figures/usecase_ch3_mermaid.png}
 \caption{Системийн Use Case диаграм}
 \end{figure}
+\clearpage
 
 \subsection{Sequence диаграм}
 AI тайлан үүсгэх үеийн дарааллыг харуулна.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[
-  lifeline/.style={draw=black!50, thick, dashed},
-  actbox/.style={rectangle, draw=black!60, fill=blue!10, drop shadow,
-    minimum width=2.2cm, minimum height=0.65cm, text centered, font=\small},
-  msg/.style={->, >=Stealth, thick, black!80},
-  ret/.style={->, >=Stealth, dashed, thick, black!60}
-]
-%% Lifeline headers
-\node[actbox] (u)  at (0,0)   {Хэрэглэгч};
-\node[actbox] (fe) at (3.2,0) {Frontend};
-\node[actbox] (ap) at (6.4,0) {FastAPI};
-\node[actbox] (db) at (9.6,0) {Өгөгдлийн сан};
-\node[actbox] (g)  at (12.8,0){Gemini API};
-
-%% Lifelines
-\foreach \x in {0,3.2,6.4,9.6,12.8}
-  \draw[lifeline] (\x,-0.35) -- (\x,-7.5);
-
-%% Messages
-\draw[msg] (0,-1.0) -- node[above,font=\footnotesize]{Тайлан хүсэх} (3.2,-1.0);
-\draw[msg] (3.2,-1.9) -- node[above,font=\footnotesize]{Тайлангийн хүсэлт} (6.4,-1.9);
-\draw[msg] (6.4,-2.8) -- node[above,font=\footnotesize]{Өгөгдөл унших} (9.6,-2.8);
-\draw[ret] (9.6,-3.5) -- node[above,font=\footnotesize]{Өгөгдөл буцаах} (6.4,-3.5);
-\draw[msg] (6.4,-4.4) -- node[above,font=\footnotesize]{Товч өгөгдөл илгээх} (12.8,-4.4);
-\draw[ret] (12.8,-5.3) -- node[above,font=\footnotesize]{Тайлан буцаах} (6.4,-5.3);
-\draw[ret] (6.4,-6.1) -- node[above,font=\footnotesize]{Үр дүн буцаах} (3.2,-6.1);
-\draw[ret] (3.2,-6.9) -- node[above,font=\footnotesize]{Дэлгэцэнд харуулах} (0,-6.9);
-
-%% Bottom labels
-\node[actbox] at (0,-7.8)   {Хэрэглэгч};
-\node[actbox] at (3.2,-7.8) {Frontend};
-\node[actbox] at (6.4,-7.8) {FastAPI};
-\node[actbox] at (9.6,-7.8) {Өгөгдлийн сан};
-\node[actbox] at (12.8,-7.8){Gemini API};
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.98\textwidth,center}
+\includegraphics[width=0.92\textwidth]{Figures/sequence_mermaid.png}
+\end{adjustbox}
 \caption{AI тайлан үүсгэх Sequence диаграм}
 \end{figure}
 
 \subsection{Activity диаграм}
 Dashboard ашиглах, өгөгдөл цуглуулах, шинжилгээ хийх, тайлан үүсгэх хүртэлх системийн үндсэн үйл ажиллагааны дараалал.
 
-\begin{figure}[H]
+\begin{figure}[p]
 \centering
-\begin{tikzpicture}[
-  act/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
-    minimum width=3.8cm, minimum height=0.7cm, text centered, font=\small, align=center},
-  dec/.style={diamond, draw=black!60, fill=yellow!15, aspect=2.2, drop shadow,
-    minimum width=3.0cm, text centered, font=\small, align=center},
-  start/.style={circle, fill=green!70!black, drop shadow, minimum size=0.4cm},
-  stop/.style={circle, draw=black, fill=white, drop shadow, minimum size=0.4cm,
-    path picture={\draw[fill=red!70!black] circle (0.12cm);}},
-  arr/.style={->, >=Stealth, thick, black!70},
-  lbl/.style={font=\footnotesize, fill=white, inner sep=1pt}
-]
-\node[start] (s) at (0,0) {};
-\node[act] (login) at (0,-1.2) {Системд нэвтрэх, самбар нээх};
-\node[dec] (apic) at (0,-2.7) {API холбоосон?};
-\node[act] (live) at (-3.2,-4.2) {Бодит өгөгдөл татах};
-\node[act] (demo) at (3.2,-4.2) {Жишээ өгөгдөл харуулах};
-\node[act] (view) at (0,-5.7) {Самбар, график, пост харах};
-\node[dec] (newd) at (0,-7.2) {Шинэ дата хэрэгтэй?};
-\node[act] (tgt) at (-3.5,-8.7) {Зорилтот жагсаалт унших};
-\node[act] (coll) at (-3.5,-10.2) {Цуглуулах процесс эхлүүлэх};
-\node[act] (store) at (0,-11.7) {Пост, зураг, сэтгэгдэл хадгалах};
-\node[act] (anal) at (0,-13.2) {Хандлага, сэдэв шинжлэх};
-\node[dec] (rep) at (0,-14.7) {Тайлан / экспорт?};
-\node[act] (air) at (-3.2,-16.2) {AI тайлан үүсгэх};
-\node[act] (exp) at (3.2,-16.2) {Хүснэгт рүү экспорт};
-\node[act] (log) at (0,-17.7) {Лог, системийн төлөв хянах};
-\node[stop] (e) at (0,-19.0) {};
-
-\draw[arr] (s) -- (login);
-\draw[arr] (login) -- (apic);
-\draw[arr] (apic) -- node[lbl,above left]{Тийм} (live);
-\draw[arr] (apic) -- node[lbl,above right]{Үгүй} (demo);
-\draw[arr] (live.south) -- ++(0,-0.3) -| (view.north);
-\draw[arr] (demo.south) -- ++(0,-0.3) -| (view.north);
-\draw[arr] (view) -- (newd);
-\draw[arr] (newd) -- node[lbl,above]{Тийм} (tgt);
-\draw[arr] (tgt) -- (coll);
-\draw[arr] (coll.south) -- ++(0,-0.4) -| (store.north);
-\draw[arr] (newd) -- node[lbl,right]{Үгүй} ++(3.5,0) |- (store.east);
-\draw[arr] (store) -- (anal);
-\draw[arr] (anal) -- (rep);
-\draw[arr] (rep) -- node[lbl,above left]{Тайлан} (air);
-\draw[arr] (rep) -- node[lbl,above right]{Экспорт} (exp);
-\draw[arr] (air.south) -- ++(0,-0.3) -| (log.north);
-\draw[arr] (exp.south) -- ++(0,-0.3) -| (log.north);
-\draw[arr] (log) -- (e);
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.96\textwidth,max totalheight=0.82\textheight,center}
+\includegraphics[width=0.92\textwidth]{Figures/activity_mermaid.png}
+\end{adjustbox}
 \caption{Системийн үндсэн Activity диаграм}
 \end{figure}
 
 \subsection{State диаграм}
 Нийт систем хэрэглэгчийн интерфэйс, backend холболт, өгөгдөл цуглуулалт, шинжилгээ, тайлангийн үе шатуудаар дараах төлөвүүдэд шилжинэ.
 
-\begin{figure}[H]
+\begin{figure}[p]
 \centering
-\begin{tikzpicture}[
-  state/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=4pt, drop shadow,
-    minimum width=3.5cm, minimum height=0.75cm, text centered, font=\small},
-  start/.style={circle, fill=green!70!black, drop shadow, minimum size=0.4cm},
-  stop/.style={circle, draw=black, fill=white, drop shadow, minimum size=0.45cm,
-    path picture={\draw[fill=red!70!black] circle (0.14cm);}},
-  arr/.style={->, >=Stealth, thick, black!70},
-  lbl/.style={font=\footnotesize, fill=white, inner sep=1pt}
-]
-\node[start] (s) at (0,0) {};
-\node[state] (ready) at (0,-1.3) {Бэлэн};
-\node[state] (loading) at (0,-2.8) {API өгөгдөл ачаалж байна};
-\node[state] (visual) at (-3.0,-4.4) {Үзүүлэлт харуулж байна};
-\node[state] (degraded) at (3.0,-4.4) {Жишээ өгөгдлийн горим};
-\node[state] (collecting) at (-3.0,-6.0) {Өгөгдөл цуглуулж байна};
-\node[state] (processing) at (-3.0,-7.6) {Шинжилгээ хийж байна};
-\node[state] (reporting) at (-3.0,-9.2) {Тайлан / экспорт бэлтгэж байна};
-\node[state, fill=red!10] (error) at (3.0,-7.6) {Алдаа засварлах горим};
-\node[stop] (e) at (0,-10.8) {};
-
-\draw[arr] (s) -- (ready);
-\draw[arr] (ready) -- (loading);
-\draw[arr] (loading) -- node[lbl,above left]{Амжилттай} (visual);
-\draw[arr] (loading) -- node[lbl,above right]{Алдаа} (degraded);
-\draw[arr] (visual) -- (collecting);
-\draw[arr] (collecting) -- (processing);
-\draw[arr] (processing) -- (reporting);
-\draw[arr] (processing) -- node[lbl,above]{Алдаа} (error);
-\draw[arr] (error) -- node[lbl,right]{Дахин оролдох} (loading);
-\draw[arr] (degraded.south) -- ++(0,-0.5) -| (loading.east);
-\draw[arr] (reporting.south) -- ++(0,-0.5) -| (e.north);
-\end{tikzpicture}
+\begin{adjustbox}{max width=0.96\textwidth,max totalheight=0.78\textheight,center}
+\includegraphics[width=0.92\textwidth]{Figures/state_mermaid.png}
+\end{adjustbox}
 \caption{Системийн State диаграм}
 \end{figure}
 

@@ -1,0 +1,8 @@
+flowchart LR
+  pages["pages.txt\nTargets"] --> scraper["Selenium\nScraping"]
+  scraper --> db["SQLAlchemy\nStorage"]
+  db --> api["FastAPI\nJSON"]
+  api --> frontend["React\nDashboard"]
+  db --> analysis["TextBlob/LDA\nEngagement"]
+  frontend --> gemini["Gemini\nReport"]
+  analysis --> frontend

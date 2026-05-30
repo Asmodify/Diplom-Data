@@ -1,0 +1,10 @@
+flowchart TD
+  Start([Start]) --> Login["Login / Open dashboard"]
+  Login --> CheckAPI{"API connected?"}
+  CheckAPI -- Yes --> Live["Load live data"]
+  CheckAPI -- No --> Fallback["Show demo data"]
+  Live --> View["View dashboard"]
+  View --> NeedNew{"Need new data?"}
+  NeedNew -- Yes --> Targets["Edit target list"] --> Scraper["Start scraper"] --> Store["Store posts/images/comments"]
+  Store --> Analysis["Run analysis"] --> Report["Report / Export"]
+  NeedNew -- No --> Report

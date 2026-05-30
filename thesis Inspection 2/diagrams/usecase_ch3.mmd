@@ -1,0 +1,33 @@
+graph LR
+  %% Reworked use-case diagram: clearer actors and expanded use cases
+  Analyst["Аналист"]
+  Admin["Админ"]
+  Researcher["Судлаач"]
+
+  subgraph UseCases [Use Cases]
+    UD((Хяналтын самбар үзэх))
+    UR((AI тайлан үүсгэх))
+    UE((Тайлан экспорт: Google Sheets))
+    UM((Scraper зорилтуудыг удирдах))
+    US((Scraper ажиллуулах / Хуваарьлах))
+    UL((Скрапер лог шалгах))
+    UC((Системийн тохиргоо))
+    UU((Хэрэглэгч, эрх удирдах))
+  end
+
+  Analyst --> UD
+  Analyst --> UR
+  Analyst --> UE
+  Analyst --> UM
+
+  Researcher --> UD
+  Researcher --> UR
+
+  Admin --> UM
+  Admin --> US
+  Admin --> UL
+  Admin --> UC
+  Admin --> UU
+
+  %% groupings for layout guidance
+  UseCases ---|includes| UR

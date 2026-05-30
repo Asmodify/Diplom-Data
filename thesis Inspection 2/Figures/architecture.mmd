@@ -1,0 +1,40 @@
+%%{init: {"theme": "default", "themeVariables": { "fontSize": "32px", "fontFamily": "sans-serif"}}}%%
+flowchart LR
+  %% Users and Clients
+  U[Хэрэглэгч /<br>Шинжээч] -->|UI ашиглах| BROWSER[Хөтөч]
+
+  %% Frontend
+  BROWSER -->|HTTP / WS| FE[React + Vite<br>Фронтенд]
+  FE -->|REST / GraphQL| API[API Сервер<br>Node/TypeScript]
+  FE -->|Хуулах/Татах| STORAGE[Статик<br>Файлууд]
+
+  %% API integrations
+  API -->|Синхр/Асинхр| AI_VERCEL[Сервергүй<br>AI SDK]
+  API -->|Хүсэлтүүд| GOOGLE_GEMINI[Google<br>Gemini LLM]
+  API -->|Дараалалд нэмэх| TASK_QUEUE[Арын<br>Дараалал]
+
+  %% Backend workers / Batch
+  TASK_QUEUE -->|Даалгавар| PY_BATCH[Python<br>Багц боловсруулагч]
+  PY_BATCH -->|Унших/Бичих| PG[(Postgres<br>Бааз)]
+  PY_BATCH -->|Унших/Бичих| FIREBASE[(Firebase<br>Бааз)]
+  API -->|Унших/Бичих| PG
+  API -->|Унших/Бичих| FIREBASE
+
+  %% Integrations & Data Sources
+  SCRAPER[Мэдээлэл<br>цуглуулагч] -->|Өгөгдөл хийх| PG
+  SCRAPER -->|Өгөгдөл хийх| FIREBASE
+  API -->|Холбогдох| SHEETS[Google<br>Sheets]
+  PY_BATCH -->|Экспортлох| EXPORTS[Үүлэн<br>Сан]
+
+  %% Observability & CI/CD
+  API -->|Лог бүртгэл| LOGS[Системийн<br>Лог]
+  FE -->|Build/Deploy| VERCEL[CI/CD<br>Vercel]
+  repo[GitHub сан] -->|Push| VERCEL
+
+  %% Security & Auth
+  FE -->|Токен| AUTH[Auth /<br>OAuth]
+  API -->|Шалгах| AUTH
+
+  %% Notes (annotations)
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1px;
+  class PG,FIREBASE,STORAGE,LOGS,TASK_QUEUE infra;

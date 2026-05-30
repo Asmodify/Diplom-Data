@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>
+    <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
+    <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
+    <p:sp>
+  <p:nvSpPr><p:cNvPr id="20" name="Hero"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="12192000" cy="6858000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="21" name="Panel"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="760000" y="900000"/><a:ext cx="10350000" cy="4650000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="F8FAFC"/></a:solidFill><a:ln><a:solidFill><a:srgbClr val="F8FAFC"/></a:solidFill></a:ln></p:spPr>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="22" name="University"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="1030000" y="1180000"/><a:ext cx="9700000" cy="300000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1300"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1300"><a:b/><a:solidFill><a:srgbClr val="0F766E"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>ШУТИС • Мэдээллийн систем</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="23" name="Main Title"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="1020000" y="1640000"/><a:ext cx="9400000" cy="1180000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="3000"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="3000"><a:b/><a:solidFill><a:srgbClr val="0F172A"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Нийгмийн сүлжээний өгөгдлийн автомат цуглуулга ба таамаглалт шинжилгээний систем</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="24" name="Subtitle"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="1030000" y="3100000"/><a:ext cx="9200000" cy="620000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1650"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1650"><a:solidFill><a:srgbClr val="334155"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Facebook group/page өгөгдөл цуглуулалт, Sentiment Analysis, Engagement Prediction, AI Report</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp><p:sp>
+  <p:nvSpPr><p:cNvPr id="25" name="Meta"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr>
+  <p:spPr><a:xfrm><a:off x="1030000" y="4450000"/><a:ext cx="4200000" cy="650000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>
+  <p:txBody><a:bodyPr wrap="square" anchor="t"/><a:lstStyle/><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1350"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1350"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Оюутан: Ө. Хүслэн</a:t></a:r></a:p><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1350"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1350"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Удирдагч багш: Б. Мөнхбуян</a:t></a:r></a:p><a:p><a:pPr algn="l"><a:endParaRPr lang="mn-MN" sz="1350"/></a:pPr><a:r><a:rPr lang="mn-MN" sz="1350"><a:solidFill><a:srgbClr val="475569"/></a:solidFill><a:latin typeface="Aptos"/><a:cs typeface="Aptos"/></a:rPr><a:t>Улаанбаатар • 2026</a:t></a:r></a:p>
+  </p:txBody>
+</p:sp>
+  </p:spTree></p:cSld>
+  <p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
+</p:sld>

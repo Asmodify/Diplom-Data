@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant User as Хэрэглэгч
+    participant FE as Frontend
+    participant API as FastAPI
+    participant Scraper as Scraper
+    participant DB as Database
+
+    User->>FE: Start Scraper
+    FE->>API: POST /scraper/run
+    API->>Scraper: Spawn background process
+    Scraper->>DB: Insert data
+    DB-->>Scraper: Success
+    Scraper-->>API: Log write
+    API-->>FE: 200 OK

@@ -1,0 +1,26 @@
+flowchart LR
+    analyst["Аналист /<br/>Хэрэглэгч"]
+    admin["Админ"]
+    external["Гадаад<br/>үйлчилгээ"]
+
+    subgraph system["Сошиал медиа шинжилгээний систем"]
+        direction TB
+        dashboard(["Хяналтын самбар<br/>харах"])
+        targets(["Зорилтот хуудас<br/>удирдах"])
+        query(["Пост, статистик<br/>хайх"])
+        scrape(["Өгөгдөл<br/>цуглуулах"])
+        ai(["AI тайлан<br/>үүсгэх"])
+        analyze(["Хандлага, сэдэв,<br/>чиг хандлага шинжлэх"])
+        logs(["Лог, системийн<br/>төлөв хянах"])
+        export(["Хүснэгт рүү<br/>экспорт хийх"])
+
+    end
+
+    analyst --- dashboard
+    admin --- targets
+    external --- export
+
+    classDef actor fill:#f5f5f5,stroke:#555,color:#111;
+    classDef usecase fill:#f1f0ff,stroke:#6f63c7,color:#111;
+    class analyst,admin,external actor;
+    class dashboard,query,ai,logs,targets,scrape,analyze,export usecase;

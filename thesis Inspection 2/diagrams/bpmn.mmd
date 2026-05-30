@@ -1,0 +1,10 @@
+flowchart LR
+  Start([Start]) --> Input["Enter target URL(s)"]
+  Input --> ScraperStart["Start scraper process"]
+  ScraperStart --> Success{"Success?"}
+  Success -- Yes --> SaveDB["Save to DB"]
+  SaveDB --> ML["AI / ML analysis"]
+  ML --> UI["Show on UI"]
+  UI --> Report["Generate report"]
+  Success -- No --> Error["Log error"]
+  Error --> ScraperStart

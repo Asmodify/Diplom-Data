@@ -1,0 +1,31 @@
+erDiagram
+    FACEBOOKPOST {
+        string id PK
+        string post_id
+        string page_name
+        string content
+        int likes
+        int shares
+        int comment_count
+    }
+    POSTCOMMENT {
+        string id PK
+        string post_id FK
+        string author_name
+        string content
+    }
+    POSTIMAGE {
+        string id PK
+        string post_id FK
+        string image_url
+    }
+    ANALYSISRESULT {
+        string id PK
+        string post_id FK
+        string analysis_type
+        string result_json
+    }
+
+    FACEBOOKPOST ||--o{ POSTCOMMENT : "1:N"
+    FACEBOOKPOST ||--o{ POSTIMAGE : "1:N"
+    FACEBOOKPOST ||--o{ ANALYSISRESULT : "1:N"
