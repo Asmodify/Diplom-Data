@@ -140,6 +140,7 @@ export function AdminControl() {
           <TabsTrigger value="limits">Хязгаарууд</TabsTrigger>
           <TabsTrigger value="collect">Хайлт</TabsTrigger>
           <TabsTrigger value="ops">Журмууд</TabsTrigger>
+          <TabsTrigger value="settings">Тохиргоо</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
@@ -245,6 +246,29 @@ export function AdminControl() {
               </div>
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {backendStatus}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="settings">
+          <Card>
+            <CardHeader className="border-b border-slate-200 pb-4">
+              <CardTitle>Системийн Тохиргоо</CardTitle>
+              <CardDescription>Орчны хувьсагчид болон холболтын төгсгөлийн цэгүүд.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="divide-y divide-slate-200 rounded-lg border border-slate-200">
+                {[
+                  ['Backend API', import.meta.env.VITE_BACKEND_API_URL || 'https://diplom-data-api.onrender.com'],
+                  ['Дотоод API', import.meta.env.VITE_API_URL || 'http://localhost:8000'],
+                  ['Баталгаажуулах горим', import.meta.env.VITE_API_TOKEN ? 'Токен тохируулагдсан' : 'Хөгжүүлэлтийн токен'],
+                  ['Байршуулалт', 'Vite frontend, Render/FastAPI backend'],
+                ].map(([label, value]) => (
+                  <div key={label} className="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:items-center">
+                    <p className="text-sm font-medium text-slate-600">{label}</p>
+                    <p className="break-all text-sm font-semibold text-slate-950">{value}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

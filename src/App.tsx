@@ -3,33 +3,25 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Activity,
   BarChart3,
-  BookOpen,
   Bot,
   Database,
   Heart,
-  Hash,
   LayoutDashboard,
   Menu,
-  Search,
   ServerCog,
-  Settings,
   ShieldCheck,
   X,
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { Dashboard } from './components/Dashboard';
 import { DataSources } from './components/DataSources';
-import { PredictiveAnalysis } from './components/PredictiveAnalysis';
 import { AdminControl } from './components/AdminControl';
 import { Badge } from './components/ui/badge';
-import { Overview } from './components/Overview';
-import { SentimentAnalysis } from './components/SentimentAnalysis';
-import { KeywordAnalysis } from './components/KeywordAnalysis';
-import { KeywordSearch } from './components/KeywordSearch';
+import { AIInsights } from './components/AIInsights';
 import { Landing } from './components/Landing';
 import { Login } from './components/Login';
 
-type TabId = 'dashboard' | 'sentiment' | 'keywords' | 'search' | 'sources' | 'analysis' | 'admin' | 'overview' | 'settings';
+type TabId = 'dashboard' | 'analysis' | 'sources' | 'admin';
 
 const tabs: Array<{
   id: TabId;
@@ -44,22 +36,10 @@ const tabs: Array<{
     icon: LayoutDashboard,
   },
   {
-    id: 'sentiment',
-    label: 'Хандлагын шинжилгээ',
-    description: 'AI ашиглан постуудын хандлагыг тодорхойлж, хүмүүсийн сэтгэл хөдлөлийг хэмжих.',
-    icon: Heart,
-  },
-  {
-    id: 'keywords',
-    label: 'Түлхүүр үгийн шинжилгээ',
-    description: 'Тренд болж буй сэдэв болон түлхүүр үгсийг нээн илрүүлэх.',
-    icon: Hash,
-  },
-  {
-    id: 'search',
-    label: 'Хайлт',
-    description: 'Цуглуулсан өгөгдөл дотроос шүүлтүүр ашиглан нарийвчилсан хайлт хийх.',
-    icon: Search,
+    id: 'analysis',
+    label: 'AI Шинжилгээ',
+    description: 'AI ашиглан постуудын хандлагыг тодорхойлох ба урьдчилан таамагласан хураангуй үүсгэх.',
+    icon: BarChart3,
   },
   {
     id: 'sources',
@@ -68,34 +48,16 @@ const tabs: Array<{
     icon: Database,
   },
   {
-    id: 'analysis',
-    label: 'AI Шинжилгээ',
-    description: 'Хамгийн сүүлд цуглуулсан постуудаас урьдчилан таамагласан хураангуй үүсгэх.',
-    icon: BarChart3,
-  },
-  {
     id: 'admin',
-    label: 'Админ',
-    description: 'Арын системийн эрүүл мэндийг шалгах, цуглуулсан өгөгдлийг шүүх болон хязгаарыг тохируулах.',
+    label: 'Удирдлага',
+    description: 'Арын системийн эрүүл мэндийг шалгах, тохиргоо хийх болон хязгаарыг тохируулах.',
     icon: ShieldCheck,
-  },
-  {
-    id: 'overview',
-    label: 'AI Тойм',
-    description: 'AI ойлголтуудын талаар суралцах: үүсгэгч загварууд, LLMs болон эмбеддингүүд.',
-    icon: BookOpen,
-  },
-  {
-    id: 'settings',
-    label: 'Тохиргоо',
-    description: 'Системийн тохиргоо болон байршуулах төгсгөлийн цэгүүдийг шалгах.',
-    icon: Settings,
   },
 ];
 
 export default function App() {
   const [appState, setAppState] = useState<'landing' | 'login' | 'dashboard'>('landing');
-  const [activeTab, setActiveTab] = useState<TabId>('sentiment');
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const activeTabMeta = useMemo(
@@ -179,7 +141,7 @@ export default function App() {
               <div className="grid gap-3 sm:grid-cols-3 xl:w-[560px]">
                 <StatusTile icon={Activity} label="Дамжлага" value="Цуглуулах -> Хадгалах -> Шинжлэх" />
                 <StatusTile icon={ServerCog} label="Ажиллах орчин" value="FastAPI + Supabase" />
-                <StatusTile icon={Bot} label="AI давхарга" value="Gemini тайлангууд" />
+                <StatusTile icon={Bot} label="AI давхарга" value="Gemini + BERT" />
               </div>
             </div>
           </header>
@@ -193,14 +155,9 @@ export default function App() {
               transition={{ duration: 0.2 }}
             >
               {activeTab === 'dashboard' && <Dashboard />}
-              {activeTab === 'sentiment' && <SentimentAnalysis />}
-              {activeTab === 'keywords' && <KeywordAnalysis />}
-              {activeTab === 'search' && <KeywordSearch />}
+              {activeTab === 'analysis' && <AIInsights />}
               {activeTab === 'sources' && <DataSources />}
-              {activeTab === 'analysis' && <PredictiveAnalysis />}
               {activeTab === 'admin' && <AdminControl />}
-              {activeTab === 'overview' && <Overview />}
-              {activeTab === 'settings' && <SettingsPanel />}
             </motion.section>
           </AnimatePresence>
         </main>
@@ -288,49 +245,6 @@ function StatusTile({
         {label}
       </div>
       <p className="mt-2 text-sm font-semibold text-slate-900">{value}</p>
-    </div>
-  );
-}
-
-function SettingsPanel() {
-  const items = [
-    ['Backend API', import.meta.env.VITE_BACKEND_API_URL || 'https://diplom-data-api.onrender.com'],
-    ['Дотоод API', import.meta.env.VITE_API_URL || 'http://localhost:8000'],
-    ['Баталгаажуулах горим', import.meta.env.VITE_API_TOKEN ? 'Токен тохируулагдсан' : 'Хөгжүүлэлтийн токен'],
-    ['Байршуулалт', 'Vite frontend, Render/FastAPI backend'],
-  ];
-
-  return (
-    <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">Тохиргоо</h2>
-        <p className="mt-1 text-sm leading-6 text-slate-600">
-          Эдгээр утгуудыг Vite орчноос уншиж, frontend API харилцагчид ашигладаг.
-        </p>
-        <div className="mt-5 divide-y divide-slate-200 rounded-lg border border-slate-200">
-          {items.map(([label, value]) => (
-            <div key={label} className="grid gap-1 p-4 sm:grid-cols-[11rem_1fr] sm:items-center">
-              <p className="text-sm font-medium text-slate-600">{label}</p>
-              <p className="break-all text-sm font-semibold text-slate-950">{value}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-950">Системийн Тэмдэглэл</h2>
-        <div className="mt-4 space-y-3">
-          {[
-            'Хянах самбар нь backend-ээс бодит постуудыг ашиглах ба холбогдох боломжгүй үед туршилтын өгөгдлийг ашигладаг.',
-            'Цуглуулах зорилтуудыг удирдах хэсэг нь дотоод FastAPI үйлчилгээг ажиллаж байхыг шаарддаг.',
-            'Сүлжээний ачааллыг тодорхой байлгахын тулд AI тайлангуудыг зөвхөн шаардлагатай үед үүсгэдэг.',
-          ].map((note) => (
-            <p key={note} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
-              {note}
-            </p>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

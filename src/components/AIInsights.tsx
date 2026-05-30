@@ -51,7 +51,9 @@ const EMOTION_EMOJIS: Record<string, string> = {
   neutral: '😐',
 };
 
-export function SentimentAnalysis() {
+import { GeminiDataAnalyzer } from './GeminiDataAnalyzer';
+
+export function AIInsights() {
   const [singleText, setSingleText] = useState('');
   const [singleResult, setSingleResult] = useState<SentimentResult | null>(null);
   const [isAnalyzingSingle, setIsAnalyzingSingle] = useState(false);
@@ -414,6 +416,7 @@ export function SentimentAnalysis() {
           </CardContent>
         </Card>
       </div>
+      <GeminiDataAnalyzer />
     </div>
   );
 }
