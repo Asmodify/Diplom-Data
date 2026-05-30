@@ -287,7 +287,7 @@ headsepline,
 \chapter*{Хураангуй}
 \addcontentsline{toc}{chapter}{Хураангуй}
 
-Энэхүү дипломын ажил нь зорилтот Facebook хуудсууд болон группуудээс (жишээ нь: https://www.facebook.com/groups/369785350059670, https://www.facebook.com/groups/995968413758817, https://www.facebook.com/spacehub.mn) олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, Монгол хэлний өгөгдөл дээр тусгайлан сургаж сайжруулсан (fine-tuned) Sentiment Analysis загвар болон Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
+Энэхүү дипломын ажил нь зорилтот Facebook хуудсууд болон группуудээс (жишээ нь: \url{https://www.facebook.com/groups/369785350059670}, \url{https://www.facebook.com/groups/995968413758817}, \url{https://www.facebook.com/spacehub.mn}) олон нийтэд харагдах нийтлэл, сэтгэгдэл, зураг, оролцооны үзүүлэлтийг автоматаар цуглуулж, хадгалж, хяналтын самбар болон AI тусламжтай тайлангаар ашиглах системийг боловсруулахад чиглэсэн. Бодит хэрэгжилт нь React/Vite frontend, FastAPI backend, Selenium ба BeautifulSoup-д суурилсан Facebook scraper, SQLAlchemy ORM бүхий PostgreSQL хадгалалт, Монгол хэлний өгөгдөл дээр тусгайлан сургаж сайжруулсан (fine-tuned) Sentiment Analysis загвар болон Google Gemini API-д суурилсан тайлан үүсгэх хэсгүүдээс бүрдэнэ.
 
 \textbf{Судалгааны үндсэн зорилгууд:}
 \begin{itemize}
@@ -355,7 +355,7 @@ URL & Uniform Resource Locator \\
 
 Олон нийтийн Facebook хуудас дээр үүсэж буй нийтлэл, сэтгэгдэл, реакцын хэмжээ нь хэрэглэгчдийн сонирхол, санал хандлага, контентийн үр нөлөөг ойлгоход хэрэгтэй өгөгдөл болдог. Гэвч уг өгөгдлийг гараар цуглуулах нь цаг их зарцуулдаг, давтагдах боломж муутай, олон хуудас дээр тогтмол хянахад хүндрэлтэй. Иймээс scraper, backend API, өгөгдлийн сан, dashboard, AI тайланг нэгтгэсэн систем шаардлагатай.
 
-Энэ төслийн бодит хэрэгжилт нь зорилтот Facebook групп, хуудсуудаас (https://www.facebook.com/groups/369785350059670, https://www.facebook.com/groups/995968413758817, https://www.facebook.com/spacehub.mn зэрэг) цуглуулсан бодит өгөгдөл дээр төвлөрсөн. Frontend нь цуглуулсан бодит өгөгдлийг харуулж, scraper target list-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, тусгайлан сургасан загвар бүхий sentiment, topic, trend, export болон scraper control функцийг өгдөг.
+Энэ төслийн бодит хэрэгжилт нь зорилтот Facebook групп, хуудсуудаас (\url{https://www.facebook.com/groups/369785350059670}, \url{https://www.facebook.com/groups/995968413758817}, \url{https://www.facebook.com/spacehub.mn} зэрэг) цуглуулсан бодит өгөгдөл дээр төвлөрсөн. Frontend нь цуглуулсан бодит өгөгдлийг харуулж, scraper target list-ийг удирдаж, scraper process эхлүүлэх, log харах, backend health шалгах, recent posts болон engagement trend харах боломжтой. Backend нь FastAPI endpoint-уудаар өгөгдөл, статистик, тусгайлан сургасан загвар бүхий sentiment, topic, trend, export болон scraper control функцийг өгдөг.
 
 \section{Судалгааны зорилго}
 
@@ -479,16 +479,7 @@ Google Gemini API зэрэг LLM үйлчилгээ нь structured summary data
 \hline
 \rowcolor{gray!20}\textbf{Шийдэл} & \textbf{Давуу тал} & \textbf{Хязгаарлалт} \\
 \hline
-Commercial social listening tools & Олон платформ, enterprise dashboard \usetikzlibrary{shapes.geometric, shadows}
-\begin{tikzpicture}[
-  proc/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
-    minimum width=3.2cm, minimum height=0.7cm, text centered, font=\small, align=center},
-  term/.style={rectangle, draw=black!60, fill=gray!10, rounded corners=6pt, drop shadow,
-    minimum width=2.5cm, minimum height=0.6cm, text centered, font=\small},
-  dec/.style={diamond, draw=black!60, fill=yellow!15, aspect=2, drop shadow,
-    minimum width=2.5cm, text centered, font=\small, align=center},
-  arr/.style={->, >=Stealth, thick, black!70}
-]\end{tikzpicture} & Үнэтэй, data access/API хязгаарлалттай \\
+Commercial social listening tools & Олон платформ, enterprise dashboard & Үнэтэй, data access/API хязгаарлалттай \\
 \hline
 API-only collection & Тогтвортой, дүрмийн дагуу access & Facebook public page data-д API access хязгаарлагдмал \\
 \hline
@@ -705,7 +696,7 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 
 \subsection{Scraper workflow}
 \begin{enumerate}
-    \item Facebook группын URL жагсаалт (жишээлбэл: \texttt{facebook.com/groups/369785350059670}) унших.
+    \item Facebook группын URL жагсаалт (жишээлбэл: \url{facebook.com/groups/369785350059670}) унших.
     \item Selenium WebDriver ашиглан browser session эхлүүлэх, Facebook-д нууцлалтайгаар нэвтэрч session cookies үүсгэх.
     \item Group-ийн хуудас руу шилжиж, динамик ачаалагдах (infinite scrolling) DOM бүтцийг 10-15 удаа гүйлгэж бүрэн ачаалах.
     \item BeautifulSoup болон нарийвчилсан CSS selector-уудыг ашиглан post-ын нийтлэл, зураг, сэтгэгдэл (comment), реакц (like, share) мэдээллийг ялгаж авах.
@@ -738,14 +729,15 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  proc/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=2pt,
+  proc/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
     minimum width=2.8cm, minimum height=0.7cm, text centered, font=\small},
-  dec/.style={diamond, draw=black!70, fill=blue!15, aspect=2,
+  dec/.style={diamond, draw=black!60, fill=yellow!15, aspect=2, drop shadow,
     minimum width=2.5cm, minimum height=0.8cm, text centered, font=\small, align=center},
-  term/.style={ellipse, draw=black!70, fill=gray!20,
+  term/.style={ellipse, draw=black!60, fill=gray!10, drop shadow,
     minimum width=1.5cm, minimum height=0.6cm, text centered, font=\small},
-  arr/.style={->, >=Stealth, thick, black!60}
+  arr/.style={->, >=Stealth, thick, black!70}
 ]
 \node[term] (start) at (0,0) {Эхлэл};
 \node[proc] (enter) at (0,-1.5) {Target URL оруулах};
@@ -768,7 +760,8 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 \draw[arr] (ok) -- node[left, font=\footnotesize]{Үгүй} (log);
 \draw[arr] (report) -- (end);
 \draw[arr] (log.east) -- ++(1.0,0) |- (end.west);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Өгөгдөл цуглуулах системийн BPMN процесс}
 \end{figure}
 
@@ -777,6 +770,7 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 
 \begin{figure}[H]
 \centering
+\resizebox{0.85\textwidth}{!}{%
 \begin{tikzpicture}[
   actor/.style={rectangle, draw=black!60, fill=gray!10, drop shadow,
     minimum width=2.0cm, minimum height=0.7cm, text centered, font=\small},
@@ -814,7 +808,8 @@ Supabase client & Frontend realtime refresh hook & \texttt{facebook\_posts} tabl
 \draw[arr] (admin.east) -- (uc6.west);
 \draw[arr] (admin.east) -- (uc7.west);
 \draw[arr] (ext.east) -- (uc8.west);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Системийн Use Case диаграм}
 \end{figure}
 
@@ -823,6 +818,7 @@ AI тайлан үүсгэх үеийн дарааллыг харуулна.
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
   lifeline/.style={draw=black!50, thick, dashed},
   actbox/.style={rectangle, draw=black!60, fill=blue!10, drop shadow,
@@ -857,7 +853,8 @@ AI тайлан үүсгэх үеийн дарааллыг харуулна.
 \node[actbox] at (6.4,-7.8) {FastAPI};
 \node[actbox] at (9.6,-7.8) {Өгөгдлийн сан};
 \node[actbox] at (12.8,-7.8){Gemini API};
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{AI тайлан үүсгэх Sequence диаграм}
 \end{figure}
 
@@ -866,6 +863,7 @@ Dashboard ашиглах, өгөгдөл цуглуулах, шинжилгээ 
 
 \begin{figure}[H]
 \centering
+\resizebox{0.75\textwidth}{!}{%
 \begin{tikzpicture}[
   act/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
     minimum width=3.8cm, minimum height=0.7cm, text centered, font=\small, align=center},
@@ -912,7 +910,8 @@ Dashboard ашиглах, өгөгдөл цуглуулах, шинжилгээ 
 \draw[arr] (air.south) -- ++(0,-0.3) -| (log.north);
 \draw[arr] (exp.south) -- ++(0,-0.3) -| (log.north);
 \draw[arr] (log) -- (e);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Системийн үндсэн Activity диаграм}
 \end{figure}
 
