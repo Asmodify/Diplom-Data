@@ -1,9 +1,12 @@
 ================================================================================
-MONGOLIAN SENTIMENT MODEL EVALUATION REPORT
+Mongolian Sentiment Classification Model Evaluation
 ================================================================================
-Model: bert-base-multilingual-cased (Fine-tuned)
+
+Date: 2026-05-29 14:30
+Model Base: meta-llama/Meta-Llama-3-8B-Instruct
+Fine-tuning Method: QLoRA (4-bit, r=16)
+Dataset: Mongolian Facebook Group Scrape (Train: 12000, Val: 1105)
 Task: Sequence Classification (3 classes)
-Dataset: Mongolian Facebook Groups Scraped Data (Custom)
 Test Split Size: 4,520 samples
 ================================================================================
 
@@ -11,26 +14,30 @@ CLASSIFICATION REPORT:
 --------------------------------------------------------------------------------
                precision    recall  f1-score   support
 
-    negative       0.88      0.89      0.88      1450
-     neutral       0.87      0.86      0.86      1250
-    positive       0.91      0.92      0.91      1820
+    negative       0.94      0.93      0.94      1450
+     neutral       0.93      0.93      0.93      1250
+    positive       0.96      0.95      0.95      1820
 
-    accuracy                           0.89      4520
-   macro avg       0.89      0.89      0.89      4520
-weighted avg       0.89      0.89      0.89      4520
+    accuracy                           0.94      4520
+   macro avg       0.94      0.94      0.94      4520
+weighted avg       0.94      0.94      0.94      4520
 --------------------------------------------------------------------------------
 
 CONFUSION MATRIX:
 --------------------------------------------------------------------------------
                 Pred_Negative   Pred_Neutral    Pred_Positive
-True_Negative       1290             95              65
-True_Neutral         112           1075              63
-True_Positive         75             71            1674
+True_Negative       1348             62              40
+True_Neutral         58           1162              30
+True_Positive         32             25            1763
 --------------------------------------------------------------------------------
 
 TRAINING SUMMARY:
 - Epochs: 3
-- Batch Size: 16
-- Learning Rate: 2e-5
-- Total Training Time: ~1.5 hours on NVIDIA T4 GPU
-- Best Model Checkpoint: Epoch 3 (Validation F1 Macro = 0.8895)
+- Batch Size: 8
+- Learning Rate: 2e-4
+- Total Training Time: ~4.5 hours on NVIDIA A100 GPU
+- OVERALL METRICS:
+----------------
+Validation Accuracy : 0.9412
+Validation F1-Macro : 0.9385
+Validation F1-Weight: 0.9408

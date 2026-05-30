@@ -1,8 +1,8 @@
 # Sentiment Model Training Configuration
-# Used for fine-tuning multilingual transformer on Mongolian Facebook data
+# Used for fine-tuning LLM via QLoRA on Mongolian Facebook data
 
 TRAINING_CONFIG = {
-    "base_model": "bert-base-multilingual-cased",
+    "base_model": "meta-llama/Meta-Llama-3-8B-Instruct",
     "task": "sequence_classification",
     "num_labels": 3,  # positive, negative, neutral
     "label_map": {
@@ -11,10 +11,16 @@ TRAINING_CONFIG = {
         2: "positive"
     },
 
-    # Training hyperparameters (tuned via grid search)
-    "learning_rate": 2e-5,
+    # QLoRA Hyperparameters
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj"],
+
+    # Training hyperparameters (tuned for LLM fine-tuning)
+    "learning_rate": 2e-4,
     "epochs": 3,
-    "batch_size": 16,
+    "batch_size": 8,
     "warmup_steps": 100,
     "weight_decay": 0.01,
     "max_seq_length": 256,

@@ -3,13 +3,13 @@ train_model.py
 ==============
 Mongolian Sentiment Analysis Model — Fine-tuning Pipeline
 
-bert-base-multilingual-cased загварыг Facebook группуудаас цуглуулсан
-Монгол хэлний өгөгдөл дээр тусгайлан сургаж (fine-tune) sentiment
+Llama-3 (8B) загварыг Facebook группуудаас цуглуулсан
+Монгол хэлний өгөгдөл дээр тусгайлан сургаж (fine-tune via QLoRA) sentiment
 classification загвар бүтээнэ.
 
 Загварын архитектур:
-  - Base: bert-base-multilingual-cased (104 хэлний multilingual BERT)
-  - Head: Linear(768 → 3) classification layer
+  - Base: meta-llama/Meta-Llama-3-8B-Instruct
+  - Method: Parameter-Efficient Fine-Tuning (PEFT) with QLoRA (4-bit quantization)
   - Labels: negative(0), neutral(1), positive(2)
 
 Hyperparameters (GridSearch-ээр сонгосон):
@@ -53,11 +53,13 @@ except ImportError:
 
 try:
     from transformers import (
-        BertTokenizer,
-        BertForSequenceClassification,
+        AutoTokenizer,
+        AutoModelForSequenceClassification,
         AdamW,
         get_linear_schedule_with_warmup,
+        BitsAndBytesConfig
     )
+    from peft import LoraConfig, get_peft_model, TaskType
     HAS_TRANSFORMERS = True
 except ImportError:
     HAS_TRANSFORMERS = False
@@ -217,12 +219,37 @@ def main():
     logger.info(f"Training config: epochs={args.epochs}, batch_size={args.batch_size}, lr={args.lr}")
 
     # ── Load tokenizer and model ──
-    logger.info(f"Loading base model: {TRAINING_CONFIG['base_model']}")
-    tokenizer = BertTokenizer.from_pretrained(TRAINING_CONFIG["base_model"])
-    model = BertForSequenceClassification.from_pretrained(
+    logger.info(f"Loading base LLM for QLoRA: {TRAINING_CONFIG['base_model']}")
+    
+    tokenizer = AutoTokenizer.from_pretrained(TRAINING_CONFIG["base_model"])
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.float16
+    )
+
+    base_model = AutoModelForSequenceClassification.from_pretrained(
         TRAINING_CONFIG["base_model"],
         num_labels=TRAINING_CONFIG["num_labels"],
-    ).to(device)
+        quantization_config=bnb_config,
+        device_map="auto"
+    )
+    
+    peft_config = LoraConfig(
+        task_type=TaskType.SEQ_CLS,
+        inference_mode=False,
+        r=TRAINING_CONFIG["lora_r"],
+        lora_alpha=TRAINING_CONFIG["lora_alpha"],
+        lora_dropout=TRAINING_CONFIG["lora_dropout"],
+        target_modules=TRAINING_CONFIG["target_modules"]
+    )
+    
+    model = get_peft_model(base_model, peft_config)
+    model.print_trainable_parameters()
 
     # ── Load datasets ──
     train_dataset = SentimentDataset(

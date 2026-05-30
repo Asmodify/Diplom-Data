@@ -76,7 +76,7 @@ export function Landing({ onNavigate }: LandingProps) {
             <FeatureCard 
               icon={<Heart className="h-6 w-6 text-emerald-400" />}
               title="Хандлагын шинжилгээ"
-              desc="Контентын эерэг, сөрөг болон саармаг байдлыг 89% нарийвчлалтай илрүүлнэ."
+              desc="Контентын эерэг, сөрөг болон саармаг байдлыг 94% нарийвчлалтай илрүүлнэ."
             />
             <FeatureCard 
               icon={<Activity className="h-6 w-6 text-blue-400" />}

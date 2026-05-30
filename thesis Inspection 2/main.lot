@@ -5,7 +5,7 @@
 \contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Бодит ашигласан технологийн сонголт}}{8}{table.caption.12}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Backend endpoint-уудын үндсэн бүлэг}}{17}{table.caption.18}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Загварын үнэлгээний үзүүлэлт (Test set)}}{19}{table.caption.19}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Загварын үнэлгээний үзүүлэлт (Llama-3 QLoRA, Test set)}}{19}{table.caption.19}%
 \contentsline {table}{\numberline {4.3}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Системийн туршилтын хувилбарууд (Test cases)}}{20}{table.caption.20}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {5.1}{\ignorespaces \xpg@aux {}{mongolian}\ignorespaces Хэрэгжсэн модулиудын нэгтгэл}}{21}{table.caption.21}%

@@ -141,7 +141,7 @@ export default function App() {
               <div className="grid gap-3 sm:grid-cols-3 xl:w-[560px]">
                 <StatusTile icon={Activity} label="Дамжлага" value="Цуглуулах -> Хадгалах -> Шинжлэх" />
                 <StatusTile icon={ServerCog} label="Ажиллах орчин" value="FastAPI + Supabase" />
-                <StatusTile icon={Bot} label="AI давхарга" value="Gemini + BERT" />
+                <StatusTile icon={Bot} label="AI давхарга" value="Gemini + Llama-3" />
               </div>
             </div>
           </header>

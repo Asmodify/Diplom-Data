@@ -210,11 +210,11 @@ export function AIInsights() {
             <div className="mb-4 flex flex-wrap gap-2">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm shadow-sm border border-white/10">
                 <BrainCircuit className="h-4 w-4" />
-                Fine-Tuned Multilingual BERT
+                Fine-Tuned Llama-3 (QLoRA)
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 backdrop-blur-sm border border-emerald-500/30">
                 <TrendingUp className="h-3 w-3" />
-                F1-Score: 89%
+                F1-Score: 94%
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-200 backdrop-blur-sm border border-amber-500/30">
                 <Database className="h-3 w-3" />
