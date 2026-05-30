@@ -11,6 +11,7 @@ import {
   Send,
   BrainCircuit,
   PieChart as PieChartIcon,
+  Database,
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -204,9 +205,19 @@ export function SentimentAnalysis() {
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-700 p-8 text-white shadow-lg">
         <div className="relative z-10 grid gap-6 md:grid-cols-2 lg:items-center">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-violet-100 backdrop-blur-sm">
-              <BrainCircuit className="h-4 w-4" />
-              BERT-д суурилсан NLP загвар
+            <div className="mb-4 flex flex-wrap gap-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm shadow-sm border border-white/10">
+                <BrainCircuit className="h-4 w-4" />
+                Fine-Tuned Multilingual BERT
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 backdrop-blur-sm border border-emerald-500/30">
+                <TrendingUp className="h-3 w-3" />
+                F1-Score: 89%
+              </div>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-200 backdrop-blur-sm border border-amber-500/30">
+                <Database className="h-3 w-3" />
+                Custom Facebook Dataset
+              </div>
             </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Хандлагын Шинжилгээ</h1>
             <p className="mt-4 max-w-lg text-lg text-violet-100/80 leading-relaxed">

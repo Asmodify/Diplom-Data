@@ -578,11 +578,12 @@ Browser automation scraper & Динамик UI-тай ажиллах болом�
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  box/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=3pt,
+  box/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
     minimum width=2.9cm, minimum height=0.85cm, text centered, font=\small, align=center},
   sysbox/.style={rectangle, draw=black!40, fill=yellow!10, rounded corners=5pt, inner sep=8pt},
-  arr/.style={->, >=Stealth, thick, black!60}
+  arr/.style={->, >=Stealth, thick, black!70}
 ]
 \node[sysbox, minimum width=4.2cm, minimum height=1.6cm] at (0,0.1) {};
 \node[font=\footnotesize\itshape] at (1.8,0.7) {User};
@@ -611,7 +612,8 @@ Browser automation scraper & Динамик UI-тай ажиллах болом�
 \draw[arr] (api) -- (db);
 \draw[arr] (db.south) -- (gem.north);
 \draw[arr] (gem.north) -- ++(0,0.5) -| (fe.south);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Системийн бодит архитектурын диаграм}
 \label{fig:architecture-diagram}
 \end{figure}
@@ -620,10 +622,11 @@ Browser automation scraper & Динамик UI-тай ажиллах болом�
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  box/.style={rectangle, draw=black!70, fill=blue!8, rounded corners=3pt,
+  box/.style={rectangle, draw=black!60, fill=blue!10, rounded corners=3pt, drop shadow,
     minimum width=2.2cm, minimum height=1.0cm, text centered, font=\small, align=center},
-  arr/.style={->, >=Stealth, thick, black!60},
+  arr/.style={->, >=Stealth, thick, black!70},
   node distance=0.7cm
 ]
 \node[box] (pages) at (0,0) {pages.txt\\Targets};
@@ -641,7 +644,8 @@ Browser automation scraper & Динамик UI-тай ажиллах болом�
 \draw[arr] (api.east) -- ++(0.4,0) |- (dash.west);
 \draw[arr] (tb.east) -- ++(0.4,0) |- (dash.west);
 \draw[arr] (dash) -- (gem);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Өгөгдлийн урсгалын бодит дараалал}
 \label{fig:dataflow-diagram}
 \end{figure}
